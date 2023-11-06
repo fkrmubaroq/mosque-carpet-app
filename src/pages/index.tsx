@@ -11,13 +11,15 @@ import {
   AiOutlinePhone,
   AiOutlineMail,
   AiOutlineInstagram,
+  AiOutlineClose,
 } from "react-icons/ai";
 import { FiTrendingUp, FiThumbsUp } from "react-icons/fi";
 import { BsFacebook } from "react-icons/bs";
 import { FaRegLightbulb } from "react-icons/fa6";
+import { RxHamburgerMenu } from "react-icons/rx";
 import { BiLogoTiktok } from "react-icons/bi";
 import { HiOutlineLocationMarker } from "react-icons/hi";
-import { useEffect } from "react";
+import { memo, useEffect, useState } from "react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -27,52 +29,78 @@ import 'swiper/css/navigation';
 
 // import required modules
 import { Navigation } from 'swiper/modules';
+import { debounce } from "@/lib/utils";
+import dynamic from "next/dynamic";
+import ButtonWa from "@/components/ui/button/ButtonWa";
 
-const container = "lg:mx-auto lg:w-[1280px]";
+const Portal = dynamic( import("@/components/ui/portal").then((module) => module.default), { ssr: false });
+type TMobile = { mobileMd: boolean, mobileSm: boolean };
+const container = "lg:mx-auto xl:w-[1280px]";
+const marginEachSection = "lg:mb-[100px] mb-16";
 export default function Home() {
+
+  const [mobileMd, setMobileMdWidth] = useState(false);
+  const [mobileSm, setMobileSm] = useState(false);
+  const mobile: TMobile = {
+    mobileMd,
+    mobileSm,
+  };
+  useEffect(() => {
+    const checkScreenWidth = () => {
+      const width = window.innerWidth;
+      const mobileMdWidth = width <= 968;
+      const mobileSmWidth = width <= 640;
+      if (mobileSmWidth) {
+        setMobileSm(true);
+        setMobileMdWidth(false);
+        return;
+      }
+      setMobileSm(false);
+      setMobileMdWidth(mobileMdWidth);
+    };
+    const debounceCheckScreenWidth = debounce(checkScreenWidth);
+    debounceCheckScreenWidth();
+    window.addEventListener("resize", debounceCheckScreenWidth);
+    return () => window.removeEventListener("resize", debounceCheckScreenWidth);
+  }, [mobile]);
+
   useEffect(() => {
     document.body.classList.add("bg-slate-50");
   }, []);
   return (
     <main className="min-h-screen">
-      <SectionFirst />
-      <div className={cn(container)}>
+      <SectionFirst mobile={mobile} />
+      <div className={cn(container, "px-4")}>
         <SectionAboutUs />
         <SectionVisionMision />
         <SectionWhyChooseUs />
-        <SectionContactUs />
-        <SectionRecentNews />
-        <SectionOurProduct />
+        <SectionContactUs mobile={mobile} />
+        <SectionRecentNews mobile={mobile} />
+        <SectionOurProduct mobile={mobile} />
       </div>
       <Footer />
+      <ButtonWa />
     </main>
   );
 }
 
-const menus = ["About Us", "Collections", "Projects", "Contact Us"];
-function SectionFirst() {
+// function ButtonWa() {
+//   return (
+//     <div className="fixed right-4 bottom-6 shadow-sm z-50">
+//       <Button className="flex items-center justify-center gap-x-2 rounded-full w-16 !h-16">
+//         <AiOutlineWhatsApp size={40} />
+//       </Button>
+//     </div>
+//   );
+// }
+
+function SectionFirst({ mobile }: { mobile: TMobile }) {
   return (
-    <section className="h-[700px] w-full lg:mb-20">
-      <header className="absolute left-0 right-0 z-50">
-        <div
-          className={cn("mt-4 flex items-center justify-between", container)}
-        >
-          <div className="flex items-center justify-center gap-x-3">
-            <Image src="/img/logo.png" width="36" height="36" alt="" />
-            <span className="text-lg text-white">Al-Hijra</span>
-          </div>
-          <nav className="flex h-16 list-none items-center justify-center gap-x-5 text-lg font-light tracking-wide text-white">
-            {menus.map((item, key) => (
-              <li className="cursor-pointer p-3" key={key}>
-                {item}
-              </li>
-            ))}
-          </nav>
-        </div>
-      </header>
+    <section className="h-[600px] w-full lg:mb-20 lg:h-[700px]">
+      <Header mobile={mobile} />
       <div
         className={cn(
-          "absolute h-[700px] w-full bg-cover bg-center"
+          "absolute h-[600px] w-full bg-black bg-center object-cover lg:h-[700px]"
           // "before:absolute before:w-full before:h-16 before:bg-black before:opacity-40 before:top-0 before:content-[''] before:block"
         )}
         style={{
@@ -81,7 +109,7 @@ function SectionFirst() {
           backgroundSize: "100%",
         }}
       >
-        <div className={cn("pt-48", container)}>
+        <div className={cn("pt-28 lg:pt-48", container)}>
           <div
             className="absolute inset-0"
             style={{
@@ -89,11 +117,11 @@ function SectionFirst() {
                 "linear-gradient(180deg, #000000 0%, #00000000 50%)",
             }}
           ></div>
-          <h1 className="relative mx-auto mb-24 text-center font-poppins text-2xl font-light tracking-wider text-white lg:max-w-[750px]">
+          <h1 className="relative mx-auto mb-6 max-w-[450px] px-3 text-center font-poppins text-xl font-light tracking-wider text-white lg:mb-24 lg:w-full lg:max-w-[750px] lg:px-0 lg:text-2xl">
             Solusi Kebutuhan Karpet Masjid yang terpadu dengan berbagai Merk
             Lokal dan Import dengan Kualitas dan Design Terbaik
           </h1>
-          <div className="relative flex gap-x-5">
+          <div className="relative mx-4 flex gap-x-5">
             <HeroCard
               title={
                 <>
@@ -102,7 +130,7 @@ function SectionFirst() {
               }
               text="Pusat Spesialist Karpet Masjid Terlengkap yang Amanah & Jujur Memberikan Pelayanan Terbaik Bagi Donatur & Jamaah."
               footer={
-                <div className="mt-5 flex gap-x-4">
+                <div className="mt-5 flex flex-col gap-x-4 gap-y-4 lg:flex-row lg:gap-y-0">
                   <Button className="!rounded-none !px-10 !py-6 font-cinzel">
                     READ MORE
                   </Button>
@@ -122,6 +150,82 @@ function SectionFirst() {
   );
 }
 
+const menus = ["About Us", "Collections", "Projects", "Contact Us"];
+function Header({ mobile }: { mobile: TMobile }) {
+  return (
+    <header className="absolute left-0 right-0 z-50 px-3 lg:px-0">
+      <div className={cn("mt-4 flex items-center justify-between", container)}>
+        <div className="flex items-center justify-center gap-x-3">
+          <Image src="/img/logo.png" width="36" height="36" alt="" />
+          <span className="text-lg text-white">Al-Hijra</span>
+        </div>
+        {mobile.mobileMd || mobile.mobileSm ? (
+          <MobileNavigationHeader menus={menus} />
+        ) : (
+          <NavigationHeader menus={menus} />
+        )}
+      </div>
+    </header>
+  );
+}
+
+function NavigationHeader({ menus }: { menus: string[] }) {
+  return (
+    <nav className="flex h-16 list-none items-center justify-center gap-x-5 text-lg font-light tracking-wide text-white">
+      {menus.map((item, key) => (
+        <li className="cursor-pointer p-3" key={key}>
+          {item}
+        </li>
+      ))}
+    </nav>
+  );
+}
+function MobileNavigationHeader({ menus }: { menus: string[] }) {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  return (
+    <div>
+      <div className="h-11 w-11 flex justify-center items-center cursor-pointer" onClick={() => setIsOpen(true)}>
+        <RxHamburgerMenu color="white" size={30} />
+      </div>
+
+      <Portal>
+        <div className={cn("inset-0 bg-black absolute opacity-40", { "hidden": !isOpen })} onClick={() => setIsOpen(false) }></div>
+        <div
+          className={cn(
+            "absolute left-0 right-0 bg-white p-5 transition-all duration-300 z-50",
+            {
+              "-top-[1000px]": !isOpen,
+              "top-0": isOpen,
+            }
+          )}
+        >
+          <div
+            className="absolute right-6 top-5 cursor-pointer flex h-8 w-8 justify-center text-lg text-black"
+            onClick={() => setIsOpen(false)}
+          >
+            <AiOutlineClose size={25} />
+          </div>
+          <div className="flex flex-col items-center justify-center gap-y-5">
+            <div className="flex flex-col items-center gap-y-1">
+              <Image src="/img/logo-black.png" width="50" height="50" alt="" />
+              <span className="text-lg font-semibold tracking-wide text-black">
+                AL - HIJRA
+              </span>
+            </div>
+            <div className="mb-6 flex flex-col gap-y-8">
+              {menus.map((item, key) => (
+                <div className="flex justify-center" key={key}>
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Portal>
+    </div>
+  );
+}
+
 function HeroCard({
   title,
   text,
@@ -133,11 +237,11 @@ function HeroCard({
 }) {
   return (
     <div
-      className="rounded-lg px-12 py-10 text-white lg:max-w-[500px]"
+      className="rounded-lg px-12 py-10 text-white lg:w-[500px] sm:w-[400px] w-full"
       style={{ background: "rgba(0,0,0,0.7)" }}
     >
-      <div className="mb-4 text-3xl font-cinzel">{title}</div>
-      <span className="font-poppins text-md font-light tracking-wide">
+      <div className="mb-4 text-xl lg:text-3xl font-cinzel">{title}</div>
+      <span className="font-poppins text-sm lg:text-md font-light tracking-wide">
         {text}
       </span>
       {footer}
@@ -171,10 +275,15 @@ function SectionTitle({
     </div>
   );
 }
-function SectionAboutUs() {
+function SectionAboutUsMemo() {
   return (
-    <section className="flex items-center gap-x-3 pt-20  lg:mb-[100px]">
-      <div className="pr-40">
+    <section
+      className={cn(
+        "mb-16 flex flex-col items-center gap-x-3 pt-20 lg:flex-row",
+        marginEachSection
+      )}
+    >
+      <div className="lg:pr-40">
         <SectionTitle
           context="ABOUT US"
           title={
@@ -184,7 +293,7 @@ function SectionAboutUs() {
           }
         />
 
-        <div className="font-poppins text-lg tracking-wide text-gray-500">
+        <div className="mb-5 font-poppins text-lg tracking-wide text-gray-500 lg:mb-0">
           MODULO started as a boutique concept store in 2018. Today, MODULO
           provides one stop solution for home owners who seek to have finer
           interior solutions for their homes. Our designers are trained to help
@@ -205,23 +314,21 @@ function SectionAboutUs() {
             alt=""
           />
         </div>
-        <div className="absolute -left-20 top-36 border-[7px] border-white shadow-md">
-          <Image
-            src="/img/red-carpet-detail.webp"
-            className="rounded-md"
-            width="150"
-            height="200"
-            alt=""
-          />
-        </div>
       </div>
     </section>
   );
 }
 
-function SectionVisionMision() {
+const SectionAboutUs = memo(SectionAboutUsMemo);
+
+function SectionVisionMisionMemo() {
   return (
-    <section className="flex gap-x-12 lg:mb-[100px]">
+    <section
+      className={cn(
+        "flex flex-col gap-x-12 lg:flex-row",
+        marginEachSection
+      )}
+    >
       <CardContent
         className="w-full bg-secondary text-white"
         icon={<AiOutlineAim color="white" size={50} />}
@@ -244,6 +351,8 @@ function SectionVisionMision() {
   );
 }
 
+const SectionVisionMision = memo(SectionVisionMisionMemo);
+
 
 function CardContent({ className, icon, title, description }:
   React.ComponentPropsWithoutRef<"div"> & {
@@ -262,11 +371,13 @@ function CardContent({ className, icon, title, description }:
   );
 }
 
-function SectionWhyChooseUs() {
+function SectionWhyChooseUsMemo() {
   return (
     <>
       <div className="h-1 w-full border-t border-dashed"></div>
-      <section className="flex items-center gap-x-3 pt-20 lg:mb-[100px]">
+      <section
+        className={cn("flex items-center gap-x-3 pt-20", marginEachSection)}
+      >
         <div>
           <SectionTitle
             classNameContext="border-b-primary"
@@ -277,23 +388,21 @@ function SectionWhyChooseUs() {
               </>
             }
           />
-          <div className="flex items-center gap-x-10">
-            <div className="flex items-center gap-x-24">
+          <div className="flex flex-col items-center gap-x-10 lg:flex-row lg:gap-y-0 gap-y-5 ">
+            <div className="flex flex-col items-center lg:gap-x-24 lg:flex-row lg:gap-y-0 gap-y-7">
               <ItemChooseUs
                 className="w-full"
-                icon={<FaRegLightbulb size={110} color="#15803d" />}
+                icon={<FaRegLightbulb size={50} color="#15803d" />}
                 description="Solusi Kebutuhan Karpet Masjid yang terpadu dengan berbagai Merk Lokal dan Import dengan Kualitas dan Design Terbaik"
               />
               <ItemChooseUs
                 className="w-full"
-                icon={<FiThumbsUp size={140} color="#15803d" />}
+                icon={<FiThumbsUp size={50} color="#15803d" />}
                 description="Tenaga Profesional kami telah teruji dalam melakukan pemasangan, setting, layout dengan berbagai tingkat kesulitan."
               />
             </div>
             <div className="flex w-2/3 justify-center">
-              <Button
-                className="flex items-center justify-center gap-x-2 !rounded-none !p-6"
-              >
+              <Button className="flex items-center justify-center gap-x-2 !rounded-none !p-6">
                 <span>OUR SERVICES</span>
                 <AiFillCaretRight />
               </Button>
@@ -305,6 +414,8 @@ function SectionWhyChooseUs() {
   );
 }
 
+const SectionWhyChooseUs = memo(SectionWhyChooseUsMemo);
+
 function ItemChooseUs({
   icon,
   description,
@@ -314,9 +425,11 @@ function ItemChooseUs({
   description: React.ReactNode | string;
 }) {
   return (
-    <div className={cn("flex gap-x-7 items-center", className)}>
-      {icon}
-      <span className="font-normal text-gray-700 tracking-wide">{description}</span>
+    <div className={cn("flex items-center gap-x-7", className)}>
+      <div className="shrink-0 max-w-[425px]">{icon}</div>
+      <span className="font-normal tracking-wide text-gray-700">
+        {description}
+      </span>
     </div>
   );
 }
@@ -351,27 +464,33 @@ function SectionOurPartner() {
   );
 }
 
-function SectionContactUs() {
+function SectionContactUs({ mobile }: { mobile: TMobile }) {
   return (
-    <section className="lg:mb-[100px] h-[440px]">
+    <section className={cn("h-[440px]", marginEachSection)}>
       <div
-        className="absolute left-0 h-[440px] w-full bg-cover bg-bottom"
+        className="absolute left-0 h-[440px] w-full bg-bottom object-cover"
         style={{
           backgroundImage: `url('/img/img-contact-us.webp')`,
           backgroundRepeat: "no-repeat",
-          backgroundSize: "100%",
+          backgroundSize: `100% ${mobile ? "100%" : ""}`,
         }}
       >
         <div
           className="absolute inset-0 z-0"
           style={{
-            backgroundImage:
-              "linear-gradient(260deg, #000000 0%, #00000000 100%)",
+            backgroundImage: `linear-gradient(${
+              mobile.mobileMd ? "60deg" : "260deg"
+            }, #000000 0%, #00000000 100%)`,
           }}
         ></div>
-        <div className={cn("relative z-10 flex h-full items-center justify-end",container)}>
-          <div>
-            <div className="mb-4 max-w-[700px] font-cinzel text-5xl leading-normal text-white">
+        <div
+          className={cn(
+            "relative z-10 flex h-full items-center justify-end",
+            container
+          )}
+        >
+          <div className="px-4 lg:px-0">
+            <div className="mb-4 font-cinzel text-2xl leading-normal text-white lg:max-w-[700px] lg:text-5xl">
               Finding Finer Solution For Your{" "}
               <span className="text-primary">Home?</span>
             </div>
@@ -379,8 +498,8 @@ function SectionContactUs() {
               MODULO provides everything you need.
             </span>
             <div className="mt-4">
-              <Button className="flex items-center justify-center gap-x-2 !rounded-none !p-7 text-lg text-white">
-                <AiOutlineWhatsApp size={22} />
+              <Button className="flex items-center justify-center gap-x-2 !rounded-none !p-5 text-sm text-white lg:!p-7 lg:text-lg">
+                <AiOutlineWhatsApp size={mobile.mobileMd ? 20 : 22} />
                 <span>CONTACT US NOW</span>
               </Button>
             </div>
@@ -412,10 +531,22 @@ const newsItems: TNewItem[] = [
     description:
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
   },
+  {
+    image: "/img/news/news-3.webp",
+    title: "Soft Launching Masjid Al-Jabar",
+    createdAt: "2023-10-12",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+  },
 ];
-function SectionRecentNews() {
+function SectionRecentNews({ mobile }: { mobile: TMobile }) {
+  const getSlidePerPreviewByScreen = () => {
+    if (mobile.mobileSm) return 1;
+    if (mobile.mobileMd) return 2;
+    return 3;
+  }
   return (
-    <section className="lg:mb-[100px]">
+    <section className={cn(marginEachSection)}>
       <SectionTitle
         context="ARTICLES"
         title={
@@ -433,9 +564,20 @@ function SectionRecentNews() {
         }
       />
       <div className="flex gap-x-8">
-        {newsItems.map((item, key) => (
-          <CardNewItem key={key} data={item} />
-        ))}
+        <Swiper
+          slidesPerView={getSlidePerPreviewByScreen()}
+          spaceBetween={20}
+          navigation={true}
+          loop
+          modules={[Navigation]}
+          className="swipper-category"
+        >
+          {newsItems.map((item, key) => (
+            <SwiperSlide key={key}>
+              <CardNewItem data={item} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     </section>
   );
@@ -470,16 +612,18 @@ const categoryItems: TCategoryItem[] = [
 ];
 function CardNewItem({ data }: { data: TNewItem }) {
   return (
-    <div className="group flex flex-col gap-y-3 transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary">
-      <Image
-        src={data.image}
-        width="400"
-        className="h-[350px] w-full object-cover"
-        height="300"
-        alt=""
-      />
+    <div className="group flex flex-col gap-y-3 transition-all duration-500 hover:scale-105 ease-in-out hover:bg-primary">
+      <div className="h-[350px] w-full">
+        <Image
+          src={data.image}
+          width="400"
+          className="w-full shrink-0 object-cover"
+          height="300"
+          alt=""
+        />
+      </div>
       <div className="flex flex-col gap-y-2 px-4 pb-8">
-        <span className="mt-2 cursor-pointer text-xl font-medium tracking-wider text-gray-700 group-hover:text-white">
+        <span className="mt-2 cursor-pointer text-xl font-medium hover:underline tracking-wider text-gray-700 group-hover:text-white">
           {data.title}
         </span>
         <span className="text-sm tracking-wide text-gray-400 group-hover:text-white">
@@ -494,9 +638,14 @@ function CardNewItem({ data }: { data: TNewItem }) {
 }
 
 
-function SectionOurProduct() {
+function SectionOurProduct({ mobile }: { mobile: TMobile }) {
+  const getSlidePerPreviewByScreen = () => {
+    if (mobile.mobileSm) return 1;
+    if (mobile.mobileMd) return 2;
+    return 4;
+  };
   return (
-    <section className="lg:mb-[100px]">
+    <section className={marginEachSection}>
       <SectionTitle
         context="OUR PRODUCTS"
         title={
@@ -514,7 +663,7 @@ function SectionOurProduct() {
         }
       />
       <Swiper
-        slidesPerView={4}
+        slidesPerView={getSlidePerPreviewByScreen()}
         spaceBetween={20}
         navigation={true}
         loop
@@ -524,11 +673,10 @@ function SectionOurProduct() {
         {categoryItems.map((item, key) => (
           <SwiperSlide
             key={key}
-            className="group cursor-pointer mb-2 flex flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary"
+            className="group mb-2 flex cursor-pointer flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary"
           >
-
             <Image src={item.image} width="300" height="300" alt="" />
-            <div className="pb-5 pt-4 font-poppins tracking-wider text-slate-700 group-hover:bg-primary group-hover:text-white">
+            <div className="pb-5 pt-4 text-center font-poppins tracking-wider text-slate-700 group-hover:bg-primary group-hover:text-white">
               {item.title}
             </div>
           </SwiperSlide>
@@ -538,10 +686,10 @@ function SectionOurProduct() {
   );
 }
 
-function Footer() {
+function FooterMemo() {
   return (
-    <footer className="relative flex gap-x-4 bg-black py-20">
-      <div className={cn("flex justify-between", container)}>
+    <footer className="relative flex gap-x-4 bg-black pt-20 pb-28 md:px-5">
+      <div className={cn("flex lg:flex-row flex-col lg:gap-y-0 gap-y-8 justify-between w-full lg:px-0 px-4", container)}>
         <FooterLogo />
         <FooterContactItem />
         <FooterSocialMedia />
@@ -550,10 +698,11 @@ function Footer() {
     </footer>
   );
 }
+const Footer = memo(FooterMemo);
 
 function FooterLogo() {
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col lg:items-center lg:justify-center">
       <Image src="/img/logo.png" width="80" height="80" alt="" />
       <span className="text-lg tracking-widest text-white mt-3">AL - HIJRA</span>
       <span className="text-gray-50 text-sm">Ibadah Semakin Nyaman</span>
@@ -581,7 +730,7 @@ function FooterContactItem() {
 }
 
 function FooterTitleItem({ title } : { title: string | React.ReactNode}) {
-  return <div className="text-3xl font-cinzel">{title}</div>
+  return <div className="text-2xl lg:text-3xl font-cinzel ">{title}</div>
 }
 
 function FooterContentItem({ icon, text}: { icon : React.ReactNode, text: string | React.ReactNode }) {
@@ -607,8 +756,8 @@ function FooterSocialMedia() {
 function FooterCopyright() {
   const currentYear = new Date().getFullYear();
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-11 border-t-[0.1px] border-gray-600">
-      <div className={cn(container, "flex h-full items-center text-white text-sm")}>
+    <div className="absolute text-center bottom-0 left-0 right-0 h-11 border-t-[0.1px] border-gray-600">
+      <div className={cn(container, "flex h-full items-center justify-center text-white text-sm")}>
         Copyright &copy; {currentYear} | All Rights Reserved
       </div>
     </div>
