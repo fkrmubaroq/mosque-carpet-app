@@ -1,0 +1,13 @@
+.animation-move {
+  animation-name: move;
+  animation-timing-function: linear;
+  @keyframes move {
+    0% {
+      width:0;
+    }
+
+    100% {
+      width: 100%;
+    }
+  }
+}

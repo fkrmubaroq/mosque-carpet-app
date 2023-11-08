@@ -1,0 +1,11 @@
+.checkbox {
+  .checkbox__input:checked~.checkbox__label {
+    >div {
+      @apply border-primary bg-primary ;
+
+      >.checkbox__icon {
+        @apply opacity-100;
+      }
+    }
+  }
+}

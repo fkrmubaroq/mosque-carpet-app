@@ -79,34 +79,24 @@ export default function Home() {
         <SectionOurProduct mobile={mobile} />
       </div>
       <Footer />
-      <ButtonWa />
+      <ButtonWa phone=""/>
     </main>
   );
 }
 
-// function ButtonWa() {
-//   return (
-//     <div className="fixed right-4 bottom-6 shadow-sm z-50">
-//       <Button className="flex items-center justify-center gap-x-2 rounded-full w-16 !h-16">
-//         <AiOutlineWhatsApp size={40} />
-//       </Button>
-//     </div>
-//   );
-// }
-
 function SectionFirst({ mobile }: { mobile: TMobile }) {
   return (
-    <section className="h-[600px] w-full lg:mb-20 lg:h-[700px]">
+    <section className="h-[500px] w-full lg:mb-20 lg:h-[700px]">
       <Header mobile={mobile} />
       <div
         className={cn(
-          "absolute h-[600px] w-full bg-black bg-center object-cover lg:h-[700px]"
+          "absolute h-[500px] w-full bg-black bg-center object-cover lg:h-[700px]"
           // "before:absolute before:w-full before:h-16 before:bg-black before:opacity-40 before:top-0 before:content-[''] before:block"
         )}
         style={{
           backgroundImage: `url('/img/banner.webp')`,
           backgroundRepeat: "no-repeat",
-          backgroundSize: "100%",
+          backgroundSize: `100% ${mobile.mobileSm ? "100%" : ""}`,
         }}
       >
         <div className={cn("pt-28 lg:pt-48", container)}>
@@ -613,10 +603,10 @@ const categoryItems: TCategoryItem[] = [
 function CardNewItem({ data }: { data: TNewItem }) {
   return (
     <div className="group flex flex-col gap-y-3 transition-all duration-500 hover:scale-105 ease-in-out hover:bg-primary">
-      <div className="h-[350px] w-full">
+      <div className="image w-full">
         <Image
           src={data.image}
-          width="400"
+          width="450"
           className="w-full shrink-0 object-cover"
           height="300"
           alt=""
@@ -675,7 +665,7 @@ function SectionOurProduct({ mobile }: { mobile: TMobile }) {
             key={key}
             className="group mb-2 flex cursor-pointer flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary"
           >
-            <Image src={item.image} width="300" height="300" alt="" />
+            <Image src={item.image} width="400" height="300" alt="" className="w-full" />
             <div className="pb-5 pt-4 text-center font-poppins tracking-wider text-slate-700 group-hover:bg-primary group-hover:text-white">
               {item.title}
             </div>
@@ -703,7 +693,9 @@ const Footer = memo(FooterMemo);
 function FooterLogo() {
   return (
     <div className="flex flex-col lg:items-center lg:justify-center">
-      <Image src="/img/logo.png" width="80" height="80" alt="" />
+      <span>
+        <Image src="/img/logo.png" width="80" height="80" alt="" />
+      </span>
       <span className="text-lg tracking-widest text-white mt-3">AL - HIJRA</span>
       <span className="text-gray-50 text-sm">Ibadah Semakin Nyaman</span>
     </div>

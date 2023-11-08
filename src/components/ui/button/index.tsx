@@ -3,19 +3,19 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import cn from "classnames";
+import { DialogTrigger } from "@radix-ui/react-dialog";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default:
-          "bg-primary text-white shadow hover:bg-primary-hover",
+        default: "bg-primary text-white shadow hover:bg-primary-hover",
         danger:
           "bg-red-500 text-destructive-foreground shadow-sm hover:bg-red-600",
         secondary:
           "bg-secondary text-slate-50 text-secondary-foreground shadow-sm hover:bg-secondary-hover",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        ghost: "hover:bg-accent hover:text-accent-foreground hover:bg-gray-100",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
@@ -36,10 +36,21 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  asTrigger?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  (
+    {
+      className,
+      asTrigger,
+      variant,
+      size,
+      asChild = false,
+      ...props
+    },
+    ref
+  ) => {
     const Comp = asChild ? Slot : "button";
     return (
       <Comp

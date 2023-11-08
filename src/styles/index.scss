@@ -1,5 +1,6 @@
 @import "./fonts/index";
-
+@import "./form";
+@import "./animation";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -32,4 +33,8 @@ body {
       font-size:30px !important;    
     }
   }
+}
+
+.upload-file-drop-zone {
+  @apply rounded-md border-2 border-dashed bg-gray-50 hover:border-primary flex cursor-pointer flex-col items-center justify-center bg-cover bg-no-repeat p-8;
 }

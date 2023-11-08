@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Category {
+  id            Int       @id @unique @default(autoincrement()) @db.UnsignedInt
+  category_name String    @db.VarChar(100)
+  product       Product[]
+
+  @@map("category")
+}
+
+model Product {
+  id          Int      @id @unique @default(autoincrement())
+  name        String   @db.VarChar(255)
+  description String   @db.Text
+  price       Int
+  stock       Int      @db.SmallInt
+  category_id Int      @db.UnsignedInt
+  image       String?  @db.VarChar(255)
+  category    Category? @relation(fields: [category_id], references: [id])
+
+  @@index([category_id], name: "category_FK")
+  @@map("product")
+}
+
+model Setting {
+  id           Int    @id @default(autoincrement()) @db.UnsignedInt
+  no_wa        String @db.VarChar(20)
+  branch       Json
+  social_media Json
+  logo         String
+
+  @@map("setting")
+}
+
+model Article {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  title      String   @unique
+  slug       String
+  content    String   @db.LongText
+  created_at DateTime @db.DateTime(0)
+  updated_at DateTime @db.DateTime(0)
+
+  @@map("article")
+}
+
+model PackageBundle {
+  id           Int    @id @default(autoincrement()) @db.UnsignedInt
+  package_name String
+  description  String
+  price        Int
+
+  @@map("package_bundle")
+}

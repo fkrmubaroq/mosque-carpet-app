@@ -6,15 +6,21 @@ module.exports = {
   ],
   theme: {
     extend: {
+      boxShadow: {
+        "card": "0 0 2px #919eab4d,0 12px 24px -4px #919eab1f!important"
+      },
       fontFamily: {
         "poppins": ["Poppins", "sans-serif"],
         "cinzel": ["Cinzel", "sans-serif"],
+        "jasans": ["Plus Jakarta Sans", "sans-serif"]
       },
       colors: {
+        "background": "white",
         "primary": "#15803d",
         "primary-hover": "#166534",
         "secondary": "#eab308",
         "secondary-hover": "#ca8a04",
+        "border-color": "#e5eaef"
       },
     },
   },

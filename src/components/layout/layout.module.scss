@@ -1,0 +1,38 @@
+.layout{
+  @apply min-h-screen font-jasans; 
+  display: grid;
+  grid-template-rows: 70px 1fr;
+  grid-template-columns: 75px 1fr;  
+  grid-template-areas: "sidebar header"
+                       "sidebar content";
+
+  @apply transition-all ease-in-out duration-300;
+  &.expanded {
+    grid-template-columns: 270px 1fr;
+    .sidebar{
+      @apply overflow-hidden;
+    }
+  }
+  .sidebar{
+    grid-area: sidebar;
+    @apply border-r-border-color border;
+    .sidebar__menu{
+      @apply p-5 h-full;
+      .sidebar__label{
+        @apply pl-3.5 tracking-wide font-semibold mb-2 text-xs uppercase;
+      }
+    }
+  }
+
+  .header{
+    grid-area: header;
+    height: 4.375rem;
+    @apply px-6 flex justify-between items-center;
+
+  }
+
+  .content{
+    grid-area: content;
+    @apply px-6 pt-6 pb-16;
+  }
+}

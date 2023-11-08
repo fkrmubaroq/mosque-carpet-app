@@ -1,0 +1,23 @@
+.invalid-feedback {
+  @apply hidden text-red-500 text-xs ml-[2px] mt-[5px];
+}
+
+.form-validated {
+
+  // invalid
+  .text-input:invalid,
+  .upload-file:invalid,
+
+  .text-input:invalid~.selection {
+    @apply border-red-500;
+  }
+
+  .text-input:invalid~.invalid-feedback,
+  .upload-file:invalid~.invalid-feedback {
+    @apply block;
+  }
+
+  .upload-file:invalid~.wrapper-upload-file {
+    @apply border-red-500;
+  }
+}

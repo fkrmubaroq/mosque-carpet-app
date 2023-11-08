@@ -10,6 +10,7 @@ const config = {
   env: {
     ENVIRONMENT,
   },
+  swcMinify: false,
   reactStrictMode: true,
   sassOptions: {
     fiber: false,
