@@ -3,18 +3,19 @@ import ButtonAdd from "@/components/ui/button/ButtonAdd";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import SearchInput from "@/components/ui/form/input/SearchInput";
 import Table, { Td, Th, Thead, Tr } from "@/components/ui/table";
-import { PrismaClient } from "@prisma/client";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { TResponseDataProduct } from "../../../types/api/product";
 import { useState } from "react";
 import ButtonEdit from "@/components/ui/button/ButtonEdit";
 import ButtonDelete from "@/components/ui/button/ButtonDelete";
 import Checkbox from "@/components/ui/form/Checkbox";
-import ModalForm, { TProductForm } from "@/components/features/products/ModalForm";
+import ModalForm, {
+  TProductForm,
+} from "@/components/features/products/ModalForm";
 import { SchemaModal } from "@/components/ui/modal";
-import { Toast } from "@/components/ui/toast";
 import { prismaClient } from "@/lib/prisma";
-import { Confirmation } from "@/components/ui/modal/Confirmation";
+import { useDialogStore } from "@/lib/hookStore";
+import { useMutation } from "@tanstack/react-query";
 
 type ProductProps = {
   data?: TResponseDataProduct[];
@@ -25,7 +26,7 @@ type TModalType = "add";
 const initModal = {
   show: false,
   type: "add" as TModalType,
-}
+};
 
 const initForm = {
   id: 0,
@@ -33,25 +34,33 @@ const initForm = {
   description: "",
   price: 0,
   stock: 0,
-  category_id: 0
-}
+  category_id: 0,
+};
 
 export default function Index({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const [modal, setModal] = useState<SchemaModal<TProductForm, TModalType>>(initModal);
+  const [modal, setModal] =
+    useState<SchemaModal<TProductForm, TModalType>>(initModal);
   const [products, setProducts] = useState<TResponseDataProduct[]>(data);
-  console.log("index admin")
+
+  const [showConfirmation, showToast] = useDialogStore((state) => [
+    state.showConfirmation,
+    state.showToast,
+  ]);
+  // const { mutate } = useMutation({
+  //   mutationFn:(payload) =>
+  // })
   return (
     <>
-      {modal.show &&
+      {modal.show && (
         <ModalForm
           type="add"
           show={modal.show}
           data={modal?.data ? modal.data : initForm}
           onHide={() => setModal(initModal)}
         />
-      }
+      )}
 
       <Layout title="Products">
         <Card>
@@ -96,7 +105,15 @@ export default function Index({
                     <Td>
                       <div className="flex justify-center gap-x-1">
                         <ButtonEdit />
-                        <ButtonDelete />
+                        <ButtonDelete
+                          onClick={() =>
+                            showConfirmation("confirm-delete-product", {
+                              onConfirm: () => {
+                                showToast("success-delete-product");
+                              },
+                            })
+                          }
+                        />
                       </div>
                     </Td>
                   </Tr>

@@ -30,8 +30,9 @@ export function SelectionCategory({
         name: selectionSearch
       }
       const response = await getCategory(params);
-      if (response.status >= 299 || response.data.code) throw new Error();
+      if (response.status >= 299) throw new Error();
       const data = response.data.data;
+      response.data
       return (
         data?.map((item) => ({
           id: item.id,

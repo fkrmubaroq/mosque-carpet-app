@@ -6,14 +6,20 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { BiHomeAlt } from "react-icons/bi";
 import { MdOutlineAccountCircle } from "react-icons/md";
 import { PiDotsThreeLight } from "react-icons/pi";
+import Router, { useRouter } from "next/router";
+import { CiBoxes, CiBoxList } from "react-icons/ci";
+import { TfiPackage } from "react-icons/tfi";
+import { MdOutlineArticle } from "react-icons/md";
+import { AiOutlineSetting } from "react-icons/ai";
 
 type TMenu = {
   icon: React.ReactNode,
-  menu: string
+  menu: string,
+  path: string
 };
 type TSidebarMenu = {
   label: string,
-  menus: TMenu[]
+  menus: TMenu[],
 };
 
 const sidebarMenus: TSidebarMenu[] = [
@@ -21,12 +27,9 @@ const sidebarMenus: TSidebarMenu[] = [
     label: "HOME",
     menus: [
       {
-        icon: <BiHomeAlt size={20}/>,
+        icon: <BiHomeAlt size={20} />,
         menu: "Beranda",
-      },
-      {
-        icon: <BiHomeAlt size={20}/>,
-        menu: "Contact",
+        path: "/admin/dashboard",
       },
     ],
   },
@@ -34,18 +37,42 @@ const sidebarMenus: TSidebarMenu[] = [
     label: "MASTER",
     menus: [
       {
-        icon: <BiHomeAlt size={20}/>,
+        icon: <CiBoxes size={20} />,
         menu: "Produk",
+        path: "/admin/products",
       },
       {
-        icon: <BiHomeAlt size={20}/>,
-        menu: "Cabang",
+        icon: <CiBoxList size={20} />,
+        menu: "Kategori Produk",
+        path: "/admin/category",
+      },
+      {
+        icon: <TfiPackage size={18} />,
+        menu: "Paket Bundle",
+        path: "/admin/package-bundle",
+      },
+    ],
+  },
+  {
+    label: "Lainnya",
+    menus: [
+      {
+        icon: <MdOutlineArticle size={20} />,
+        menu: "Artikel",
+        path: "/admin/articles",
+      },
+      {
+        icon: <AiOutlineSetting size={20} />,
+        menu: "Pengaturan",
+        path: "/admin/settings",
       },
     ],
   },
 ];
 export function Layout({ children, title }: { title: string } & React.ComponentPropsWithoutRef<"div">) {
   const [expand, setExpand] = useState<boolean>(true);
+  const route = useRouter();
+
   return (
     <div className={cn(style["layout"], { [style["expanded"]]: expand })}>
       <div className={style["header"]}>
@@ -58,25 +85,32 @@ export function Layout({ children, title }: { title: string } & React.ComponentP
           </div>
           <div className="text-lg font-medium">{title}</div>
         </div>
-        <div className="flex items-center gap-x-2 hover:bg-primary px-3 pb-3 pt-2 rounded-lg group  hover:text-white">
-          <MdOutlineAccountCircle size={33} className="opacity-50 group-hover:opacity-100"/>
+        <div className="group flex items-center gap-x-2 rounded-lg px-3 pb-3 pt-2 hover:bg-primary  hover:text-white">
+          <MdOutlineAccountCircle
+            size={33}
+            className="opacity-50 group-hover:opacity-100"
+          />
           <div className="flex flex-col gap-y-1">
-            <span className="text-sm group-hover:text-white text-gray-500 font-semibold">Mrs. Dennis Schulist</span>
-            <span className="text-xs group-hover:text-white text-gray-600">Admin</span>
+            <span className="text-sm font-semibold text-gray-500 group-hover:text-white">
+              Mrs. Dennis Schulist
+            </span>
+            <span className="text-xs text-gray-600 group-hover:text-white">
+              Admin
+            </span>
           </div>
         </div>
       </div>
       <div className={style["sidebar"]}>
         <div
           className={cn(
-            " mt-5 flex items-center gap-x-4 rounded-lg bg-primary/95 py-3",
+            " mt-5 flex items-center gap-x-4 rounded-lg bg-primary/95 overflow-hidden",
             {
-              "mx-5 mb-2 px-4": expand,
-              "mx-3 justify-center": !expand,
+              "mx-5 mb-2 px-4 py-3": expand,
+              "mx-3 justify-center pt-3 pb-2": !expand,
             }
           )}
         >
-          <div className="shrink-0">
+          <div className="shrink-0 overflow-hidden">
             <Image
               src="/img/logo.png"
               width={expand ? "35" : "25"}
@@ -85,8 +119,8 @@ export function Layout({ children, title }: { title: string } & React.ComponentP
             />
           </div>
           {expand && (
-            <div className="flex flex-col font-jasans ">
-              <span className="font-medium tracking-widest text-white">
+            <div className="flex flex-col font-jasans overflow-hidden">
+              <span className="font-medium tracking-widest text-white overflow-hidden">
                 AL - HIJRA
               </span>
               <span className="text-xs text-gray-200">Admin</span>
@@ -109,7 +143,12 @@ export function Layout({ children, title }: { title: string } & React.ComponentP
               )}
               <div className="mb-6 flex flex-col gap-y-1">
                 {sidebar.menus.map((menu, key) => (
-                  <MenuItem data={menu} key={key} expand={expand} />
+                  <MenuItem
+                    data={menu}
+                    key={key}
+                    expand={expand}
+                    activeMenu={route.pathname}
+                  />
                 ))}
               </div>
             </div>
@@ -121,15 +160,36 @@ export function Layout({ children, title }: { title: string } & React.ComponentP
   );
 }
 
-function MenuItem({ data, expand }: { data: TMenu; expand: boolean; }) {
+function MenuItem({
+  data,
+  expand,
+  activeMenu,
+}: {
+  data: TMenu;
+  expand: boolean;
+  activeMenu: string
+  }) {
+  
+  const isActiveMenu = activeMenu.includes(data.path);
   return (
-    <div className={cn("group flex h-11 cursor-pointer items-center gap-x-3 rounded-md hover:bg-primary/10 hover:text-primary", {
-      "pl-3 pr-4": expand,
-      "justify-center w-11": !expand
-    })}>
-      <span className="shrink-0">{data.icon}</span>
+    <div
+      className={cn(
+        "group flex h-11 cursor-pointer items-center gap-x-3 rounded-md hover:bg-primary/10 hover:text-primary",
+        {
+          "pl-3 pr-4": expand,
+          "w-11 justify-center": !expand,
+          "bg-primary/10 text-primary": isActiveMenu,
+        }
+      )}
+      onClick={() => Router.push(data.path)}
+    >
+      <span className="shrink-0 w-8 h-8 justify-center items-center flex">{data.icon}</span>
       {expand && (
-        <span className="text-sm text-gray-600 group-hover:text-primary">
+        <span
+          className={cn("text-sm text-gray-600 group-hover:text-primary", {
+            "text-primary": isActiveMenu,
+          })}
+        >
           {data.menu}
         </span>
       )}

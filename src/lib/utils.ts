@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client'
 export const debounce = (fn: Function, timeout = 300) => {
   let timer: ReturnType<typeof setTimeout>;
   return function (this: any, ...args: any[]) {
@@ -24,6 +23,12 @@ export function checkResolutionImage(file: File): Promise<{ width:number, height
       }
     }
   })
+}
+
+export function formatNumberToPrice(priceInt: number, delimiters = ".") {
+  if (typeof priceInt !== "number" && typeof priceInt !== "string")
+    return priceInt;
+  return priceInt.toString().replace(/\B(?=(\d{3})+(?!\d))/g, delimiters);
 }
 
 export const createThumbnailVideo = (file: File | Blob, cb: (thumbnail:string) => void) => {

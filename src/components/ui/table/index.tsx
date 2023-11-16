@@ -20,7 +20,9 @@ export function Th({ children, className }: React.ComponentPropsWithoutRef<"div"
 }
 
 export function Tr({ children, className }: React.ComponentPropsWithoutRef<"div">) {
-  return <tr className={cn("h-[55px] border-b bg-white")}>{children}</tr>;
+  return (
+    <tr className={cn("h-[55px] border-b bg-white hover:bg-gray-50", className)}>{children}</tr>
+  );
 }
 export function Td({ children, className }: React.ComponentPropsWithoutRef<"div">) {
   return <td className={cn("px-6 py-4", className)}>{children}</td>;

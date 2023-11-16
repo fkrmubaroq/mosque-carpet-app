@@ -18,3 +18,6 @@ export const MIME_TYPE: Record<string, string> = {
   ...MIME_TYPE_IMAGE,
   ...MIME_TYPE_VIDEO,
 };
+
+export const OFFSET = 20;
+export const EXPIRED_DAYS = 60 * 60 * 24 * 30; // 1 days

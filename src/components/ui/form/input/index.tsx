@@ -10,7 +10,7 @@ export interface InputProps
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, invalid, type, ...props }, ref) => {
     return (
-      <div>
+      <>
         <input
           type={type}
           className={cn(
@@ -22,7 +22,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {invalid && <span className="invalid-feedback">{invalid}</span>}
-      </div>
+      </>
     );
   }
 );

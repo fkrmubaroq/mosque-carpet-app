@@ -1,7 +1,7 @@
-import { RESPONSE_API_MESSAGE } from '@/lib/message'
+import { responseErrorMessage } from '@/errors/response-error'
+import { STATUS_MESSAGE_ENUM } from '@/lib/enum'
 import { prismaClient } from '@/lib/prisma'
-import { ApiMessage, TResponseDataApi } from '@/types/api'
-import { TResponseDataCategory } from '@/types/api/category'
+import { TResponseDataCategory } from '@/lib/api/category'
 import type { NextApiRequest, NextApiResponse } from 'next'
  
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -9,12 +9,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     case "GET": getCategory(req,res)
   }
 }
-async function getCategory(req: NextApiRequest, res: NextApiResponse<TResponseDataApi<TResponseDataCategory[]>>) {
-  const data = await prismaClient.category.findMany({});
-
-  res.status(200).json({
-    code: +ApiMessage.StatusOk,
-    message: RESPONSE_API_MESSAGE[ApiMessage.StatusOk],
-    data
-  })
+async function getCategory(req: NextApiRequest, res: NextApiResponse<{ data: TResponseDataCategory[] }>) {
+  try { 
+    const data = await prismaClient.category.findMany({});
+    res.status(STATUS_MESSAGE_ENUM.Ok).json({ data })
+  } catch (e: any) {
+    responseErrorMessage(e, res);
+  }
 } 

@@ -16,15 +16,21 @@ model Category {
   @@map("category")
 }
 
+enum Active {
+  Y
+  N
+}
+
 model Product {
   id          Int      @id @unique @default(autoincrement())
   name        String   @db.VarChar(255)
-  description String   @db.Text
-  price       Int
-  stock       Int      @db.SmallInt
+  description String?   @db.Text
+  price       Int?
+  stock       Int?      @db.SmallInt
   category_id Int      @db.UnsignedInt
   image       String?  @db.VarChar(255)
   category    Category? @relation(fields: [category_id], references: [id])
+  active      Active   @default(N)
 
   @@index([category_id], name: "category_FK")
   @@map("product")
@@ -58,4 +64,18 @@ model PackageBundle {
   price        Int
 
   @@map("package_bundle")
+}
+
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+}
+model User {
+  username      String @unique 
+  password      String @db.VarChar(255)
+  name          String @db.VarChar(100)
+  token         String? @db.VarChar(150)
+  role          Role @default(ADMIN)       
+  @@map("user")
 }

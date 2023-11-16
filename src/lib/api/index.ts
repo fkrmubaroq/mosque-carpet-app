@@ -9,15 +9,19 @@ const instance = axios.create({
   },
 });
 
-export type ToggleStatus = 0 | 1;
-export type ParamGetAll = {
-  offset?: number;
+export type TStatus = "Y" | "N";
+export type TPaging = {
+  page: number,
+  total_page: number,
+  total_items: number
 }
-
-export type DateTime = {
-  Time: string,
-  Valid: boolean
-};
+export type TResponseDataApi<TData> = {
+  data: TData,
+}
+export type TResponseDataApiWithPagination<TData> = {
+  data: TData,
+  paging: TPaging
+}
 export function getMethod<TData>(endpoint:string, config?: AxiosRequestConfig): Promise<AxiosResponse<TData>> {
   return instance.get(endpoint, config);
 }
@@ -29,10 +33,14 @@ export function postMethod<TPayloadPost>(endpoint:string, payload?:TPayloadPost,
 export function putMethod<TPayloadPut>(endpoint:string, payload?:TPayloadPut, config?:AxiosRequestConfig): Promise<AxiosResponse> {
   return instance.put(endpoint, payload, config);
 }
+export function patchMethod<TPayloadPut>(endpoint:string, payload?:TPayloadPut, config?:AxiosRequestConfig): Promise<AxiosResponse> {
+  return instance.patch(endpoint, payload, config);
+}
 
 export function deleteMethod(endpoint:string, config?:AxiosRequestConfig): Promise<AxiosResponse> {
   return instance.delete(endpoint, config);
 }
+
 
 export { instance };
 

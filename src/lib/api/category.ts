@@ -1,15 +1,21 @@
-import { TResponseDataApi } from "@/types/api";
-import { getMethod, postMethod } from ".";
-import { TResponseDataCategory } from "@/types/api/category";
+import { AxiosResponse } from "axios";
+import { TResponseDataApi, getMethod, postMethod } from ".";
 export type TParamCategory = {
   name?: string
 }
-export function getCategory(params?: TParamCategory) {
-  return getMethod<TResponseDataApi<TResponseDataCategory[]>>("category",{ params });
+
+export type TResponseDataCategory = {
+  id: number,
+  category_name: string,
+}
+ 
+export function getCategory(params?: TParamCategory): Promise<AxiosResponse<TResponseDataApi<TResponseDataCategory[]>>> {
+  return getMethod("category",{ params });
 }
 
 type TPayloadCategory = {
+  category_name: string
 }
 export function insertCategory(payload:TPayloadCategory) {
-  return postMethod<TResponseDataApi<TResponseDataCategory>>("category",payload);
+  return postMethod<TPayloadCategory>("category",payload);
 }

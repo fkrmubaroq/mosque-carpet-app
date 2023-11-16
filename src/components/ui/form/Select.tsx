@@ -1,11 +1,9 @@
 import cn from "classnames";
 import React, {
   ChangeEvent,
-  FC,
-  useEffect,
-  useMemo,
+  FC, useMemo,
   useRef,
-  useState,
+  useState
 } from "react";
 import { SpinnerIcon } from "../Spinner";
 import { PiCaretDownBold, PiCaretUpBold } from "react-icons/pi";
@@ -13,7 +11,7 @@ import { AiOutlineClose as CloseIcon } from "react-icons/ai";
 import { FiSearch as SearchIcon } from "react-icons/fi";
 
 import { Input } from "./input";
-import { useOnClickOutside, useToggle } from "@/lib/hooks";
+import { useOnClickOutside } from "@/lib/hooks";
 import Checkbox from "./Checkbox";
 
 export type SelectionDataItem = {

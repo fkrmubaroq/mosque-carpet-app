@@ -1,11 +1,12 @@
 import { FiTrash2 } from "react-icons/fi";
 import { Button } from ".";
 
-export default function ButtonDelete() {
+export default function ButtonDelete({ onClick }: React.ComponentPropsWithoutRef<"button">) {
   return (
     <Button
-      className="text-6b7280 flex items-center justify-center gap-x-2 hover:text-white hover:bg-red-500"
+      className="text-6b7280 flex items-center justify-center gap-x-2 hover:bg-red-500 hover:text-white"
       variant="ghost"
+      onClick={onClick}
     >
       <FiTrash2 />
       <span>Hapus</span>

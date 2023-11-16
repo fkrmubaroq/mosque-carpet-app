@@ -8,7 +8,7 @@ export default function ButtonAdd({
 }) {
   return (
     <Button onClick={onClick}>
-      Add {text}
+      Tambah {text}
     </Button>
   );
 }

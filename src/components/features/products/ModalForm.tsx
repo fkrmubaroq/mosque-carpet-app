@@ -2,25 +2,16 @@ import ContainerInput from "@/components/ui/container/ContainerInput";
 import { Input } from "@/components/ui/form/input";
 import { Label } from "@/components/ui/label";
 import { Modal, ModalBody, ModalHeader, TTypeModalProps } from "@/components/ui/modal";
-import { Selection, SelectionDataItem } from "@/components/ui/form/Select";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { productQuery } from "@/lib/queryKeys";
-import { getCategory } from "@/lib/api/category";
+import { SelectionDataItem } from "@/components/ui/form/Select";
 import { SelectionCategory } from "../SelectionFeature";
-import { useContext, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Textarea from "@/components/ui/form/Textarea";
 import UploadFile from "@/components/ui/form/UploadFile";
-import { MIME_TYPE_IMAGE } from "@/lib/constant";
 import { Button } from "@/components/ui/button";
 import Form from "@/components/ui/form";
-import { TPayloadProduct, insertProduct } from "@/lib/api/product";
-import { postMethod } from "@/lib/api";
+import { TResponseDataProduct } from "@/lib/api/product";
+import { TStatus } from "@/lib/api";
 import { SpinnerIcon } from "@/components/ui/Spinner";
-import { sleep } from "@/lib/utils";
-import { DialogContextStore } from "@/components/context/dialog";
-import { useDialogStore } from "@/lib/hookStore";
-
-type TTypeDialog = "add";
 
 export type TProductForm = {
   id?: number;
@@ -30,57 +21,70 @@ export type TProductForm = {
   stock: number;
   category_id: number;
   image?: string;
+  active: TStatus;
 };
 
 const titleType = {
   add: "Tambah",
+  edit: "Ubah"
 };
 
 export default function ModalForm({
   onHide,
-  type="add",
+  type = "add",
   show,
-  data
-}: TTypeModalProps & { type: TTypeDialog, data: TProductForm }) {
-  const showToast = useDialogStore(state => state.showToast)
-
+  data,
+  onSave,
+  isLoading,
+}: TTypeModalProps & {
+  type: "add" | "edit";
+  data: TProductForm | TResponseDataProduct;
+  onSave: (form: TProductForm | TResponseDataProduct) => void;
+  isLoading: boolean;
+}) {
   const formRef = useRef<HTMLFormElement>(null);
   const [form, setForm] = useState<TProductForm>(data);
   const [validated, setValidated] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<SelectionDataItem>();
 
-  const { mutate, isLoading } = useMutation({
-    mutationFn: insertProduct,
-    onSuccess: (data) => {
-      showToast("success-insert-product");
-    },
-    onError: () => showToast("error-insert-product"),
-    onSettled: () => onHide && onHide(),
-  });
+  useEffect(() => {
+    if (type === "edit") {
+      const categoryName = (form as TResponseDataProduct)?.category_name;
+      if (!categoryName || !form.category_id) return;
+      setSelectedCategory({
+        id: form.category_id,
+        text: categoryName,
+      });
+    }
+  }, [type]);
+
   const onClickCategory = (selected: SelectionDataItem) => {
-    setForm(form => ({
+    setForm((form) => ({
       ...form,
-      category_id: +selected.id
-    }))
+      category_id: +selected.id,
+    }));
     setSelectedCategory(selected);
-  }
+  };
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm(form => ({
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setForm((form) => ({
       ...form,
-      [e.target.name]: e.target.value
-    }))
-  }
+      [e.target.name]: e.target.value,
+    }));
+  };
 
-  const onSubmit = (e: React.SyntheticEvent) => {
+  const onSubmitForm = (e: React.SyntheticEvent) => {
     e.preventDefault();
     const valid = formRef.current?.checkValidity();
     setValidated(true);
     if (!valid) return;
-    
+
     setValidated(false);
-    mutate(form);
+    onSave(form);
   };
+
   return (
     <Modal show={show} size="w-[800px]" onHide={onHide}>
       <ModalHeader
@@ -90,7 +94,7 @@ export default function ModalForm({
         {titleType[type]} Produk
       </ModalHeader>
       <ModalBody>
-        <Form ref={formRef} validated={validated} onSubmit={onSubmit}>
+        <Form ref={formRef} validated={validated} onSubmit={onSubmitForm}>
           <div className="mb-4 flex items-center gap-x-7">
             <div className="w-[320px] shrink-0">
               <Label>Gambar</Label>
