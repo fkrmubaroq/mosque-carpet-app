@@ -11,6 +11,7 @@ import { CiBoxes, CiBoxList } from "react-icons/ci";
 import { TfiPackage } from "react-icons/tfi";
 import { MdOutlineArticle } from "react-icons/md";
 import { AiOutlineSetting } from "react-icons/ai";
+import { VscFolderLibrary } from "react-icons/vsc";
 
 type TMenu = {
   icon: React.ReactNode,
@@ -62,6 +63,11 @@ const sidebarMenus: TSidebarMenu[] = [
         path: "/admin/articles",
       },
       {
+        icon: <VscFolderLibrary size={20} />,
+        menu: "File Manager",
+        path: "/admin/file-manager",
+      },
+      {
         icon: <AiOutlineSetting size={20} />,
         menu: "Pengaturan",
         path: "/admin/settings",
@@ -69,7 +75,7 @@ const sidebarMenus: TSidebarMenu[] = [
     ],
   },
 ];
-export function Layout({ children, title }: { title: string } & React.ComponentPropsWithoutRef<"div">) {
+export function Layout({ children, customTitle, title, classNameTitle }: { classNameTitle?: string, title?: string, customTitle?: React.ReactNode } & React.ComponentPropsWithoutRef<"div">) {
   const [expand, setExpand] = useState<boolean>(true);
   const route = useRouter();
 
@@ -83,7 +89,12 @@ export function Layout({ children, title }: { title: string } & React.ComponentP
           >
             <RxHamburgerMenu size={20} />
           </div>
-          <div className="text-lg font-medium">{title}</div>
+          {customTitle && customTitle}
+          {!customTitle &&
+            <div className={cn("text-lg font-medium", classNameTitle)}>
+              {title}
+            </div>
+          }
         </div>
         <div className="group flex items-center gap-x-2 rounded-lg px-3 pb-3 pt-2 hover:bg-primary  hover:text-white">
           <MdOutlineAccountCircle
@@ -103,10 +114,10 @@ export function Layout({ children, title }: { title: string } & React.ComponentP
       <div className={style["sidebar"]}>
         <div
           className={cn(
-            " mt-5 flex items-center gap-x-4 rounded-lg bg-primary/95 overflow-hidden",
+            " mt-5 flex items-center gap-x-4 overflow-hidden rounded-lg bg-primary/95",
             {
               "mx-5 mb-2 px-4 py-3": expand,
-              "mx-3 justify-center pt-3 pb-2": !expand,
+              "mx-3 justify-center pb-2 pt-3": !expand,
             }
           )}
         >
@@ -119,8 +130,8 @@ export function Layout({ children, title }: { title: string } & React.ComponentP
             />
           </div>
           {expand && (
-            <div className="flex flex-col font-jasans overflow-hidden">
-              <span className="font-medium tracking-widest text-white overflow-hidden">
+            <div className="flex flex-col overflow-hidden font-jasans">
+              <span className="overflow-hidden font-medium tracking-widest text-white">
                 AL - HIJRA
               </span>
               <span className="text-xs text-gray-200">Admin</span>

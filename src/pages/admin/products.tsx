@@ -137,6 +137,7 @@ export default function Index() {
           <CardHeader>
             <div className="flex items-start justify-between">
               <SearchInput
+                className="!w-80"
                 placeholder="Search Product"
                 onChange={debounceSearch}
               />
@@ -171,9 +172,12 @@ export default function Index() {
                         <ShimmerTableRow colspan={7} key={key} />
                       ))
                   : data?.data?.map((product, key) => (
-                    <Tr key={key} className={cn({
-                        "text-gray-300": product.active === "N"
-                      })}>
+                      <Tr
+                        key={key}
+                        className={cn({
+                          "text-gray-300": product.active === "N",
+                        })}
+                      >
                         <Td>{product.name}</Td>
                         <Td>{product.category_name}</Td>
                         <Td>Rp{formatNumberToPrice(product.price)}</Td>

@@ -79,3 +79,16 @@ model User {
   role          Role @default(ADMIN)       
   @@map("user")
 }
+
+model FileManager {
+  id           Int    @id @default(autoincrement()) @db.UnsignedInt
+  type         TYPE_MANAGER 
+  name         String @db.VarChar(255)
+  path         String @db.VarChar(255)
+  @@map("file_manager")
+}
+
+enum TYPE_MANAGER {
+  FILE
+  FOLDER
+}

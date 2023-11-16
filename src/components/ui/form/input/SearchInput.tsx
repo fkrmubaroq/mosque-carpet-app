@@ -1,17 +1,19 @@
 import { Input } from ".";
 import { FiSearch } from "react-icons/fi";
+import cn from "classnames";
 
 export default function SearchInput({
   onChange,
   placeholder,
   name,
   value,
+  className
 }: React.ComponentPropsWithoutRef<"input">) {
   return (
     <div className="relative shrink-0">
       <Input
         placeholder={placeholder ? placeholder : "Search"}
-        className="!h-11 !w-80"
+        className={cn("!h-11", className)}
         name={name}
         value={value}
         onChange={onChange}
