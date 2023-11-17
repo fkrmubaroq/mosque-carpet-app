@@ -3,15 +3,18 @@ import { NextApiResponse } from "next";
 
 class ResponseError extends Error {
   status;
-  constructor(status: number, message: string) {
+  code;
+  constructor(status: number, { message, code }: { message: string; code: number }) {
     super(message);
     this.status = status;
+    this.code = code;
   }
 }
 
 export function responseErrorMessage(e: any, res: NextApiResponse) {
   if (e instanceof ResponseError) {
     res.status(e.status).json({
+      code: e.code || 1,
       message: e.message
     });
     return;

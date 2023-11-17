@@ -1,4 +1,5 @@
 import { ResponseError } from "@/errors/response-error";
+import { STATUS_MESSAGE_ENUM } from "@/lib/enum";
 import Joi from "joi";
 
 export function validation<TSchema, TData>(schema:Joi.ObjectSchema<TSchema> | Joi.NumberSchema<TSchema> , data:TData) {
@@ -7,7 +8,10 @@ export function validation<TSchema, TData>(schema:Joi.ObjectSchema<TSchema> | Jo
       allowUnknown: false
   });
   if (validate.error) {
-    throw new ResponseError(400,validate.error.message); 
+    throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, {
+      code: 1,
+      message: validate.error.message
+    }); 
   }
 
   return validate.value

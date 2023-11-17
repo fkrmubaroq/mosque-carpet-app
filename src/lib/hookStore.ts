@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { TKeyToastMessage, TKeyConfirmation } from "./message";
+import { TVariantToast } from "@/components/ui/toast";
 
 type TConfirm = {
    onConfirm: () => void
@@ -7,7 +8,8 @@ type TConfirm = {
 type TDialogStore = {
   toast: TKeyToastMessage | undefined;
   customMessage: string;
-  showToast: (toast: TKeyToastMessage, message?: string) => void;
+  customVariantToast: TVariantToast | "";
+  showToast: (toast: TKeyToastMessage, message?: string, variant?:TVariantToast) => void;
   hideToast: () => void;
 
 
@@ -22,10 +24,12 @@ export const useDialogStore = create<TDialogStore>((set) => ({
   // toast
   toast: undefined,
   customMessage: "",
-  showToast: (toast: TKeyToastMessage, message?: string) => set(state => ({
+  customVariantToast: "",
+  showToast: (toast: TKeyToastMessage, message?: string, variant?:TVariantToast) => set(state => ({
     ...state,
     toast,
-    customMessage: toast === "custom-message" ? message : ""
+    customMessage: toast === "custom-message" ? message : "",
+    customVariantToast:variant
   })),
   hideToast: () => set((state) => ({ ...state, toast: undefined })),
 
@@ -46,4 +50,14 @@ export const useDialogStore = create<TDialogStore>((set) => ({
   })),
   hideConfirmation: () => set((state) => ({ ...state, confirmation: undefined, confirmationIsLoading: false })),
  
+}))
+
+type TFileManagerStore = {
+  currentPath: string;
+  setPath: (path:string) => void
+}
+
+export const useFileManagerStore = create<TFileManagerStore>((set) => ({
+  currentPath: "/",
+  setPath: (path:string) => set(state => ({ ...state, currentPath:path }))
 }))

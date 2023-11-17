@@ -101,16 +101,22 @@ type PropsModalHeader = {
   children: React.ReactNode;
   onHide: () => void;
 };
+
+const variantHeader = { 
+  primary: "bg-primary text-white"
+}
 export function ModalHeader({
+  variant = "primary",
   className,
   children,
   onHide,
-}: React.ComponentPropsWithoutRef<"div"> & PropsModalHeader) {
+}: React.ComponentPropsWithoutRef<"div"> & PropsModalHeader & { variant?: keyof typeof variantHeader}) {
   return (
     <div
       className={cn(
-        "flex items-center justify-between rounded-t border-b p-4",
-        className
+        "flex items-center justify-between rounded-t-lg border-b p-4",
+        className,
+        variantHeader[variant]
       )}
     >
       <h3 className="tracking-wide">{children}</h3>

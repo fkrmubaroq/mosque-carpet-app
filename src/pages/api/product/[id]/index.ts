@@ -1,4 +1,6 @@
 import { ResponseError, responseErrorMessage } from '@/errors/response-error';
+import { STATUS_MESSAGE_ENUM } from '@/lib/enum';
+import { ERROR_MESSAGE } from '@/lib/message';
 import { prismaClient } from '@/lib/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -13,7 +15,7 @@ async function deleteProduct(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { id } = req.query;
     if (!id) {
-      throw new ResponseError(400, "id is not found");
+      throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.ProductIdIsNull);
     }
     const deleteProduct = await prismaClient.product.delete({
       where: {

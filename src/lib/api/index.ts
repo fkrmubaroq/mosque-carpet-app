@@ -18,6 +18,10 @@ export type TPaging = {
 export type TResponseDataApi<TData> = {
   data: TData,
 }
+export type TResponseErrorApi = {
+  code: number,
+  message: string
+}
 export type TResponseDataApiWithPagination<TData> = {
   data: TData,
   paging: TPaging

@@ -8,6 +8,8 @@ import { v4 as uuid } from "uuid";
 import { decodeJwt, encodeJwt } from '@/lib/jwt';
 import { serialize } from 'cookie';
 import { EXPIRED_DAYS } from '@/lib/constant'
+import { ERROR_MESSAGE } from '@/lib/message'
+import { STATUS_MESSAGE_ENUM } from '@/lib/enum'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {  
@@ -28,12 +30,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     if (!user) {
-      throw new ResponseError(401, "Username or password wrong");
+      throw new ResponseError(STATUS_MESSAGE_ENUM.Unauthorized, ERROR_MESSAGE.UsernameOrPasswordWrong);
     }
     const isPasswordValid = await bcrypt.compare(validateRequest.password, user.password);
 
     if (!isPasswordValid) {
-      throw new ResponseError(401, "Username or password wrong");
+      throw new ResponseError(STATUS_MESSAGE_ENUM.Unauthorized, ERROR_MESSAGE.UsernameOrPasswordWrong);
     }
     
     const token = encodeJwt({ user: user.username });

@@ -88,7 +88,6 @@ export default function ModalForm({
   return (
     <Modal show={show} size="w-[800px]" onHide={onHide}>
       <ModalHeader
-        className="bg-primary text-white"
         onHide={() => onHide && onHide()}
       >
         {titleType[type]} Produk

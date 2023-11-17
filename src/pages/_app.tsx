@@ -7,7 +7,13 @@ import { Toast } from "@/components/ui/toast";
 import { CONFIRMATION_MESSAGE, TOAST_MESSAGE } from "@/lib/message";
 import { Confirmation } from "@/components/ui/modal/Confirmation";
 import { useShallow } from "zustand/react/shallow";
-const queryClient = new QueryClient({});
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export default function App({ Component, pageProps }: AppProps) {
 
@@ -24,6 +30,7 @@ export default function App({ Component, pageProps }: AppProps) {
 function ToastMessage() {
   const [
     customMessage,
+    customVariantToast,
     toast,
     hideToast,
     confirmation,
@@ -33,6 +40,7 @@ function ToastMessage() {
   ] = useDialogStore(
     useShallow((state) => [
       state.customMessage,
+      state.customVariantToast,
       state.toast,
       state.hideToast,
       state.confirmation,
@@ -40,13 +48,20 @@ function ToastMessage() {
       state.confirmMessage,
       state.confirmationIsLoading,
     ])
-  );
+    );
+  
+  const getVariant = () => {
+    if (!customVariantToast) {
+      return toast?.startsWith("error-") ? "danger" : "default"
+    }
+    return customVariantToast;
+  }
   return (
     <>
       <Toast
         onHide={hideToast}
         show={!!toast}
-        variant={toast?.startsWith("error-") ? "danger" : "default"}
+        variant={getVariant()}
       >
         {!!toast && toast !== "custom-message" && TOAST_MESSAGE[toast]}
         {!!toast && toast === "custom-message" && customMessage}

@@ -5,19 +5,22 @@ import type { NextApiRequest, NextApiResponse } from 'next'
  
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
-    case "GET": getAllFile(req,res)
+    case "GET": getAllFile(req, res); break;      
   }
 }
 async function getAllFile(req: NextApiRequest, res: NextApiResponse) {
   try {
     const query = req.query;
-    console.log("query", query);
     const path = query?.path ? String(query?.path) : "/";
-    // console.log("path ", path);
     const data = await prismaClient.fileManager.findMany({
       where: {
-        path
-      }
+        path,
+      },
+      orderBy: [
+        {
+          type: "desc"
+        }
+      ]
     });
     res.status(STATUS_MESSAGE_ENUM.Ok).json({ data })
   } catch (e: any) {

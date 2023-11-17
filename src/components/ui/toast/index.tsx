@@ -10,15 +10,22 @@ const Portal = dynamic(
   }
 );
 
+export type TVariantToast = "default" | "danger";
 const listVariant = {
   default: "bg-slate-900 text-gray-500",
   danger: "bg-red-700 text-white"
 };
-export function Toast({ children, show, onHide, duration = 3000, variant="default" }: { variant?: "default" | "danger" } & React.ComponentPropsWithoutRef<"div"> & {
-  show: boolean,
-  onHide: () => void,
-  duration?: number
-}) {
+export function Toast({
+  children,
+  show,
+  onHide,
+  duration = 3000,
+  variant = "default",
+}: { variant?: TVariantToast } & React.ComponentPropsWithoutRef<"div"> & {
+    show: boolean;
+    onHide: () => void;
+    duration?: number;
+  }) {
   return (
     <Portal>
       <div
@@ -34,20 +41,26 @@ export function Toast({ children, show, onHide, duration = 3000, variant="defaul
       >
         <div className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg">
           {variant === "default" ? (
-            <FiCheck color="white" size={25}/>
+            <FiCheck color="white" size={25} />
           ) : (
             <IoMdCloseCircle size={25} />
           )}
           <span className="sr-only">Check icon</span>
         </div>
-        <div className="ml-3 text-sm font-normal text-gray-300">{children}</div>
+        <div
+          className={cn("ml-3 text-sm font-normal ", {
+            "text-gray-300": variant === "default",
+          })}
+        >
+          {children}
+        </div>
         <button
           type="button"
           className={cn(
-            "-mx-1.5 -my-1.5 ml-auto inline-flex h-8 w-8 items-center justify-center rounded-lg p-1.5 text-gray-400 hover:text-white focus:ring-2  focus:ring-gray-300 ",
+            "-mx-1.5 -my-1.5 ml-auto inline-flex h-8 w-8 items-center justify-center rounded-lg p-1.5  hover:text-white focus:ring-2  focus:ring-gray-300 ",
             {
-              "hover:bg-gray-800": variant === "default",
-              "hover:bg-gray-200": variant === "danger",
+              "text-gray-400 hover:bg-gray-800": variant === "default",
+              "text-white hover:text-gray-200": variant === "danger",
             }
           )}
           data-dismiss-target="#toast-success"
