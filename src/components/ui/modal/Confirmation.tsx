@@ -22,6 +22,7 @@ export function Confirmation({
   return (
     <Modal show={show} onHide={() => onHide && onHide()} verticallyCentered>
       <ModalHeader
+        variant="transparent"
         onHide={() => onHide && onHide()}
         className="!border-none px-7 pb-0 pt-5"
       >

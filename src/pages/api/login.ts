@@ -3,10 +3,9 @@ import { prismaClient } from '@/lib/prisma'
 import { loginUserValidation } from '@/validation/user-validation'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { validation } from '@/validation/validation'
-import bcrypt from "bcrypt";
-import { v4 as uuid } from "uuid";
-import { decodeJwt, encodeJwt } from '@/lib/jwt';
-import { serialize } from 'cookie';
+import bcrypt from "bcrypt"
+import { encodeJwt } from '@/lib/jwt'
+import { serialize } from 'cookie'
 import { EXPIRED_DAYS } from '@/lib/constant'
 import { ERROR_MESSAGE } from '@/lib/message'
 import { STATUS_MESSAGE_ENUM } from '@/lib/enum'

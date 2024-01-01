@@ -103,7 +103,8 @@ type PropsModalHeader = {
 };
 
 const variantHeader = { 
-  primary: "bg-primary text-white"
+  primary: "bg-primary text-white",
+  transparent: ""
 }
 export function ModalHeader({
   variant = "primary",

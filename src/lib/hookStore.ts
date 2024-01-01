@@ -7,14 +7,14 @@ type TConfirm = {
 }
 type TDialogStore = {
   toast: TKeyToastMessage | undefined;
-  customMessage: string;
+  customMessage: string | React.ReactNode;
   customVariantToast: TVariantToast | "";
   showToast: (toast: TKeyToastMessage, message?: string, variant?:TVariantToast) => void;
   hideToast: () => void;
 
 
   confirmation: TKeyConfirmation | undefined;
-  showConfirmation: (toast: TKeyConfirmation, confirmOptions: TConfirm ) => void;
+  showConfirmation: (toast: TKeyConfirmation, confirmOptions: TConfirm, message?:string | React.ReactNode ) => void;
   hideConfirmation: () => void;
   confirmMessage: () => void;
   confirmationIsLoading: boolean;
@@ -37,9 +37,10 @@ export const useDialogStore = create<TDialogStore>((set) => ({
   confirmation: undefined,
   confirmationIsLoading: false,
   confirmMessage:() => null,
-  showConfirmation:(confirmation: TKeyConfirmation, confirmOptions:TConfirm ) => set(state => ({
+  showConfirmation:(confirmation: TKeyConfirmation, confirmOptions:TConfirm, message?:string | React.ReactNode) => set(state => ({
     ...state,
     confirmation,
+    customMessage:message,
     confirmMessage: () => {
       set(state => ({
         ...state,

@@ -85,6 +85,7 @@ model FileManager {
   type         TYPE_MANAGER 
   name         String @db.VarChar(255)
   path         String @db.VarChar(255)
+  level        Int @default(0)
   @@map("file_manager")
 }
 

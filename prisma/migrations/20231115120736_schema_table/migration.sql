@@ -69,3 +69,8 @@ CREATE TABLE `user` (
 
 -- AddForeignKey
 ALTER TABLE `product` ADD FOREIGN KEY (`category_id`) REFERENCES `category`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+INSERT INTO file_manager VALUES (null,"FOLDER","xx","/",0)
+INSERT INTO file_manager VALUES (null,"FOLDER","yy","/",0)
+INSERT INTO file_manager VALUES (null,"FOLDER","zz","/",0)

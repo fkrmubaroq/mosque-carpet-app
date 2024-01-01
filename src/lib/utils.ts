@@ -1,3 +1,5 @@
+import { DIR_FILE_UPLOAD } from "./constant";
+
 export const debounce = (fn: Function, timeout = 300) => {
   let timer: ReturnType<typeof setTimeout>;
   return function (this: any, ...args: any[]) {
@@ -60,3 +62,40 @@ export const handleDragZoneHover = (e: React.DragEvent<HTMLDivElement>, hover: b
 export function sleep(timeout: number) {
   return new Promise(resolve => setTimeout(resolve, timeout));
 }
+
+export function formatBytes(bytes:number, decimals:number = 2) {
+    if (!+bytes) return '0 Bytes'
+
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+}
+
+export function copyToClipboard(text: string) {
+  const elInput = document.createElement("input");
+  elInput.id = "copy-clipboard";
+  elInput.value = text;
+
+  document.body.append(elInput);
+  const copyText = document.getElementById(elInput.id) as HTMLInputElement; 
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(copyText.value);
+  document.getElementById(elInput.id)?.remove();
+  return copyText.value;
+
+} 
+
+export const generateID = (length: number) => {
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+};

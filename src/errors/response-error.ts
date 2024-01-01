@@ -22,8 +22,7 @@ export function responseErrorMessage(e: any, res: NextApiResponse) {
 
   res.status(STATUS_MESSAGE_ENUM.InternalServerError).json({
     message: e.message
-  })
-  
+  })  
 }
 
 

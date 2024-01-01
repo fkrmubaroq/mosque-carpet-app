@@ -72,7 +72,8 @@ function ToastMessage() {
         onConfirm={confirmMessage}
         isLoading={confirmationIsLoading}
       >
-        {!!confirmation && CONFIRMATION_MESSAGE[confirmation]}
+        {!!confirmation && confirmation !== "costum-message" && CONFIRMATION_MESSAGE[confirmation]}
+        {!!confirmation && confirmation === "costum-message" && customMessage}
       </Confirmation>
     </>
   );

@@ -6,22 +6,21 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Button } from "../button";
-import { FiTrash2 } from "react-icons/fi";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import cn from "classnames";
 import {
-  checkResolutionImage,
-  createThumbnailVideo,
-  handleDragZoneHover,
+  checkResolutionImage, formatBytes, handleDragZoneHover
 } from "@/lib/utils";
-import { MIME_TYPE, MIME_TYPE_IMAGE, MIME_TYPE_VIDEO } from "@/lib/constant";
+import { MIME_TYPE, MIME_TYPE_IMAGE } from "@/lib/constant";
+import Image from "next/image";
+import { Card, CardContent } from "../card";
 export type TypeChangeEventUploadFile =
   | ChangeEvent<HTMLInputElement>
   | React.DragEvent;
+
 type PropsUploadFile = {
   name?: string;
-  onChange?: (file: File, cb?: (file: File | Blob) => void) => void;
+  onChange?: (file: FileList, cb?: (file: FileList) => void) => void;
   maxFileSizeKB?: number;
   accept?: string | string[];
   invalid?: string;
@@ -34,26 +33,26 @@ type PropsUploadFile = {
   onRemove?: () => void;
   value?: string | File;
   allowResolutionImage?: string[];
+  multiple?: boolean;
 };
 
 const UploadFile: FC<PropsUploadFile> = ({
   required,
   invalid,
+  multiple,
   name,
   allowResolutionImage,
   onChange,
   maxFileSizeKB,
   accept,
   placeholder,
-  thumbnail,
   className,
   onRemove,
-  value,
 }: PropsUploadFile) => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | React.ReactNode>("");
-
-  const emptyFile = (): void => {
+  const [selectedFile, setSelectedFile] = useState<FileList>();
+  const resetValue = (): void => {
     if (!fileRef.current) return;
     fileRef.current.value = "";
     if (fileRef.current.nextElementSibling) {
@@ -69,7 +68,8 @@ const UploadFile: FC<PropsUploadFile> = ({
     if (maxFileSizeKB) {
       const sizeKB = maxFileSizeKB * 1024;
       if (file.size > sizeKB) {
-        setError(`File melebihi ukuran maksimum ${maxFileSizeKB} KB`);
+        const mb = Math.ceil(maxFileSizeKB / 1024);
+        setError(`File melebihi ukuran maksimum ${maxFileSizeKB} KB / ${mb} MB`);
         return false;
       }
     }
@@ -98,16 +98,10 @@ const UploadFile: FC<PropsUploadFile> = ({
 
   const handleChange = async (e: TypeChangeEventUploadFile) => {
     if (!fileRef.current) return;
-    const file =
-      "dataTransfer" in e ? e.dataTransfer.files[0] : e.target.files?.[0];
-    if (!file) {
-      emptyFile();
-      return;
-    }
-
-    const valid = validationFile(file);
-    if (!valid) {
-      emptyFile();
+    const files = "dataTransfer" in e ? e.dataTransfer.files : e.target.files;
+    
+    if (!files?.length) {
+      resetValue();
       return;
     }
 
@@ -115,59 +109,40 @@ const UploadFile: FC<PropsUploadFile> = ({
       fileRef.current.required = false;
     }
 
-    // check resolution image if any
-    if (allowResolutionImage?.length && MIME_TYPE_IMAGE[file.type]) {
-      const { width, height } = await checkResolutionImage(file);
-
-      if (!allowResolutionImage.includes(`${width}x${height}`)) {
-        emptyFile();
-        setError(
-          <>
-            Resolusi gambar harus{" "}
-            {allowResolutionImage.map((item, key) => (
-              <span className="mr-1 font-semibold" key={key}>
-                {item}
-              </span>
-            ))}
-          </>
-        );
+    for (let i = 0; i < files.length; i++){
+      const valid = validationFile(files[i]);
+      if (!valid) {
+        resetValue();
         return;
       }
-    }
-    emptyFile();
-    console.log("ads")
-    onChange && handleResultImage && onChange(file, handleResultImage);
-  };
-
-  const createThumbnailImage = (
-    file: File | Blob,
-    wrapper: HTMLElement
-  ): void => {
-    if (!fileRef.current) return;
-    const url = window.URL.createObjectURL(file);
-    wrapper.style.backgroundImage = `url('${url}')`;
-    wrapper.classList.add("!border-solid");
-    wrapper.classList.remove("!border-primary");
-  };
-
-  const handleResultImage = (file: File | Blob): void => {
-    if (!fileRef.current) return;
-    if (!fileRef.current.nextElementSibling) return;
-    const wrapper = fileRef.current.nextElementSibling as HTMLElement;
-    console.log("wrapper ", wrapper);
-    // when type file is video
-    if (MIME_TYPE_VIDEO[file.type]) {
-      createThumbnailVideo(file, (thumbnailVideo: string) => {
-        wrapper.style.backgroundImage = `url('${thumbnailVideo}')`;
-      });
+      // check resolution image if any
+      if (allowResolutionImage?.length && MIME_TYPE_IMAGE[files[i].type]) {
+        const { width, height } = await checkResolutionImage(files[i]);
+  
+        if (!allowResolutionImage.includes(`${width}x${height}`)) {
+          resetValue();
+          setError(
+            <>
+              Resolusi gambar harus{" "}
+              {allowResolutionImage.map((item, key) => (
+                <span className="mr-1 font-semibold" key={key}>
+                  {item}
+                </span>
+              ))}
+            </>
+          );
+          return;
+        }
+      }
     }
 
-    // when type file is image
-    if (MIME_TYPE_IMAGE[file.type]) {
-      createThumbnailImage(file, wrapper);
-    }
-
+    console.log("files", files);
+    onChange && onChange(files, (files) => {
+      console.log("fileee ", files);
+      setSelectedFile(files)
+    });
   };
+
 
   const handleClick = (e: React.MouseEvent<HTMLElement>): void => {
     e.stopPropagation();
@@ -186,18 +161,14 @@ const UploadFile: FC<PropsUploadFile> = ({
     e: React.MouseEvent<HTMLButtonElement | HTMLSpanElement>
   ): void => {
     e.stopPropagation();
-    emptyFile();
+    resetValue();
     onRemove && onRemove();
     if (required && fileRef.current) {
       fileRef.current.required = true;
     }
   };
 
-  const thumbnailUrl = useMemo(
-    () => (thumbnail ? { backgroundImage: `url('${thumbnail}')` } : {}),
-    [thumbnail]
-  );
-
+  console.log("filelsi ", selectedFile);
   return (
     <div className="flex flex-col">
       <input
@@ -208,28 +179,39 @@ const UploadFile: FC<PropsUploadFile> = ({
         className="upload-file hidden"
         ref={fileRef}
         onChange={handleChange}
+        multiple={multiple}
       />
       <div
         className={cn(
-          "wrapper-upload-file upload-file-drop-zone relative",
-          className
+          "wrapper-upload-file upload-file-drop-zone relative overflow-auto",
+          className,
+          {
+            "flex-col flex items-center justify-center": !selectedFile,
+          }
         )}
-        style={thumbnailUrl}
         onClick={handleClick}
         onDrop={onDrag}
         onDragOver={(e) => handleDragZoneHover(e, true)}
         onDragLeave={(e) => handleDragZoneHover(e, false)}
       >
-        <div className="flex flex-col items-center justify-center pb-6 pt-5">
-          <AiOutlineCloudUpload size={30} color="#6b7280" />
-          <div className="flex flex-col items-center justify-center text-center">
-            <p className="mb-2 text-sm text-gray-400">
-              <span className="font-semibold">Klik untuk upload</span> atau drop
-              file disini
-            </p>
-            <p className="text-xs text-gray-400">{placeholder}</p>
+        {selectedFile ? (
+          <div className="grid grid-cols-3 gap-3">
+            {Array.from(selectedFile).map((file, key) => (
+              <PreviewFile file={file} key={key} />
+            ))}
           </div>
-        </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center pb-6 pt-5">
+            <AiOutlineCloudUpload size={30} color="#6b7280" />
+            <div className="flex flex-col items-center justify-center text-center">
+              <p className="mb-2 text-sm text-gray-400">
+                <span className="font-semibold">Klik untuk upload</span> atau
+                drop file disini
+              </p>
+              <p className="text-xs text-gray-400">{placeholder}</p>
+            </div>
+          </div>
+        )}
       </div>
       {error && (
         <span className="ml-[2px] mt-1 text-xs text-red-500">{error}</span>
@@ -239,4 +221,24 @@ const UploadFile: FC<PropsUploadFile> = ({
   );
 };
 
+function PreviewFile({ file }: { file: File }) {
+  const getSrcFile = (file: File) =>  URL.createObjectURL(file);
+  return (
+    <div>
+      {MIME_TYPE_IMAGE[file.type] && (
+        <Card className="rounded-none h-[180px]">
+          <CardContent className="flex flex-col justify-center gap-y-2 !pb-4 !pt-3 !px-3 ">
+            <Image src={getSrcFile(file)} width="100" height="100" alt="" className="object-cover" />
+            <span className="text-sm font-semibold text-gray-600 line-clamp-2">
+              {file.name}
+            </span>
+            <span className="text-sm text-gray-400">
+              {formatBytes(file.size)}
+            </span>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
 export default UploadFile;

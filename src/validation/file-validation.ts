@@ -10,6 +10,14 @@ const createFolderValidation = Joi.object<TFolderForm>({
   path: Joi.string().max(255).required(),
 })
 
+const updateFolderNameValidation =  Joi.object<TFolderForm>({
+  name: Joi.string().max(255).required().pattern(/^[a-zA-Z0-9\-\_\!\@\#\$\%\^\&\*\(\)\s]+$/)
+    .messages({
+      "string.pattern.base": "Nama folder tidak valid",
+      "string.max": "Nama folder terlalu panjang",
+  }).required(),
+})
 export {
-  createFolderValidation
+  createFolderValidation,
+  updateFolderNameValidation
 }

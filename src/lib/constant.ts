@@ -21,3 +21,6 @@ export const MIME_TYPE: Record<string, string> = {
 
 export const OFFSET = 20;
 export const EXPIRED_DAYS = 60 * 60 * 24 * 30; // 1 days
+
+export const DIR_FILE_UPLOAD = "./files/upload";
+export const DIR_ACCESS_FILE = "/api/files";

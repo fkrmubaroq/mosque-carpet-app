@@ -1,7 +1,10 @@
 import { GoPlus } from "react-icons/go";
 import { LuUpload } from "react-icons/lu";
+import { MdOutlineDriveFileRenameOutline } from "react-icons/md";
+import { FaRegFolderOpen, FaRegTrashAlt, FaRegEye } from "react-icons/fa";
+import { FiCopy } from "react-icons/fi";
 
-export default function DropdownFileManager({
+export function DropdownFileManager({
   onCreateFolder,
   onUploadFile,
 }: {
@@ -19,6 +22,74 @@ export default function DropdownFileManager({
         text="Upload File"
         icon={<LuUpload size={17} />}
         onClick={onUploadFile}
+      />
+    </nav>
+  );
+}
+
+
+export function DropdownActionFolder({
+  onOpenFolder,
+  onRenameFolder,
+  onDeleteFolder,
+}: {
+  onOpenFolder: () => void;
+  onRenameFolder:() => void;
+  onDeleteFolder:() => void;
+}) {
+  return (
+    <nav className="absolute right-0 top-10 flex w-56 flex-col gap-y-2 rounded-md bg-white py-2 shadow">
+      <DropdownItem
+        text="Buka"
+        icon={<FaRegFolderOpen size={18} />}
+        onClick={() => onOpenFolder()}
+      />
+      <DropdownItem
+        text="Ganti Nama"
+        icon={<MdOutlineDriveFileRenameOutline size={18} />}
+        onClick={() => onRenameFolder()}
+      />
+      <DropdownItem
+        text="Hapus"
+        icon={<FaRegTrashAlt size={15} />}
+        onClick={() => onDeleteFolder()}
+      />
+    </nav>
+  );
+}
+
+export function DropdownActionFile({
+  onOpenFile,
+  onRenameFile,
+  onDeleteFile,
+  onCopySource,
+}: {
+  onOpenFile: () => void;
+  onRenameFile: () => void;
+  onDeleteFile: () => void;
+  onCopySource: () => void;
+}) {
+  return (
+    <nav className="absolute right-0 top-10 z-[999] flex w-56 flex-col gap-y-2 rounded-md bg-white py-2 shadow">
+      <DropdownItem
+        text="Lihat"
+        icon={<FaRegEye size={18} />}
+        onClick={() => onOpenFile()}
+      />
+      <DropdownItem
+        text="Ganti Nama"
+        icon={<MdOutlineDriveFileRenameOutline size={18} />}
+        onClick={() => onRenameFile()}
+      />
+      <DropdownItem
+        text="Salin Link"
+        icon={<FiCopy size={18} />}
+        onClick={() => onCopySource()}
+      />
+      <DropdownItem
+        text="Hapus"
+        icon={<FaRegTrashAlt size={15} />}
+        onClick={() => onDeleteFile()}
       />
     </nav>
   );

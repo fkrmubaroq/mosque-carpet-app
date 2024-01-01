@@ -2,10 +2,23 @@ import { ResponseError, responseErrorMessage, responseNotFound } from '@/errors/
 import { STATUS_MESSAGE_ENUM } from '@/lib/enum';
 import { ERROR_MESSAGE } from '@/lib/message';
 import { prismaClient } from '@/lib/prisma';
-import { TFolderForm, createFolderValidation } from '@/validation/file-validation';
+import { createFolderValidation } from '@/validation/file-validation';
+import { TFolderForm } from '@/components/features/file-manager/ModalForm';
 import { validation } from '@/validation/validation';
 import { TYPE_MANAGER } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import fs from "fs";
+import { DIR_FILE_UPLOAD } from '@/lib/constant';
+
+function createFolderAsync(folderName: string, src: string) {
+  const dir = `${DIR_FILE_UPLOAD}${src}${folderName}`;
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+    return true;
+  }
+
+  return false;
+}
  
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try{
@@ -23,15 +36,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (folderAlreadyExists) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.FolderAlreadyExists);
     }
+
+    const levelBySlash = payload.path.split("/").length - 2;
     const createFolder = await prismaClient.fileManager.create({
-      data: payload,
+      data: {
+        ...payload,
+        level: payload.path === "/" ? 0 : levelBySlash
+      },
       select: {
         id: true,
         path: true,
         name: true,
-        type: true
+        type: true,
+        level: true
       }
-    })
+    });
+
+    createFolderAsync(payload.name, payload.path);
 
     res.status(STATUS_MESSAGE_ENUM.Ok).json({
       data: createFolder
@@ -53,3 +74,4 @@ async function checkFolderIsAlreadyExist({ path, name }:TFolderForm) {
 
   return !!folderExists 
 }
+

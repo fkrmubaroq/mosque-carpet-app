@@ -36,5 +36,5 @@ body {
 }
 
 .upload-file-drop-zone {
-  @apply rounded-md border-2 border-dashed bg-gray-50 hover:border-primary flex cursor-pointer flex-col items-center justify-center bg-cover bg-no-repeat p-8;
+  @apply rounded-md border-2 border-dashed bg-gray-50 hover:border-primary cursor-pointer bg-cover bg-no-repeat p-8;
 }
