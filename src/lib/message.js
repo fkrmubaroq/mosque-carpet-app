@@ -12,15 +12,26 @@ const TOAST_MESSAGE = {
   // file manager
   "error-create-folder": "Gagal membuat folder",
   "error-update-folder": "Gagal mengubah folder",
-  "success-delete-folder": "Folder telah dihapus",
   "error-upload-file": "Gagal upload file",
+  "success-delete-folder": "Folder telah dihapus",
   "success-upload-file": "File telah diupload",
   "custom-message": "custom-message",
+
+  // category 
+  "success-insert-category": "Kategori telah ditambahkan",
+  "success-update-category": "Kategori berhasil diubah",
+  "success-delete-category": "Kategori telah dihapus",
+  "error-insert-category": "Kategori gagal ditambahkan",
+  "error-update-category": "Kategori gagal diubah",
+  "error-delete-category": "Kategori gagal dihapus",
 }
 
 const CONFIRMATION_MESSAGE = {
   // product 
   "confirm-delete-product": "Apakah anda yakin ingin menghapus produk ini ?",
+
+  // category
+  "confirm-delete-category": "Apakah anda yakin ingin menghapus kategori ini ?",
 
   "costum-message": "custom-message"
 }

@@ -130,7 +130,7 @@ export default function Index() {
             <div className="flex items-start justify-between">
               <SearchInput
                 className="!w-80"
-                placeholder="Search Product"
+                placeholder="Cari Produk"
                 onChange={debounceSearch}
               />
               <ButtonAdd

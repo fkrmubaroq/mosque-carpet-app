@@ -9,6 +9,9 @@ export const selectionQuery = {
 export const adminProductQuery = {
   getAll : (page,keyword) => ["admin","product",page,keyword]
 }
+export const adminCategoryQuery = {
+  getAll : (page,keyword) => ["admin","category",page,keyword]
+}
 
 export const adminFileManagerQuery = {
   getFIleItems: (path) => ["admin","file-manager", path]

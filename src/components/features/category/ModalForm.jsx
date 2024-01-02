@@ -20,20 +20,12 @@ export default function ModalForm({
   type = "add",
   show,
   data,
-  onSubmit,
+  isLoading,
+  onSave,
 }) {
   const formRef = useRef(null);
   const [form, setForm] = useState(data);
   const [validated, setValidated] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState();
-
-  const onClickCategory = (selected) => {
-    setForm((form) => ({
-      ...form,
-      category_id: +selected.id,
-    }));
-    setSelectedCategory(selected);
-  };
 
   const onChange = (e) => {
     setForm((form) => ({
@@ -49,30 +41,30 @@ export default function ModalForm({
     if (!valid) return;
 
     setValidated(false);
-    onSubmit(form);
+    onSave(form);
   };
   return (
-    <Modal show={show} size="w-[800px]" onHide={onHide}>
+    <Modal show={show} size="md" onHide={onHide}>
       <ModalHeader
         className="bg-primary text-white"
         onHide={() => onHide && onHide()}
       >
-        {titleType[type]} Kategori Produk
+        {titleType[type]} Kategori
       </ModalHeader>
       <ModalBody>
         <Form ref={formRef} validated={validated} onSubmit={onSubmitForm}>
           <ContainerInput>
-            <Label>Nama Produk</Label>
+            <Label>Nama Kategori</Label>
             <Input
               required
-              invalid="Nama produk wajib diisi"
-              name="name"
-              placeholder="Nama"
-              value={form.name}
+              invalid="Kategori produk wajib diisi"
+              name="category_name"
+              placeholder="Kategori"
+              value={form.category_name}
               onChange={onChange}
             />
           </ContainerInput>
-          <div className="flex justify-end gap-x-2">
+          <div className="flex justify-end gap-x-2 mt-3">
             <Button
               variant="ghost"
               size="lg"
