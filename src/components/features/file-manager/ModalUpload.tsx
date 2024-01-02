@@ -15,8 +15,8 @@ export default function ModalUploadFile({ onUpload, onHide }: TTypeModalProps & 
         <UploadFile
           multiple
           className="max-h-[500px] min-h-[350px]"
-          placeholder="PNG, JPG, WEBP, GIF (Ukuran Maksimal 2Mb)"
-          maxFileSizeKB={1000}
+          placeholder="PNG, JPG, WEBP, GIF (Ukuran Maksimal 1Mb)"
+          maxFileSizeMb={1}
           accept={[
             "image/jpeg",
             "image/jpg",

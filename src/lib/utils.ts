@@ -1,5 +1,6 @@
+import { NextApiRequest } from "next";
 import { DIR_FILE_UPLOAD } from "./constant";
-
+import multiparty from "multiparty";
 export const debounce = (fn: Function, timeout = 300) => {
   let timer: ReturnType<typeof setTimeout>;
   return function (this: any, ...args: any[]) {
@@ -99,3 +100,23 @@ export const generateID = (length: number) => {
   }
   return result;
 };
+
+export async function incomingRequest(form: multiparty.Form, req: NextApiRequest): Promise<Record<string, any>>{
+  return await new Promise((resolve, reject) => {
+    form.parse(req, function (err, fields, files) {
+      if (err) reject({ err });
+      const bodyText: Record<string, string> = {};
+      Object.keys(fields).forEach(key => {
+        bodyText[key] = fields[key].toString();
+      })
+
+      const bodyFile:Record<string,string> = {};
+      Object.keys(files).forEach(key => {
+        bodyFile[key] = files[key][0]
+      })
+
+      resolve({ ...bodyText, files: bodyFile });
+    });
+  });
+
+}

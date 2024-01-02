@@ -19,8 +19,10 @@ import ToggleSwitch from "@/components/ui/switch/toggle";
 import { TResponseDataApiWithPagination, TStatus } from "@/lib/api";
 import PaginationTable from "@/components/ui/table/PaginationTable";
 import cn from "classnames";
+import Image from "next/image";
 
 type TModalType = "add" | "edit";
+const placeholderImage = "/img/placeholder.webp";
 
 const initModal = Object.freeze({
   show: false,
@@ -80,6 +82,7 @@ export default function Index() {
     onSuccess: () => {
       showToast("success-insert-product");
       queryClient.invalidateQueries({ queryKey: adminProductQuery.getAll(page, keyword) });
+
     },
     onError: () => showToast("error-insert-product"),
     onSettled: () => setModal(initModal),
@@ -94,19 +97,14 @@ export default function Index() {
     onSettled: () => setModal(initModal),
   });
   
-  const onSaveForm = (payload: TPayloadProduct | TResponseDataProduct) => {
-    if (modal.type === "add") {
-      console.log("payload ", payload)
-      mutateInsertProduct(payload)
-      return;
-    }
-
-    if (modal.type === "edit") {
-      const { category_name, ...restPayload } = payload as TResponseDataProduct;
-      mutateUpdateProduct(restPayload);
-      return;
-    }
+  const onSaveForm = (payload: TPayloadProduct) => {
+    mutateInsertProduct(payload)
   }
+
+  const onEditForm = (payload: TResponseDataProduct) => {
+    const { category_name, ...restPayload } = payload as TResponseDataProduct;
+    mutateUpdateProduct(restPayload);
+  };
 
   const { mutate: updateStatus } = useMutation({
     mutationFn: (productId: number) => updateToggleStatus(productId),
@@ -128,6 +126,7 @@ export default function Index() {
           data={modal?.data ? modal.data : initForm}
           onHide={() => setModal(initModal)}
           onSave={onSaveForm}
+          onEdit={onEditForm}
           isLoading={isLoadingSaveForm || isLoadingUpdateForm}
         />
       )}
@@ -156,6 +155,7 @@ export default function Index() {
             <Table>
               <Thead>
                 <tr>
+                  <Td className="w-[60px] font-semibold">GAMBAR</Td>
                   <Th>PRODUCT NAME</Th>
                   <Th>CATEGORY</Th>
                   <Th>PRICE</Th>
@@ -169,7 +169,7 @@ export default function Index() {
                   ? Array(20)
                       .fill(1)
                       .map((_, key) => (
-                        <ShimmerTableRow colspan={7} key={key} />
+                        <ShimmerTableRow colspan={8} key={key} />
                       ))
                   : data?.data?.map((product, key) => (
                       <Tr
@@ -178,6 +178,18 @@ export default function Index() {
                           "text-gray-300": product.active === "N",
                         })}
                       >
+                        <Td>
+                          <Image
+                            src={
+                              product.image
+                                ? `/api/files/products/${product.image}`
+                                : placeholderImage
+                            }
+                            width={50}
+                            height={50}
+                            className="rounded-md object-cover"
+                          />
+                        </Td>
                         <Td>{product.name}</Td>
                         <Td>{product.category_name}</Td>
                         <Td>Rp{formatNumberToPrice(product.price)}</Td>

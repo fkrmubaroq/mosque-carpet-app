@@ -7,7 +7,7 @@ const insertProductValidation = Joi.object<TProductForm>({
   price: Joi.number().optional().empty('').default(0),
   stock: Joi.number().optional().empty('').default(0),
   category_id: Joi.number().required(),
-  image: Joi.string().max(255).optional(),
+  image: Joi.object().optional(),
   active: Joi.string().max(1).optional()
 
 })

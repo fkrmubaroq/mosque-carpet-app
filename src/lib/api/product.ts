@@ -7,7 +7,7 @@ export type TPayloadProduct = {
   price?: number,
   stock?: number,
   category_id: number,
-  image?: string,
+  image?: File,
   active: TStatus
 }
 export type TResponseDataProduct = {
@@ -18,11 +18,22 @@ export type TResponseDataProduct = {
   stock: number,
   category_id: number,
   category_name: string,
-  active: TStatus
+  active: TStatus,
+  image: string,
+}
+
+function objectIntoFormData(payload:any) {
+  const form = new FormData();
+  for (const key in payload) {
+    form.append(key, payload[key]);
+  }
+  return form;
+  
 }
  
-export function insertProduct(payload:TPayloadProduct) {
-  return postMethod("product",payload);
+export function insertProduct(payload: TPayloadProduct) {
+  const formPayload = objectIntoFormData(payload);
+  return postMethod("product",formPayload);
 }
 
 export function updateProduct(payload:TPayloadProduct) {

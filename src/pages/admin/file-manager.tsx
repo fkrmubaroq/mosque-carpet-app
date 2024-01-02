@@ -197,9 +197,8 @@ export default function FileManager() {
 
   const onCopySource = (selected: TResponseFileItem) => {
     const text = `${window.location.origin}${DIR_ACCESS_FILE}${selected.path}${selected.name}`;
-    console.log("text ", text)
-    const copy = copyToClipboard(text);
-    console.log("copy ", copy);
+    copyToClipboard(text);
+    showToast("custom-message","Teks telah disalin","default")
   }
   return (
     <>
@@ -378,6 +377,7 @@ function File({
     }
   };
   const src = `${DIR_ACCESS_FILE}${data.path}${data.name}`;
+  console.log("SRC ", src);
 
   return (
     <div

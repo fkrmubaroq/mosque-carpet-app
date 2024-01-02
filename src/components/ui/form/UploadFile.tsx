@@ -21,7 +21,7 @@ export type TypeChangeEventUploadFile =
 type PropsUploadFile = {
   name?: string;
   onChange?: (file: FileList, cb?: (file: FileList) => void) => void;
-  maxFileSizeKB?: number;
+  maxFileSizeMb?: number;
   accept?: string | string[];
   invalid?: string;
   required?: boolean;
@@ -43,7 +43,7 @@ const UploadFile: FC<PropsUploadFile> = ({
   name,
   allowResolutionImage,
   onChange,
-  maxFileSizeKB,
+  maxFileSizeMb,
   accept,
   placeholder,
   className,
@@ -65,11 +65,11 @@ const UploadFile: FC<PropsUploadFile> = ({
   };
 
   const validationFile = (file: File | Blob): boolean => {
-    if (maxFileSizeKB) {
-      const sizeKB = maxFileSizeKB * 1024;
-      if (file.size > sizeKB) {
-        const mb = Math.ceil(maxFileSizeKB / 1024);
-        setError(`File melebihi ukuran maksimum ${maxFileSizeKB} KB / ${mb} MB`);
+    if (maxFileSizeMb) {
+      const sizeMB = file.size / (1024 * 1024);
+      console.log("sizemb", sizeMB, maxFileSizeMb)
+      if (sizeMB > maxFileSizeMb) {
+        setError(`File melebihi ukuran maksimum ${maxFileSizeMb} MB`);
         return false;
       }
     }
@@ -112,6 +112,7 @@ const UploadFile: FC<PropsUploadFile> = ({
     for (let i = 0; i < files.length; i++){
       const valid = validationFile(files[i]);
       if (!valid) {
+        setSelectedFile(undefined);
         resetValue();
         return;
       }
@@ -195,7 +196,11 @@ const UploadFile: FC<PropsUploadFile> = ({
         onDragLeave={(e) => handleDragZoneHover(e, false)}
       >
         {selectedFile ? (
-          <div className="grid grid-cols-3 gap-3">
+          <div className={cn("grid grid-cols-3 gap-3", {
+            "grid-cols-3": selectedFile.length > 1,
+            "grid-cols-2": selectedFile.length === 2,
+            "grid-cols-1": selectedFile.length === 1
+          })}>
             {Array.from(selectedFile).map((file, key) => (
               <PreviewFile file={file} key={key} />
             ))}
@@ -226,7 +231,7 @@ function PreviewFile({ file }: { file: File }) {
   return (
     <div>
       {MIME_TYPE_IMAGE[file.type] && (
-        <Card className="rounded-none h-[180px]">
+        <Card className="rounded-none">
           <CardContent className="flex flex-col justify-center gap-y-2 !pb-4 !pt-3 !px-3 ">
             <Image src={getSrcFile(file)} width="100" height="100" alt="" className="object-cover" />
             <span className="text-sm font-semibold text-gray-600 line-clamp-2">

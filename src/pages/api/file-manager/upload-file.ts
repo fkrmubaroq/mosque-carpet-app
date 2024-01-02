@@ -1,14 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { ResponseError, responseErrorMessage, responseNotFound } from '@/errors/response-error';
+import { responseErrorMessage, responseNotFound } from '@/errors/response-error';
 import multiparty from "multiparty";
 import fs from "fs";
 import { DIR_FILE_UPLOAD } from "@/lib/constant";
-import { v4 as uuid } from "uuid";
 import { STATUS_MESSAGE_ENUM } from "@/lib/enum";
-import { ERROR_MESSAGE } from "@/lib/message";
 import { prismaClient } from "@/lib/prisma";
-import { TYPE_MANAGER } from "@prisma/client";
-import { generateID } from "@/lib/utils";
+import { incomingRequest } from "@/lib/utils";
 
 type TFile = {
   fieldName: string;
@@ -17,25 +14,7 @@ type TFile = {
     headers: object,
     size: string
 }
-async function incomingRequest(form: multiparty.Form, req: NextApiRequest): Promise<Record<string, any>>{
-    return await new Promise((resolve, reject) => {
-    form.parse(req, function (err, fields, files) {
-      if (err) reject({ err });
-      const bodyText:Record<string,string> = {};
-      Object.keys(fields).forEach(key => {
-        bodyText[key] = fields[key].toString();
-      })
 
-      const bodyFile:Record<string,string> = {};
-      Object.keys(files).forEach(key => {
-        bodyFile[key] = files[key][0]
-      })
-
-      resolve({ ...bodyText, files: bodyFile });
-    });
-  });
-
-}
 
 function renameFileDuplicated(fileName: string, text: string) {
   const splitFileName: string[] = fileName.split(".");
@@ -55,7 +34,6 @@ async function insertFileToServerAndDatabase(data: any) {
       fs.access(srcFile, async (err) => {
         // when file is not exists, create file and then move into files/upload/
         if (err) {
-          console.log("first");
           await insertFileInfoToDatabase({
             name: file.originalFilename,
             path
@@ -70,7 +48,6 @@ async function insertFileToServerAndDatabase(data: any) {
         srcFile = `${pathDir}${fileName}`;
         fs.access(srcFile, async (err) => {
           if (err) {
-            console.log("access ", err);
             await insertFileInfoToDatabase({
               name: fileName,
               path
@@ -103,7 +80,6 @@ async function insertFileToServerAndDatabase(data: any) {
 }
 
 async function insertFileInfoToDatabase({ name, path }: { name: string; path: string }) {
-  console.log("name ", name, "path ",path)
   const levelBySlash = path.split("/").length - 2;
   await prismaClient.fileManager.create({
     data: {
@@ -125,8 +101,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const data = await incomingRequest(multipartyForm, req);
     
     await insertFileToServerAndDatabase(data);
-
-    
    
     res.status(STATUS_MESSAGE_ENUM.Ok).json({
       data: "ok"

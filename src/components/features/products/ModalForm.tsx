@@ -20,7 +20,7 @@ export type TProductForm = {
   price: number;
   stock: number;
   category_id: number;
-  image?: string;
+  image?: File;
   active: TStatus;
 };
 
@@ -36,10 +36,12 @@ export default function ModalForm({
   data,
   onSave,
   isLoading,
+  onEdit,
 }: TTypeModalProps & {
   type: "add" | "edit";
-  data: TProductForm | TResponseDataProduct;
-  onSave: (form: TProductForm | TResponseDataProduct) => void;
+  data: TProductForm;
+  onSave: (form: TProductForm) => void;
+  onEdit: (form: TResponseDataProduct) => void;
   isLoading: boolean;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -82,14 +84,13 @@ export default function ModalForm({
     if (!valid) return;
 
     setValidated(false);
-    onSave(form);
+    type === "add" && onSave(form);
+    type === "edit" && onEdit(form);
   };
 
   return (
     <Modal show={show} size="w-[800px]" onHide={onHide}>
-      <ModalHeader
-        onHide={() => onHide && onHide()}
-      >
+      <ModalHeader onHide={() => onHide && onHide()}>
         {titleType[type]} Produk
       </ModalHeader>
       <ModalBody>
@@ -98,12 +99,11 @@ export default function ModalForm({
             <div className="w-[320px] shrink-0">
               <Label>Gambar</Label>
               <UploadFile
+                maxFileSizeMb={1.5}
                 onChange={(file, next) => {
-                  const fileUrl = window.URL.createObjectURL(file);
                   next && next(file);
-                  console.log("file ", fileUrl);
                 }}
-                placeholder="PNG, JPG, WEBP, GIF (Ukuran Maksimal 2Mb)"
+                placeholder="PNG, JPG, WEBP, GIF (Ukuran Maksimal 1.5Mb)"
                 accept={[
                   "image/jpeg",
                   "image/jpg",
