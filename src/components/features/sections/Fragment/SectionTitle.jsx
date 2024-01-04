@@ -19,7 +19,7 @@ export default function SectionTitle({
                 "section-mode-edit",
                 classNameContext
               )}
-              onChange={(e) => onUpdateContent("heading", e.target.value)}
+            onChange={(e) => onUpdateContent("heading", e.target.value)}
           /> :
           <div
             className={cn(

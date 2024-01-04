@@ -1,10 +1,13 @@
 import { MARGIN_EACH_SECTION } from "@/lib/constant";
 import cn from "classnames";
 import { memo } from "react";
+import ContentEditable from "react-contenteditable";
 import { AiOutlineAim } from "react-icons/ai";
 import { FiTrendingUp } from "react-icons/fi";
 
-function SectionVisionMisionMemo({ content }) {
+function SectionVisionMisionMemo({ section, edit, onUpdateContent }) {
+  const content = section?.content || {};
+
   return (
     <section
       className={cn(
@@ -13,33 +16,69 @@ function SectionVisionMisionMemo({ content }) {
       )}
     >
       <CardContent
+        edit={edit}
         className="w-full bg-secondary text-white"
         icon={<AiOutlineAim color="white" size={50} />}
         title={content?.vision?.title || ""}
         description={content?.vision?.text}
+        onUpdateContent={(name, value) => onUpdateContent({
+          ...section,
+          content: {
+            ...section.content,
+            vision: {
+              ...section.content.vision,
+              [name]: value
+            }
+          }
+        })}
       />
       <CardContent
+        textGray
+        edit={edit}
         className="w-full"
         icon={<FiTrendingUp size={50} color="#eab308" />}
         title={content?.mision?.title || ""}
-        description={
-          <span className="text-gray-600">
-            {content?.mision?.text}
-          </span>
-        }
+        onUpdateContent={(name, value) => onUpdateContent({
+          ...section,
+          content: {
+            ...section.content,
+            mision: {
+              ...section.content.vision,
+              [name]: value
+            }
+          }
+        })}
+        description={content?.mision?.text}
       />
     </section>
   );
 }
 
-function CardContent({ className, icon, title, description }) {
+function CardContent({ textGray, className, icon, title, description, edit, onUpdateContent }) {
   return (
     <div className={cn("flex flex-col gap-y-2 py-7 px-8", className)}>
       {icon && icon}
-      <span className="text-2xl font-cinzel">{title}</span>
-      <span className="font-poppins tracking-wide opacity-90 leading-7">
-        {description}
-      </span>
+      {
+        edit ?
+        <ContentEditable
+          html={title}
+          className="text-2xl font-cinzel section-mode-edit"
+          onChange={(e) => onUpdateContent("title", e.target.value)}
+        />
+        : <span className="text-2xl font-cinzel">{title}</span>
+      }
+
+      {
+        edit ?
+        <ContentEditable
+          html={description}
+          className={cn("font-poppins tracking-wide opacity-90 leading-7  section-mode-edit", { "text-gray-600": textGray })}
+          onChange={(e) => onUpdateContent("text", e.target.value)}
+        /> :
+          <span className={cn("font-poppins tracking-wide opacity-90 leading-7", { "text-gray-600": textGray })}>
+          {description}
+        </span>
+      }
     </div>
   );
 }

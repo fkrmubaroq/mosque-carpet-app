@@ -47,7 +47,7 @@ function SectionAboutUsMemo({ section, edit, onUpdateContent }) {
         }
       </div>
 
-      <div className="relative shrink-0 flex justify-center w-[500px] group">
+      <div className="relative shrink-0 flex justify-center w-[500px] group ">
         {edit && <ToolboxImage name="image" onUpdateContent={onUpdate} className="group-hover:block hidden"/>}
         {content?.image &&
           <div className={cn({ "section-mode-edit p-1": edit })}>
