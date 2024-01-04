@@ -10,6 +10,7 @@ import ToggleSwitch from "@/components/ui/switch/toggle";
 import Table, { Td, Th, Thead, Tr } from "@/components/ui/table";
 import PaginationTable from "@/components/ui/table/PaginationTable";
 import { deleteProduct, getAllProduct, insertProduct, updateProduct, updateToggleStatus } from "@/lib/api/product";
+import { placeholderImage } from "@/lib/constant";
 import { useDialogStore } from "@/lib/hookStore";
 import { adminProductQuery } from "@/lib/queryKeys";
 import { debounce, formatNumberToPrice } from "@/lib/utils";
@@ -18,8 +19,6 @@ import cn from "classnames";
 import Image from "next/image";
 import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-
-const placeholderImage = "/img/placeholder.webp";
 
 const initModal = Object.freeze({
   show: false,

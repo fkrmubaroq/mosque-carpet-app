@@ -37,3 +37,11 @@ export const useFileManagerStore = create((set) => ({
   currentPath: "/",
   setPath: (path) => set(state => ({ ...state, currentPath:path }))
 }))
+
+export const useEditSection = create((set) => ({
+  editingIndex: null,
+  isEditing: false,
+  setIsEditing: (status, editingIndex = null) => set(state => ({ ...state, isEditing: status, editingIndex })),
+  sectionsLp: [],
+  setSectionsLp: (sections) => set(state => ({ ...state, sectionsLp: sections }))
+}))

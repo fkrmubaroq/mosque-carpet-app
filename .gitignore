@@ -6,6 +6,6 @@
 .env.production
 
 /.next/
-
+/files/
 *.tsbuildinfo
 next-env.d.ts

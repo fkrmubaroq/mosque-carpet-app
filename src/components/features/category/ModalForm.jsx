@@ -2,6 +2,7 @@ import { SpinnerIcon } from "@/components/ui/Spinner";
 import { Button } from "@/components/ui/button";
 import ContainerInput from "@/components/ui/container/ContainerInput";
 import Form from "@/components/ui/form";
+import UploadFile from "@/components/ui/form/UploadFile";
 import { Input } from "@/components/ui/form/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -53,6 +54,29 @@ export default function ModalForm({
       </ModalHeader>
       <ModalBody>
         <Form ref={formRef} validated={validated} onSubmit={onSubmitForm}>
+          <div className="flex flex-col gap-y-3">
+          <ContainerInput>
+            <Label>Gambar</Label>
+            <UploadFile
+              maxFileSizeMb={1.5}
+              onChange={(file, next) => {
+                next && next(file);
+                setForm(form => ({ ...form, image: file[0] }))
+              }}
+              placeholder="PNG, JPG, WEBP, GIF (Ukuran Maksimal 1.5Mb)"
+              accept={[
+                "image/jpeg",
+                "image/jpg",
+                "image/png",
+                "image/webp",
+                "image/gif",
+              ]}
+            />
+            {type === "edit" && form.image && <div className="flex flex-col items-center gap-y-2 mt-3">
+              <Label>Gambar sebelumnya</Label>
+              <div>{<Image src={`/api/files/products/${prevImage}`} width={110} height={110} className="rounded-md" alt="" />}</div>
+            </div>}
+          </ContainerInput>
           <ContainerInput>
             <Label>Nama Kategori</Label>
             <Input
@@ -63,7 +87,8 @@ export default function ModalForm({
               value={form.category_name}
               onChange={onChange}
             />
-          </ContainerInput>
+            </ContainerInput>
+          </div>
           <div className="flex justify-end gap-x-2 mt-3">
             <Button
               variant="ghost"

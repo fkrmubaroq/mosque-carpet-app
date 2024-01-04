@@ -1,4 +1,5 @@
 import { deleteMethod, getMethod, postMethod, putMethod } from ".";
+import { objectIntoFormData } from "../utils";
 
  
 export function getCategory(params) {
@@ -6,11 +7,13 @@ export function getCategory(params) {
 }
 
 export function insertCategory(payload) {
-  return postMethod("category",payload);
+  const formPayload = objectIntoFormData(payload);
+  return postMethod("category", formPayload);
 }
 
 export function updateCategory(payload) {
-  return putMethod("category",payload);
+  const formPayload = objectIntoFormData(payload);
+  return putMethod("category", formPayload);
 }
 
 export function deleteCategory(id) {

@@ -38,3 +38,12 @@ body {
 .upload-file-drop-zone {
   @apply rounded-md border-2 border-dashed bg-gray-50 hover:border-primary cursor-pointer bg-cover bg-no-repeat p-8;
 }
+
+.section-mode-edit{
+  &:hover{
+    @apply border-2 border-blue-600 cursor-text;
+  }
+}
+.section-mode-edit:has(input){
+    @apply border-2 border-blue-600;
+}

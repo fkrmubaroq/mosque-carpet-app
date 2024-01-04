@@ -9,10 +9,12 @@ import { ShimmerTableRow } from "@/components/ui/shimmer";
 import Table, { Td, Th, Thead, Tr } from "@/components/ui/table";
 import PaginationTable from "@/components/ui/table/PaginationTable";
 import { deleteCategory, getCategory, insertCategory, updateCategory } from "@/lib/api/category";
+import { placeholderImage } from "@/lib/constant";
 import { useDialogStore } from "@/lib/hookStore";
 import { adminCategoryQuery } from "@/lib/queryKeys";
-import { debounce } from "@/lib/utils";
+import { debounce, mediaPath } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
 import { useState } from "react";
 
 const initModal = {
@@ -126,6 +128,7 @@ export default function Category() {
             <Table>
               <Thead>
                 <tr>
+                  <Th className="w-[60px] font-semibold">GAMBAR</Th>
                   <Th>CATEGORY</Th>
                   <Th className="text-center">ACTION</Th>
                 </tr>
@@ -135,10 +138,22 @@ export default function Category() {
                   ? Array(20)
                     .fill(1)
                     .map((_, key) => (
-                      <ShimmerTableRow colspan={2} key={key} />
+                      <ShimmerTableRow colspan={3} key={key} />
                     ))
                   : data?.data?.map((item, key) => (
                     <Tr key={key}>
+                      <Td>
+                        <Image
+                          src={
+                            item.image
+                              ? mediaPath("categories",item.image)
+                              : placeholderImage
+                          }
+                          width={50}
+                          height={50}
+                          className="rounded-md object-cover"
+                        />
+                      </Td>
                       <Td>{item.category_name}</Td>                     
                       <Td>
                         <div className="flex justify-center gap-x-1">

@@ -1,13 +1,7 @@
 import { deleteMethod, getMethod, patchMethod, postMethod, putMethod } from ".";
+import { objectIntoFormData } from "../utils";
 
-function objectIntoFormData(payload) {
-  const form = new FormData();
-  for (const key in payload) {
-    form.append(key, payload[key]);
-  }
-  return form;
-  
-}
+
  
 export function insertProduct(payload) {
   const formPayload = objectIntoFormData(payload);

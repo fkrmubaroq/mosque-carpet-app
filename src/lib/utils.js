@@ -1,4 +1,5 @@
 import fs from "fs";
+import { DIR_ACCESS_FILE } from "./constant";
 
 export function debounce(func, timeout = 300) {
   let timer;
@@ -133,4 +134,27 @@ export async function unlinkFile(src) {
       resolve(true);
     });
   });
+}
+
+export function objectIntoFormData(payload) {
+  const form = new FormData();
+  for (const key in payload) {
+    form.append(key, payload[key]);
+  }
+  return form;
+
+}
+
+export function mediaPath(dir, fileName) {
+  return `${DIR_ACCESS_FILE}/${dir}/${fileName}`
+}
+
+export function setCursorPosition(el, position) {
+  const range = document.createRange();
+  const sel = window.getSelection();
+  range.setStart(el.childNodes[0], position);
+  range.collapse(true);
+  sel.removeAllRanges();
+  sel.addRange(range);
+  el.focus();
 }

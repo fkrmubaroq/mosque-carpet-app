@@ -1,13 +1,13 @@
 import cn from "classnames";
 import Image from "next/image";
 import Router, { useRouter } from "next/router";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { BiHomeAlt } from "react-icons/bi";
-import { CiBoxes, CiBoxList } from "react-icons/ci";
+import { CiBoxList, CiBoxes } from "react-icons/ci";
 import { MdOutlineAccountCircle, MdOutlineArticle } from "react-icons/md";
 import { PiDotsThreeLight } from "react-icons/pi";
-import { RxHamburgerMenu } from "react-icons/rx";
+import { RxHamburgerMenu, RxSection } from "react-icons/rx";
 import { TfiPackage } from "react-icons/tfi";
 import { VscFolderLibrary } from "react-icons/vsc";
 import style from "./layout.module.scss";
@@ -47,6 +47,11 @@ const sidebarMenus = [
     label: "Lainnya",
     menus: [
       {
+        icon: <RxSection size={20}/>,
+        menu: "Sections",
+        path: "/admin/section",
+      },
+      {
         icon: <MdOutlineArticle size={20} />,
         menu: "Artikel",
         path: "/admin/articles",
@@ -67,6 +72,12 @@ const sidebarMenus = [
 export function Layout({ children, customTitle, title, classNameTitle }) {
   const [expand, setExpand] = useState(true);
   const route = useRouter();
+
+  useEffect(() => {
+    if (route.pathname === "/admin/section") {
+      setExpand(false);
+    }
+  },[])
 
   return (
     <div className={cn(style["layout"], { [style["expanded"]]: expand })}>

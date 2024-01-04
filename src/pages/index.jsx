@@ -2,22 +2,10 @@ import { Button } from "@/components/ui/button";
 import cn from "classnames";
 import dayjs from "dayjs";
 import Image from "next/image";
-import { memo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  AiFillCaretRight,
-  AiOutlineAim,
-  AiOutlineClose,
-  AiOutlineInstagram,
-  AiOutlineMail,
-  AiOutlinePhone,
-  AiOutlineWhatsApp,
+  AiFillCaretRight
 } from "react-icons/ai";
-import { BiLogoTiktok } from "react-icons/bi";
-import { BsFacebook } from "react-icons/bs";
-import { FaRegLightbulb } from "react-icons/fa6";
-import { FiThumbsUp, FiTrendingUp } from "react-icons/fi";
-import { HiOutlineLocationMarker } from "react-icons/hi";
-import { RxHamburgerMenu } from "react-icons/rx";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -26,22 +14,58 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 // import required modules
+import SectionTitle from "@/components/features/sections/Fragment/SectionTitle";
+import SectionAboutUs from "@/components/features/sections/SectionAboutUs";
+import SectionContactUs from "@/components/features/sections/SectionContactUs";
+import SectionFooter from "@/components/features/sections/SectionFooter";
+import SectionHero from "@/components/features/sections/SectionHero";
+import SectionVisionMision from "@/components/features/sections/SectionVisionMision";
+import SectionWhyChooseUs from "@/components/features/sections/SectionWhyChooseUs";
 import ButtonWa from "@/components/ui/button/ButtonWa";
-import { debounce } from "@/lib/utils";
-import dynamic from "next/dynamic";
+import { CONTAINER_LP, MARGIN_EACH_SECTION } from "@/lib/constant";
+import { prismaClient } from "@/lib/prisma";
+import { debounce, mediaPath } from "@/lib/utils";
 import { Navigation } from 'swiper/modules';
 
-const Portal = dynamic( import("@/components/ui/portal").then((module) => module.default), { ssr: false });
-const container = "lg:mx-auto xl:w-[1280px]";
-const marginEachSection = "lg:mb-[100px] mb-16";
-export default function Home() {
+export async function getServerSideProps() {
+  const prismaCategories = await prismaClient.category.findMany({
+    orderBy: {
+      id: "desc"
+    },
+    take: 5
+  });
 
+  const prismaSections = await prismaClient.sections.findMany({
+    orderBy: {
+      position:"asc"
+    },
+    where: {
+      active: "Y"
+    }
+  })
+  return {
+    props: {
+      categories: prismaCategories || [],
+      sections: prismaSections || []
+    }
+  }
+}
+export default function Home({ categories, sections }) {  
   const [mobileMd, setMobileMdWidth] = useState(false);
   const [mobileSm, setMobileSm] = useState(false);
   const mobile = {
     mobileMd,
     mobileSm,
   };
+
+  const getContentSection = (sectionName) => {
+    const section = sections.find(section => section.section_name === sectionName);
+    const content = JSON.parse(section?.content || "{}");
+    return {
+      ...section,
+      content
+    };
+  }
   useEffect(() => {
     const checkScreenWidth = () => {
       const width = window.innerWidth;
@@ -66,341 +90,18 @@ export default function Home() {
   }, []);
   return (
     <main className="min-h-screen">
-      <SectionFirst mobile={mobile} />
-      <div className={cn(container, "px-4")}>
-        <SectionAboutUs />
-        <SectionVisionMision />
-        <SectionWhyChooseUs />
-        <SectionContactUs mobile={mobile} />
+      <SectionHero mobile={mobile} section={getContentSection("section_hero")} />
+      <div className={cn(CONTAINER_LP, "px-4")}>
+        <SectionAboutUs section={getContentSection("section_about_us")} />
+        <SectionVisionMision section={getContentSection("section_vision_mision")} />
+        <SectionWhyChooseUs section={getContentSection("section_why_choose_us")} />
+        <SectionContactUs mobile={mobile} section={getContentSection("section_contact_us")} />
         <SectionRecentNews mobile={mobile} />
-        <SectionOurProduct mobile={mobile} />
+        <SectionOurProduct mobile={mobile} categories={categories} />
       </div>
-      <Footer />
+      <SectionFooter content={getContentSection("section_footer")} />
       <ButtonWa phone=""/>
     </main>
-  );
-}
-
-function SectionFirst({ mobile }) {
-  return (
-    <section className="h-[500px] w-full lg:mb-20 lg:h-[700px]">
-      <Header mobile={mobile} />
-      <div
-        className={cn(
-          "absolute h-[500px] w-full bg-black bg-center object-cover lg:h-[700px]"
-          // "before:absolute before:w-full before:h-16 before:bg-black before:opacity-40 before:top-0 before:content-[''] before:block"
-        )}
-        style={{
-          backgroundImage: `url('/img/banner.webp')`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: `100% ${mobile.mobileSm ? "100%" : ""}`,
-        }}
-      >
-        <div className={cn("pt-28 lg:pt-48", container)}>
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                "linear-gradient(180deg, #000000 0%, #00000000 50%)",
-            }}
-          ></div>
-          <h1 className="relative mx-auto mb-6 max-w-[450px] px-3 text-center font-poppins text-xl font-light tracking-wider text-white lg:mb-24 lg:w-full lg:max-w-[750px] lg:px-0 lg:text-2xl">
-            Solusi Kebutuhan Karpet Masjid yang terpadu dengan berbagai Merk
-            Lokal dan Import dengan Kualitas dan Design Terbaik
-          </h1>
-          <div className="relative mx-4 flex gap-x-5">
-            <HeroCard
-              title={
-                <>
-                  Karpet Masjid <span className="text-green-700">Al-Hijra</span>
-                </>
-              }
-              text="Pusat Spesialist Karpet Masjid Terlengkap yang Amanah & Jujur Memberikan Pelayanan Terbaik Bagi Donatur & Jamaah."
-              footer={
-                <div className="mt-5 flex flex-col gap-x-4 gap-y-4 lg:flex-row lg:gap-y-0">
-                  <Button className="!rounded-none !px-10 !py-6 font-cinzel">
-                    READ MORE
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="!rounded-none border border-white !px-10 !py-6 font-cinzel"
-                  >
-                    VIEW COLLECTIONS
-                  </Button>
-                </div>
-              }
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const menus = ["About Us", "Collections", "Projects", "Contact Us"];
-function Header({ mobile }) {
-  return (
-    <header className="absolute left-0 right-0 z-50 px-3 lg:px-0">
-      <div className={cn("mt-4 flex items-center justify-between", container)}>
-        <div className="flex items-center justify-center gap-x-3">
-          <Image src="/img/logo.png" width="36" height="36" alt="" />
-          <span className="text-lg text-white">Al-Hijra</span>
-        </div>
-        {mobile.mobileMd || mobile.mobileSm ? (
-          <MobileNavigationHeader menus={menus} />
-        ) : (
-          <NavigationHeader menus={menus} />
-        )}
-      </div>
-    </header>
-  );
-}
-
-function NavigationHeader({ menus }) {
-  return (
-    <nav className="flex h-16 list-none items-center justify-center gap-x-5 text-lg font-light tracking-wide text-white">
-      {menus.map((item, key) => (
-        <li className="cursor-pointer p-3" key={key}>
-          {item}
-        </li>
-      ))}
-    </nav>
-  );
-}
-function MobileNavigationHeader({ menus }) {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  return (
-    <div>
-      <div className="h-11 w-11 flex justify-center items-center cursor-pointer" onClick={() => setIsOpen(true)}>
-        <RxHamburgerMenu color="white" size={30} />
-      </div>
-
-      <Portal>
-        <div className={cn("inset-0 bg-black absolute opacity-40", { "hidden": !isOpen })} onClick={() => setIsOpen(false) }></div>
-        <div
-          className={cn(
-            "absolute left-0 right-0 bg-white p-5 transition-all duration-300 z-50",
-            {
-              "-top-[1000px]": !isOpen,
-              "top-0": isOpen,
-            }
-          )}
-        >
-          <div
-            className="absolute right-6 top-5 cursor-pointer flex h-8 w-8 justify-center text-lg text-black"
-            onClick={() => setIsOpen(false)}
-          >
-            <AiOutlineClose size={25} />
-          </div>
-          <div className="flex flex-col items-center justify-center gap-y-5">
-            <div className="flex flex-col items-center gap-y-1">
-              <Image src="/img/logo-black.png" width="50" height="50" alt="" />
-              <span className="text-lg font-semibold tracking-wide text-black">
-                AL - HIJRA
-              </span>
-            </div>
-            <div className="mb-6 flex flex-col gap-y-8">
-              {menus.map((item, key) => (
-                <div className="flex justify-center" key={key}>
-                  {item}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </Portal>
-    </div>
-  );
-}
-
-function HeroCard({
-  title,
-  text,
-  footer,
-}) {
-  return (
-    <div
-      className="rounded-lg px-12 py-10 text-white lg:w-[500px] sm:w-[400px] w-full"
-      style={{ background: "rgba(0,0,0,0.7)" }}
-    >
-      <div className="mb-4 text-xl lg:text-3xl font-cinzel">{title}</div>
-      <span className="font-poppins text-sm lg:text-md font-light tracking-wide">
-        {text}
-      </span>
-      {footer}
-    </div>
-  );
-}
-
-function SectionTitle({
-  context,
-  title,
-  classNameContext,
-}) {
-  return (
-    <div className="flex flex-col gap-y-4">
-      <span>
-        <div
-          className={cn(
-            "inline border-b border-b-green-600 font-cinzel tracking-wide",
-            classNameContext
-          )}
-        >
-          {context}
-        </div>
-      </span>
-      <div className="mb-3 font-cinzel text-3xl font-medium">{title}</div>
-    </div>
-  );
-}
-function SectionAboutUsMemo() {
-  return (
-    <section
-      className={cn(
-        "mb-16 flex flex-col items-center gap-x-3 pt-20 lg:flex-row",
-        marginEachSection
-      )}
-    >
-      <div className="lg:pr-40">
-        <SectionTitle
-          context="ABOUT US"
-          title={
-            <>
-              Design For <span className="text-green-700">Luxury Living</span>
-            </>
-          }
-        />
-
-        <div className="mb-5 font-poppins text-lg tracking-wide text-gray-500 lg:mb-0">
-          MODULO started as a boutique concept store in 2018. Today, MODULO
-          provides one stop solution for home owners who seek to have finer
-          interior solutions for their homes. Our designers are trained to help
-          the customers realize their vision of dream home with ease by
-          providing a comprehensive experience from interior design and
-          construction, kitchen and wardrobe customization, fine furnishing
-          solutions & home décor. MODULO as part of Metaphor Design Group.
-        </div>
-      </div>
-
-      <div className="relative lg:min-w-[500px] ">
-        <div className="shadow-sm">
-          <Image
-            className="rounded-lg"
-            src="/img/red-carpet.webp"
-            width="450"
-            height="300"
-            alt=""
-          />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const SectionAboutUs = memo(SectionAboutUsMemo);
-
-function SectionVisionMisionMemo() {
-  return (
-    <section
-      className={cn(
-        "flex flex-col gap-x-12 lg:flex-row",
-        marginEachSection
-      )}
-    >
-      <CardContent
-        className="w-full bg-secondary text-white"
-        icon={<AiOutlineAim color="white" size={50} />}
-        title="OUR VISION"
-        description={
-          "Menjadi Pusat Spesialist Karpet Masjid Terlengkap yang Amanah & Jujur, Memberikan Pelayanan Terbaik Bagi Donatur dan Jamaah."
-        }
-      />
-      <CardContent
-        className="w-full"
-        icon={<FiTrendingUp size={50} color="#eab308" />}
-        title="OUR MISION"
-        description={
-          <span className="text-gray-600">
-            Kepuasan Pelayanan Al-Hijra Carpets, Ibadah Semakin Nyaman
-          </span>
-        }
-      />
-    </section>
-  );
-}
-
-const SectionVisionMision = memo(SectionVisionMisionMemo);
-
-
-function CardContent({ className, icon, title, description }) {
-  return (
-    <div className={cn("flex flex-col gap-y-2 py-7 px-8", className)}>
-      {icon && icon}
-      <span className="text-2xl font-cinzel">{title}</span>
-      <span className="font-poppins tracking-wide opacity-90 leading-7">
-        {description}
-      </span>
-    </div>
-  );
-}
-
-function SectionWhyChooseUsMemo() {
-  return (
-    <>
-      <div className="h-1 w-full border-t border-dashed"></div>
-      <section
-        className={cn("flex items-center gap-x-3 pt-20", marginEachSection)}
-      >
-        <div>
-          <SectionTitle
-            classNameContext="border-b-primary"
-            context="OUR VALUE"
-            title={
-              <>
-                WHY CHOOSE <span className="text-primary">US</span>
-              </>
-            }
-          />
-          <div className="flex flex-col items-center gap-x-10 lg:flex-row lg:gap-y-0 gap-y-5 ">
-            <div className="flex flex-col items-center lg:gap-x-24 lg:flex-row lg:gap-y-0 gap-y-7">
-              <ItemChooseUs
-                className="w-full"
-                icon={<FaRegLightbulb size={50} color="#15803d" />}
-                description="Solusi Kebutuhan Karpet Masjid yang terpadu dengan berbagai Merk Lokal dan Import dengan Kualitas dan Design Terbaik"
-              />
-              <ItemChooseUs
-                className="w-full"
-                icon={<FiThumbsUp size={50} color="#15803d" />}
-                description="Tenaga Profesional kami telah teruji dalam melakukan pemasangan, setting, layout dengan berbagai tingkat kesulitan."
-              />
-            </div>
-            <div className="flex w-2/3 justify-center">
-              <Button className="flex items-center justify-center gap-x-2 !rounded-none !p-6">
-                <span>OUR SERVICES</span>
-                <AiFillCaretRight />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
-  );
-}
-
-const SectionWhyChooseUs = memo(SectionWhyChooseUsMemo);
-
-function ItemChooseUs({
-  icon,
-  description,
-  className,
-}) {
-  return (
-    <div className={cn("flex items-center gap-x-7", className)}>
-      <div className="shrink-0 max-w-[425px]">{icon}</div>
-      <span className="font-normal tracking-wide text-gray-700">
-        {description}
-      </span>
-    </div>
   );
 }
 
@@ -434,51 +135,6 @@ function SectionOurPartner() {
   );
 }
 
-function SectionContactUs({ mobile }) {
-  return (
-    <section className={cn("h-[440px]", marginEachSection)}>
-      <div
-        className="absolute left-0 h-[440px] w-full bg-bottom object-cover"
-        style={{
-          backgroundImage: `url('/img/img-contact-us.webp')`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: `100% ${mobile ? "100%" : ""}`,
-        }}
-      >
-        <div
-          className="absolute inset-0 z-0"
-          style={{
-            backgroundImage: `linear-gradient(${
-              mobile.mobileMd ? "60deg" : "260deg"
-            }, #000000 0%, #00000000 100%)`,
-          }}
-        ></div>
-        <div
-          className={cn(
-            "relative z-10 flex h-full items-center justify-end",
-            container
-          )}
-        >
-          <div className="px-4 lg:px-0">
-            <div className="mb-4 font-cinzel text-2xl leading-normal text-white lg:max-w-[700px] lg:text-5xl">
-              Finding Finer Solution For Your{" "}
-              <span className="text-primary">Home?</span>
-            </div>
-            <span className="text-lg tracking-wider text-white">
-              MODULO provides everything you need.
-            </span>
-            <div className="mt-4">
-              <Button className="flex items-center justify-center gap-x-2 !rounded-none !p-5 text-sm text-white lg:!p-7 lg:text-lg">
-                <AiOutlineWhatsApp size={mobile.mobileMd ? 20 : 22} />
-                <span>CONTACT US NOW</span>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 const newsItems = [
   {
@@ -510,7 +166,7 @@ function SectionRecentNews({ mobile }) {
     return 3;
   }
   return (
-    <section className={cn(marginEachSection)}>
+    <section className={cn(MARGIN_EACH_SECTION)}>
       <SectionTitle
         context="ARTICLES"
         title={
@@ -547,29 +203,6 @@ function SectionRecentNews({ mobile }) {
   );
 }
 
-
-const categoryItems = [
-  {
-    image: "/img/categories/category-1.webp",
-    title: "Permadani Classic",
-  },
-  {
-    image: "/img/categories/category-2.webp",
-    title: "Karpet Meteran",
-  },
-  {
-    image: "/img/categories/category-3.webp",
-    title: "Karpet Masjid",
-  },
-  {
-    image: "/img/categories/category-4.webp",
-    title: "Kaligrafi",
-  },
-  {
-    image: "/img/categories/category-5.webp",
-    title: "Permadani Modern & Vintage",
-  },
-];
 function CardNewItem({ data }) {
   return (
     <div className="group flex flex-col gap-y-3 transition-all duration-500 hover:scale-105 ease-in-out hover:bg-primary">
@@ -598,14 +231,14 @@ function CardNewItem({ data }) {
 }
 
 
-function SectionOurProduct({ mobile }) {
+function SectionOurProduct({ mobile, categories }) {
   const getSlidePerPreviewByScreen = () => {
     if (mobile.mobileSm) return 1;
     if (mobile.mobileMd) return 2;
     return 4;
   };
   return (
-    <section className={marginEachSection}>
+    <section className={MARGIN_EACH_SECTION}>
       <SectionTitle
         context="OUR PRODUCTS"
         title={
@@ -630,98 +263,18 @@ function SectionOurProduct({ mobile }) {
         modules={[Navigation]}
         className="swipper-category"
       >
-        {categoryItems.map((item, key) => (
+        {categories.map((item, key) => (
           <SwiperSlide
             key={key}
             className="group mb-2 flex cursor-pointer flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary"
           >
-            <Image src={item.image} width="400" height="300" alt="" className="w-full" />
+            <Image src={mediaPath("categories",item.image)} width="400" height="300" alt="" className="w-full" />
             <div className="pb-5 pt-4 text-center font-poppins tracking-wider text-slate-700 group-hover:bg-primary group-hover:text-white">
-              {item.title}
+              {item.category_name}
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
     </section>
-  );
-}
-
-function FooterMemo() {
-  return (
-    <footer className="relative flex gap-x-4 bg-black pt-20 pb-28 md:px-5">
-      <div className={cn("flex lg:flex-row flex-col lg:gap-y-0 gap-y-8 justify-between w-full lg:px-0 px-4", container)}>
-        <FooterLogo />
-        <FooterContactItem />
-        <FooterSocialMedia />
-        <FooterCopyright />
-      </div>
-    </footer>
-  );
-}
-const Footer = memo(FooterMemo);
-
-function FooterLogo() {
-  return (
-    <div className="flex flex-col lg:items-center lg:justify-center">
-      <span>
-        <Image src="/img/logo.png" width="80" height="80" alt="" />
-      </span>
-      <span className="text-lg tracking-widest text-white mt-3">AL - HIJRA</span>
-      <span className="text-gray-50 text-sm">Ibadah Semakin Nyaman</span>
-    </div>
-  );
-}
-function FooterContactItem() {
-  return (
-    <div className="flex flex-col gap-y-3 text-white">
-      <FooterTitleItem title="Contact" />
-      <div className="flex flex-col gap-y-2">
-        <FooterContentItem
-          icon={<HiOutlineLocationMarker />}
-          text="Jl. Saluyu indah 10 no.9h"
-        />
-        <FooterContentItem icon={<AiOutlinePhone />} text="021 2329 98392" />
-        <FooterContentItem icon={<AiOutlineWhatsApp />} text="0888 753 708" />
-        <FooterContentItem
-          icon={<AiOutlineMail />}
-          text="alhijra.carpet@mail.com"
-        />
-      </div>
-    </div>
-  );
-}
-
-function FooterTitleItem({ title }) {
-  return <div className="text-2xl lg:text-3xl font-cinzel ">{title}</div>
-}
-
-function FooterContentItem({ icon, text}) {
-  return <div className="flex gap-x-2 items-center">
-    {icon}
-    <div>{text}</div>
-   </div>
-}
-
-function FooterSocialMedia() {
-  return (
-    <div className="flex flex-col gap-y-3 text-white">
-      <FooterTitleItem title="Social Media" />
-      <div className="flex flex-col gap-y-2">
-        <FooterContentItem icon={<AiOutlineInstagram />} text="Instagram" />
-        <FooterContentItem icon={<BsFacebook />} text="Facebook" />
-        <FooterContentItem icon={<BiLogoTiktok />} text="Tiktok" />
-      </div>
-    </div>
-  );
-}
-
-function FooterCopyright() {
-  const currentYear = new Date().getFullYear();
-  return (
-    <div className="absolute text-center bottom-0 left-0 right-0 h-11 border-t-[0.1px] border-gray-600">
-      <div className={cn(container, "flex h-full items-center justify-center text-white text-sm")}>
-        Copyright &copy; {currentYear} | All Rights Reserved
-      </div>
-    </div>
   );
 }

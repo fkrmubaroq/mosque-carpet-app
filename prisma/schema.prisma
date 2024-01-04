@@ -11,6 +11,7 @@ datasource db {
 model Category {
   id            Int       @id @unique @default(autoincrement()) @db.UnsignedInt
   category_name String    @db.VarChar(100)
+  image         String?   @db.VarChar(255)
   product       Product[]
 
   @@map("category")
@@ -92,4 +93,12 @@ model FileManager {
 enum TYPE_MANAGER {
   FILE
   FOLDER
+}
+
+model sections {
+  id           Int    @id @default(autoincrement()) @db.UnsignedInt
+  section_name String @db.VarChar(100)
+  content      String @db.LongText()
+  position     Int    @db.TinyInt()
+  active       Active @default(Y)
 }
