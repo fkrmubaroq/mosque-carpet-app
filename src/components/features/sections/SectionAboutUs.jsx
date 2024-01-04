@@ -2,10 +2,25 @@ import { MARGIN_EACH_SECTION } from "@/lib/constant";
 import cn from "classnames";
 import Image from "next/image";
 import { memo } from "react";
+import ContentEditable from "react-contenteditable";
 import SectionTitle from "./Fragment/SectionTitle";
+import ToolboxImage from "./Fragment/ToolboxImage";
 
 
-function SectionAboutUsMemo({ content }) {
+function SectionAboutUsMemo({ section, edit, onUpdateContent }) {
+  const content = section?.content || {};
+
+  const onUpdate = (name, value) => {
+    onUpdateContent({
+      ...section,
+      content: {
+        ...section.content,
+        [name]: value
+      }
+    })
+  }
+
+
   return (
     <section
       className={cn(
@@ -16,21 +31,26 @@ function SectionAboutUsMemo({ content }) {
       <div className="lg:pr-40">
         <SectionTitle
           context={content?.heading || ""}
-          title={
-            <>
-              {content?.title || ""}
-            </>
-          }
+          title={content?.title || ""}
+          onUpdateContent={onUpdate}
+          edit={edit}
         />
 
-        <div className="mb-5 font-poppins text-lg tracking-wide text-gray-500 lg:mb-0">
-          {content?.text || ""}
-        </div>
+        {edit ? <ContentEditable
+          html={content?.text}
+          className="mb-5 font-poppins text-lg tracking-wide text-gray-500 lg:mb-0 section-mode-edit"
+          onChange={(e) => onUpdate("text", e.target.value)}
+        /> :
+          <div className="mb-5 font-poppins text-lg tracking-wide text-gray-500 lg:mb-0">
+            {content?.text || ""}
+          </div>
+        }
       </div>
 
-      <div className="relative lg:min-w-[500px] ">
-        <div className="shadow-sm">
-          {content?.image &&
+      <div className="relative shrink-0 flex justify-center w-[500px] group">
+        {edit && <ToolboxImage name="image" onUpdateContent={onUpdate} className="group-hover:block hidden"/>}
+        {content?.image &&
+          <div className={cn({ "section-mode-edit p-1": edit })}>
             <Image
               className="rounded-lg"
               src={content?.image}
@@ -38,8 +58,8 @@ function SectionAboutUsMemo({ content }) {
               height="300"
               alt=""
             />
+          </div>
           }
-        </div>
       </div>
     </section>
   );

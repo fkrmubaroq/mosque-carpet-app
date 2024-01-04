@@ -210,7 +210,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
               "lg:mb-24 lg:w-full lg:max-w-[750px] lg:px-0 lg:text-2xl",
               "text-xl font-light tracking-wider text-white",
               "relative mx-auto mb-6 max-w-[450px] px-3 text-center font-poppins ",
-              "section-mode-edit outline-none"
+              "section-mode-edit"
             )}
             onChange={(e) => {
               const value = e.target.value;

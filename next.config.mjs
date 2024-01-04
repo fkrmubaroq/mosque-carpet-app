@@ -16,6 +16,9 @@ const config = {
     fiber: false,
     includePaths: [path.join(__dirname, 'styles')],
   },
+  images: {
+    domains: ["localhost"]
+  },
 }
 
 export default config;

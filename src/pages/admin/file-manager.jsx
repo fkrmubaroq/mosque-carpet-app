@@ -326,10 +326,10 @@ function File({
   onPreviewFile,
   onCopySource,
 }) {
-  const [opened, setOpened] = useState<boolean>(false);
-  const fileRef = useRef<HTMLDivElement>(null);
-  const editInputRef = useRef<HTMLInputElement>(null);
-  const [edit, setEdit] = useState<string>(data.name);
+  const [opened, setOpened] = useState(false);
+  const fileRef = useRef(null);
+  const editInputRef = useRef(null);
+  const [edit, setEdit] = useState(data.name);
 
   useOnClickOutside(fileRef, () => {
     if (!opened) return;

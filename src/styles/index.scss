@@ -40,8 +40,15 @@ body {
 }
 
 .section-mode-edit{
+  @apply outline-none relative;
   &:hover{
     @apply border-2 border-blue-600 cursor-text;
+    .section-mode-edit__image{
+      @apply absolute;
+    }
+  }
+  .section-mode-edit__image{
+   @apply hidden;
   }
 }
 .section-mode-edit:has(input){
