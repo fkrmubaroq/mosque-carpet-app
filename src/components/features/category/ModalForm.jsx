@@ -10,6 +10,7 @@ import {
   ModalBody,
   ModalHeader
 } from "@/components/ui/modal";
+import Image from "next/image";
 import { useRef, useState } from "react";
 
 const titleType = {
@@ -42,6 +43,9 @@ export default function ModalForm({
     if (!valid) return;
 
     setValidated(false);
+    if (!form.image?.name) {
+      delete form.image;
+    }
     onSave(form);
   };
   return (
@@ -55,6 +59,17 @@ export default function ModalForm({
       <ModalBody>
         <Form ref={formRef} validated={validated} onSubmit={onSubmitForm}>
           <div className="flex flex-col gap-y-3">
+          <ContainerInput>
+            <Label>Nama Kategori</Label>
+            <Input
+              required
+              invalid="Kategori produk wajib diisi"
+              name="category_name"
+              placeholder="Kategori"
+              value={form.category_name}
+              onChange={onChange}
+            />
+          </ContainerInput>
           <ContainerInput>
             <Label>Gambar</Label>
             <UploadFile
@@ -74,20 +89,16 @@ export default function ModalForm({
             />
             {type === "edit" && form.image && <div className="flex flex-col items-center gap-y-2 mt-3">
               <Label>Gambar sebelumnya</Label>
-              <div>{<Image src={`/api/files/products/${prevImage}`} width={110} height={110} className="rounded-md" alt="" />}</div>
+                <div>
+                {
+                  data?.image
+                  ? <Image src={`/api/files/categories/${data.image}`} width={110} height={110} className="rounded-md" alt="" />
+                  : <></>
+                }
+                </div>
             </div>}
           </ContainerInput>
-          <ContainerInput>
-            <Label>Nama Kategori</Label>
-            <Input
-              required
-              invalid="Kategori produk wajib diisi"
-              name="category_name"
-              placeholder="Kategori"
-              value={form.category_name}
-              onChange={onChange}
-            />
-            </ContainerInput>
+        
           </div>
           <div className="flex justify-end gap-x-2 mt-3">
             <Button

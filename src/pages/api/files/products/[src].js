@@ -8,7 +8,6 @@ export default function handler(req, res) {
     return;
   }
   const pathFile = `${DIR_FILE_PRODUCTS}/${src}`;
-  console.log("path ", pathFile);
   
   const img = fs.readFileSync(pathFile);
   res.writeHead(200, {'ContentType': "*" });

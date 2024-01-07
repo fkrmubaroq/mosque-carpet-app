@@ -23,7 +23,6 @@ export default function ModalUploadFile({ onUpload, onHide }) {
             "image/gif",
           ]}
           onChange={(files, next) => {
-            console.log("inchange ", files);
             next && next(files);
             if (!files) return;
             setSelectedFile(files);

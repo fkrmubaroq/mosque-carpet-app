@@ -2,7 +2,7 @@ import { responseErrorMessage } from '@/errors/response-error';
 import { DIR_FILE_CATEGORY, OFFSET } from '@/lib/constant';
 import { STATUS_MESSAGE_ENUM } from '@/lib/enum';
 import { prismaClient } from '@/lib/prisma';
-import { incomingRequest } from '@/lib/utils';
+import { createFile, incomingRequest, unlinkFile } from '@/lib/utils';
 import { insertCategoryValidation, updateCategoryValidation } from '@/validation/category-validation';
 import { validation } from '@/validation/validation';
 import fs from "fs";
@@ -28,6 +28,7 @@ async function get(req, res) {
     let filters = {};
     const page = query?.page ? +query.page : 1;
     const skip = (page - 1) * OFFSET;
+
     if (query?.name) {
       filters = {
         where: {
@@ -44,7 +45,7 @@ async function get(req, res) {
         id: "desc"
       },
       skip,
-      take: OFFSET
+      take: +(query?.limit) || OFFSET
     });
 
     const paginationInfo = await prismaClient.category.count({
@@ -97,12 +98,35 @@ async function post(req, res) {
 } 
 async function put(req, res) {
   try { 
-    const { id, category_name } = validation(updateCategoryValidation, req.body);
+    const multipartyForm = new multiparty.Form();
+    const { files, ...body } = await incomingRequest(multipartyForm, req);
+
+    const { id, ...validateRequest } = validation(updateCategoryValidation, body);
+
+    const updateData = { ...validateRequest };
+
+    if (Object.keys(files).length) {
+      const fileName = `${uuid().toString()}_${files?.image?.originalFilename}`;
+      updateData.image = fileName;
+      const prevImage = await prismaClient.category.findFirst({
+        where: {
+          id
+        },
+      });
+
+
+      // when prev image is available, then unlink file and 
+      if (prevImage) {
+        const destinationFileUnlink = `${DIR_FILE_CATEGORY}/${prevImage.image}`;
+        await unlinkFile(destinationFileUnlink);
+      }
+      const destinationCreateFile = `${DIR_FILE_CATEGORY}/${fileName}`;
+      await createFile(files.image.path, destinationCreateFile);
+
+    }
 
     const data = await prismaClient.category.update({
-      data: {
-        category_name: category_name
-      },
+      data: updateData,
       where: {
         id:+id
       }

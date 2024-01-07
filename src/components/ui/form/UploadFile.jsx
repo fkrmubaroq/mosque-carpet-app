@@ -42,7 +42,6 @@ const UploadFile = ({
   const validationFile = (file) => {
     if (maxFileSizeMb) {
       const sizeMB = file.size / (1024 * 1024);
-      console.log("sizemb", sizeMB, maxFileSizeMb)
       if (sizeMB > maxFileSizeMb) {
         setError(`File melebihi ukuran maksimum ${maxFileSizeMb} MB`);
         return false;
@@ -112,9 +111,7 @@ const UploadFile = ({
       }
     }
 
-    console.log("files", files);
     onChange && onChange(files, (files) => {
-      console.log("fileee ", files);
       setSelectedFile(files)
     });
   };

@@ -16,3 +16,13 @@ export const adminCategoryQuery = {
 export const adminFileManagerQuery = {
   getFIleItems: (path) => ["admin","file-manager", path]
 }
+
+export const landingPageQuery = {
+  getCategories: ["lp", "category"]
+}
+export const collectionsQuery = {
+  getCategories: ["collections"]
+}
+export const productsCategoryQuery = {
+  getProducts: ["products-category"]
+}

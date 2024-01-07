@@ -1,12 +1,43 @@
 import { Button } from "@/components/ui/button";
 import { CONTAINER_LP, MARGIN_EACH_SECTION } from "@/lib/constant";
 import cn from "classnames";
+import { useState } from "react";
+import ContentEditable from "react-contenteditable";
 import {
   AiOutlineWhatsApp
 } from "react-icons/ai";
+import ModalContactLink from "./Fragment/ModalContactLink";
 
-export default function SectionContactUs({ mobile=false, content }) {
+const initModal = Object.freeze({
+  show: false,
+})
+export default function SectionContactUs({ mobile = false, edit, section, onUpdateContent }) {
+  const content = section?.content || {};
+  const [modal, setModal] = useState(initModal);
+
+  const onUpdate = (name, value) => {
+    onUpdateContent({
+      ...section,
+      content: {
+        ...section.content,
+        [name]: value
+      }
+    });
+  }
   return (
+  <>
+      {
+        edit && modal.show &&
+        <ModalContactLink
+          data={modal.data}
+          show={modal.show}
+          onHide={() => setModal(initModal)}
+          onUpdateContent={(name, value) => {
+            onUpdate(name, value);
+            setModal(initModal);
+          }}
+        />
+      }
     <section className={cn("h-[440px]", MARGIN_EACH_SECTION)}>
       <div
         className="absolute left-0 h-[440px] w-full bg-bottom object-cover"
@@ -30,20 +61,51 @@ export default function SectionContactUs({ mobile=false, content }) {
           )}
         >
           <div className="px-4 lg:px-0">
-            {content?.title &&
+            {
+              edit ?
+              <ContentEditable
+                className="mb-4 font-cinzel text-2xl leading-normal text-white lg:max-w-[700px] lg:text-5xl section-mode-edit"
+                html={content?.title}
+                onChange={(e) => onUpdate("title", e.target.value)}
+              /> : 
+              content?.title &&
               <div className="mb-4 font-cinzel text-2xl leading-normal text-white lg:max-w-[700px] lg:text-5xl">
                 {content.title}
-              </div>
+              </div>            
             }
 
-            {content?.text &&
+            {
+              edit ? 
+                <ContentEditable
+                tagName="span"
+                className="text-lg tracking-wider text-white section-mode-edit"
+                html={content?.text}
+                onChange={(e) => onUpdate("text", e.target.value)}
+              />
+              :
+              content?.text &&
               <span className="text-lg tracking-wider text-white">
                 {content?.text}
               </span>
             }
             <div className="mt-4">
-              <Button className="flex items-center justify-center gap-x-2 !rounded-none !p-5 text-sm text-white lg:!p-7 lg:text-lg"
-                onClick={() => content.contact_link && window.open(content.contact_link)}>
+              <Button
+                  className={cn("flex items-center justify-center gap-x-2 !rounded-none !p-5 text-sm text-white lg:!p-7 lg:text-lg",
+                    {
+                      "section-mode-edit": edit
+                    })}
+                onClick={() => {
+                  if (!edit) { 
+                    content.contact_link && window.open(content.contact_link)
+                    return;
+                  }
+
+                  setModal({
+                    show: true,
+                    data: content?.contact_link
+                  })
+                }}
+              >
                 <AiOutlineWhatsApp size={mobile.mobileMd ? 20 : 22} />
                 <span>CONTACT US NOW</span>
               </Button>
@@ -51,6 +113,7 @@ export default function SectionContactUs({ mobile=false, content }) {
           </div>
         </div>
       </div>
-    </section>
+      </section>
+    </>
   );
 }

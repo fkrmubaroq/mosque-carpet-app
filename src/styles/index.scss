@@ -40,8 +40,8 @@ body {
 }
 
 .section-mode-edit{
-  @apply outline-none relative;
-  &:hover{
+  @apply outline-none relative p-0.5;
+  &:hover, &:focus{
     @apply border-2 border-blue-600 cursor-text;
     .section-mode-edit__image{
       @apply absolute;
@@ -53,4 +53,9 @@ body {
 }
 .section-mode-edit:has(input){
     @apply border-2 border-blue-600;
+}
+.image-full-width{
+  img{
+    width: 100%;
+  }
 }

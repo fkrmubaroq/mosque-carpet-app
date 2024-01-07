@@ -1,20 +1,9 @@
+import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/form/input";
 import { CONTAINER_LP } from "@/lib/constant";
-import { useEditSection } from "@/lib/hookStore";
 import cn from "classnames";
-import dynamic from "next/dynamic";
-import Image from "next/image";
-import Router from "next/router";
-import { useRef, useState } from "react";
 import ContentEditable from "react-contenteditable";
-import {
-  AiOutlineClose
-} from "react-icons/ai";
-import { RxHamburgerMenu } from "react-icons/rx";
-import { useShallow } from "zustand/react/shallow";
-
-const Portal = dynamic(import("@/components/ui/portal").then((module) => module.default), { ssr: false });
+import ToolboxImage from "./Fragment/Toolbox/ToolboxImage";
 
 function HeroCard({
   title,
@@ -58,117 +47,20 @@ function HeroCard({
     </div>
   );
 }
-function NavigationHeader({ onUpdateContent, edit = false, menus }) {
-  const [isEditing, setIsEditing, editingIndex] = useEditSection(useShallow(state => [state.isEditing, state.setIsEditing, state.editingIndex]));
-  const inputRef = useRef();
-  
-  return (
-    <nav className="flex h-16 list-none items-center justify-center gap-x-5 text-lg font-light tracking-wide text-white">
-      {menus.map((item, key) => (
-        <li className={cn("cursor-pointer h-10 flex items-center px-2", {
-          "section-mode-edit": edit,
-        })} key={key} onClick={(e) => {
-          if (item.link && !edit) {
-            Router.push(item.link);
-            return;
-          }
-          if (edit) {
-            setIsEditing(true, key);
-            if (!inputRef.current) return;
-            inputRef.current.select();
-          }
-          }}>
-          {isEditing && editingIndex >= 0 && editingIndex === key ?
-            <Input
-              ref={inputRef}
-              className="!bg-transparent !h-10 hover:bg-transparent !border-none focus:!ring-0 !text-lg !w-auto"
-              value={item.menu}
-              onChange={(e) => onUpdateContent({ index: key, value: e.target.value })}
-              onKeyUp={(e) => {
-                if (e.key === "Enter") {
-                  onUpdateContent({ index: key, value: e.target.value });
-                  setIsEditing(false, null);
-                }
-              }}
-            /> : item.menu}
-        </li>
-      ))}
-    </nav>
-  );
-}
-function MobileNavigationHeader({ menus }) {
-  const [isOpen, setIsOpen] = useState(false);
-  return (
-    <div>
-      <div className="h-11 w-11 flex justify-center items-center cursor-pointer" onClick={() => setIsOpen(true)}>
-        <RxHamburgerMenu color="white" size={30} />
-      </div>
 
-      <Portal>
-        <div className={cn("inset-0 bg-black absolute opacity-40", { "hidden": !isOpen })} onClick={() => setIsOpen(false)}></div>
-        <div
-          className={cn(
-            "absolute left-0 right-0 bg-white p-5 transition-all duration-300 z-50",
-            {
-              "-top-[1000px]": !isOpen,
-              "top-0": isOpen,
-            }
-          )}
-        >
-          <div
-            className="absolute right-6 top-5 cursor-pointer flex h-8 w-8 justify-center text-lg text-black"
-            onClick={() => setIsOpen(false)}
-          >
-            <AiOutlineClose size={25} />
-          </div>
-          <div className="flex flex-col items-center justify-center gap-y-5">
-            <div className="flex flex-col items-center gap-y-1">
-              <Image src="/img/logo-black.png" width="50" height="50" alt="" />
-              <span className="text-lg font-semibold tracking-wide text-black">
-                AL - HIJRA
-              </span>
-            </div>
-            <div className="mb-6 flex flex-col gap-y-8">
-              {menus.map((item, key) => (
-                <div className="flex justify-center" key={key} onClick={() => item.link && Router.push(item.link)}>
-                  {item.menu}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </Portal>
-    </div>
-  );
-}
-
-function Header({ edit, mobile, menus, onUpdateContent }) {
-  return (
-    <header className="absolute left-0 right-0 z-50 px-3 lg:px-0">
-      <div className={cn("mt-4 flex items-center justify-between", CONTAINER_LP)}>
-        <div className="flex items-center justify-center gap-x-3">
-          <Image src="/img/logo.png" width="36" height="36" alt="" />
-          <span className="text-lg text-white">Al-Hijra</span>
-        </div>
-        {mobile.mobileMd || mobile.mobileSm ? (
-          <MobileNavigationHeader edit={edit} menus={menus} />
-        ) : (
-          <NavigationHeader edit={edit} menus={menus} onUpdateContent={onUpdateContent} />
-        )}
-      </div>
-    </header>
-  );
-}
 
 export default function SectionHero({ edit, mobile = false, section, onUpdateContent }) {
   const content = section?.content || {};
-  const [isEditing, setIsEditing, editingIndex,] = useEditSection(useShallow(state => [state.isEditing, state.setIsEditing, state.editingIndex]));
   const onUpdateMenu = ({ index, value }) => {
     const dataMenu = structuredClone(content.menus);
-    dataMenu.splice(index, 1, {
+    let data = {
       ...dataMenu[index],
-      menu: value
-    })    
+      text: value
+    };
+    if (typeof value === 'object' && !Array.isArray(value)) {
+      data = value
+    }
+    dataMenu.splice(index, 1, data)    
     onUpdateContent({
       ...section,
       content: {
@@ -177,24 +69,47 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
       }
     });
   }
+
+  const onUpdateImage = (name, value) => onUpdateContent({
+    ...section,
+    content: {
+      ...section.content,
+      [name]: value
+    }
+  })
+
   return (
-    <section className="h-[500px] w-full lg:mb-20 lg:h-[700px]">
+    <section className="h-[600px] w-full lg:mb-20 lg:h-[700px]">
       <Header
         edit={edit}
         mobile={mobile}
+        content={content}
         menus={content?.menus || []}
-        onUpdateContent={onUpdateMenu} />
+        onUpdateContent={onUpdateMenu}
+        onUpdateLogo={onUpdateImage}
+      />
       <div
         className={cn(
-          "absolute h-[500px] w-full bg-black bg-center object-cover lg:h-[700px]"
+          "absolute h-[600px] group w-full bg-black bg-center object-cover lg:h-[700px]",
         )}
         style={{
-          backgroundImage: `url('${content?.image}')`,
+          backgroundImage: `url('${content?.banner}')`,
           backgroundRepeat: "no-repeat",
           backgroundSize: `100% ${mobile?.mobileSm ? "100%" : ""}`,
         }}
       >
-        <div className={cn("pt-28 lg:pt-48", CONTAINER_LP)}>
+        <div className={cn("pt-28 lg:pt-48 relative", CONTAINER_LP)}>
+          {
+            edit &&
+            <ToolboxImage
+              value={content?.banner}
+              name="banner"
+              position="bottomRight"
+              onUpdateContent={onUpdateImage}
+              text="Ganti Banner"
+              className="-bottom-20 !-right-3 cursor-pointer w-[130px]"
+            />
+          }
           <div
             className="absolute inset-0"
             style={{
@@ -237,7 +152,6 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
             <HeroCard
               edit={edit}
               onUpdateContent={(name, value) => {
-                console.log(name, value)
                 onUpdateContent({
                   ...section,
                   content: {

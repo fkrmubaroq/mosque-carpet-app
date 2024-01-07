@@ -10,3 +10,4 @@ const updateCategoryValidation = Joi.object({
 });
 
 export { insertCategoryValidation, updateCategoryValidation };
+  

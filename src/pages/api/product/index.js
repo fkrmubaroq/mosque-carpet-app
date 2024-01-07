@@ -2,7 +2,7 @@ import { responseErrorMessage, responseNotFound } from '@/errors/response-error'
 import { DIR_FILE_PRODUCTS, OFFSET } from '@/lib/constant';
 import { STATUS_MESSAGE_ENUM } from '@/lib/enum';
 import { prismaClient } from '@/lib/prisma';
-import { incomingRequest, unlinkFile } from '@/lib/utils';
+import { createFile, incomingRequest, unlinkFile } from '@/lib/utils';
 import { insertProductValidation, updateProductValidation } from '@/validation/product-validation';
 import { validation } from '@/validation/validation';
 import fs from "fs";
@@ -25,10 +25,6 @@ export default function handler(req, res) {
   responseNotFound(res);
 }
 
-async function createFile(src, destination) {
-  const contentData = await fs.promises.readFile(src);
-  await fs.promises.writeFile(destination, contentData);
-}
 
 async function put(req, res) {
   try {  
@@ -40,7 +36,6 @@ async function put(req, res) {
     }
     const { id, ...validateRequest } = validation(updateProductValidation, request);
     const updateData = { ...validateRequest };
-    console.log("update ", updateData);
     if (Object.keys(files).length) {
       const fileName = `${uuid().toString()}_${files?.image?.originalFilename}`;
       updateData.image = fileName;

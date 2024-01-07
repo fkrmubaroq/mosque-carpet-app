@@ -16,6 +16,9 @@ export function updateProduct(payload) {
 export function getAllProduct(params) {
   return getMethod("product", { params });
 }
+export function getProductByCategory(categoryName) {
+  return getMethod(`product/category/${categoryName}`);
+}
 
 export function deleteProduct(productId) {
   return deleteMethod(`product/${productId}`);

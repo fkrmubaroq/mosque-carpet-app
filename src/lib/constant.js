@@ -96,6 +96,32 @@ export const INIT_SECTIONS = [
       "text": "",
       "contact_link": ""
     }
+  },
+  {
+    "section_name": "section_footer",
+    "content": {
+      "logo_text": "AL-HIJRA",
+      "tagline": "Ibadah Semakin nyaman",
+      "contact": {
+        "address": [
+          {
+            "link": "https://map",
+            "text": "Jln Saluyu Indah"
+          },
+          {
+            "link": "https://map",
+            "text": "Jln Antapani"
+          }
+        ],
+        "phone_wa": "088828372",
+        "email": "alhijra@carpet.com",
+        "social_media": {
+          "instagram": "https://instagram/",
+          "facebook": "https://facebook/",
+          "tiktok": "https://tiktok/",
+        }
+      },
+    }
   }
 ]
 

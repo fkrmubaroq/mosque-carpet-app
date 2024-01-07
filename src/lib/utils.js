@@ -136,6 +136,11 @@ export async function unlinkFile(src) {
   });
 }
 
+export async function createFile(src, destination) {
+  const contentData = await fs.promises.readFile(src);
+  await fs.promises.writeFile(destination, contentData);
+}
+
 export function objectIntoFormData(payload) {
   const form = new FormData();
   for (const key in payload) {
@@ -146,6 +151,7 @@ export function objectIntoFormData(payload) {
 }
 
 export function mediaPath(dir, fileName) {
+  console.log("media ", `${DIR_ACCESS_FILE}/${dir}/${fileName}`);
   return `${DIR_ACCESS_FILE}/${dir}/${fileName}`
 }
 

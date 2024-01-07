@@ -24,38 +24,19 @@ export async function getServerSideProps() {
 
 export default function Section({ sections }) {
   const [
-    isEditing,
-    setIsEditing,
-    editingIndex,
     setSectionsLp,
     sectionsLp
   ] = useEditSection(useShallow(state => [
-    state.isEditing,
-    state.setIsEditing,
-    state.editingIndex,
     state.setSectionsLp,
     state.sectionsLp
   ]));
   useEffect(() => {
-    console.log("Sections ", sections);
     const parsedSections = sections.map(section => {
       const parsedContent = JSON.parse(section.content || "{}");
       return { ...section, content: parsedContent };
     })
     setSectionsLp(parsedSections);
 
-    const clickOutside = (e) => {
-      console.log("e ", e);
-      const sectionModeEdit = "section-mode-edit";
-
-      if (e.target.closest(`.${sectionModeEdit}`) || e.target.classList.contains(sectionModeEdit)) return;
-      setIsEditing(false, null);
-      
-    }
-    document.addEventListener("click", clickOutside);
-    return () => {
-      document.removeEventListener("click", clickOutside);
-    }
   }, []);
 
   const onUpdateContent = (updatedSection, keyUpdate) => {
@@ -67,8 +48,7 @@ export default function Section({ sections }) {
     )
   }
 
-  console.log("sectionLp ", sectionsLp);
-
+  console.log("section, ", sectionsLp);
   return <Layout title="Sections">
     <div className="flex flex-col gap-y-3 relative">
       {sectionsLp?.map((section, key) => <SectionContainer

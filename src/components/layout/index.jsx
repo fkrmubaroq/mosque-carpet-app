@@ -1,3 +1,6 @@
+import { updateSections } from "@/lib/api/section";
+import { useEditSection } from "@/lib/hookStore";
+import { useMutation } from "@tanstack/react-query";
 import cn from "classnames";
 import Image from "next/image";
 import Router, { useRouter } from "next/router";
@@ -5,11 +8,14 @@ import { useEffect, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { BiHomeAlt } from "react-icons/bi";
 import { CiBoxList, CiBoxes } from "react-icons/ci";
+import { IoIosGlobe } from "react-icons/io";
 import { MdOutlineAccountCircle, MdOutlineArticle } from "react-icons/md";
 import { PiDotsThreeLight } from "react-icons/pi";
 import { RxHamburgerMenu, RxSection } from "react-icons/rx";
 import { TfiPackage } from "react-icons/tfi";
 import { VscFolderLibrary } from "react-icons/vsc";
+import { SpinnerIcon } from "../ui/Spinner";
+import { Button } from "../ui/button";
 import style from "./layout.module.scss";
 
 const sidebarMenus = [
@@ -72,16 +78,31 @@ const sidebarMenus = [
 export function Layout({ children, customTitle, title, classNameTitle }) {
   const [expand, setExpand] = useState(true);
   const route = useRouter();
-
+  const sectionsLp = useEditSection(state => state.sectionsLp);
+  const isSectionPage = route.pathname === "/admin/section";
   useEffect(() => {
     if (route.pathname === "/admin/section") {
       setExpand(false);
     }
-  },[])
+  }, []);
+
+  const { mutate: mutateUpdateSection, isLoading } = useMutation({
+    mutationFn: updateSections
+  })
+  const onPublish = () => {
+    const sections = sectionsLp.map(section => ({ ...section, content: JSON.stringify(section.content) }));
+    mutateUpdateSection({
+      sections
+    });
+  }
 
   return (
     <div className={cn(style["layout"], { [style["expanded"]]: expand })}>
-      <div className={style["header"]}>
+      <div className={cn(style["header"], {
+        "fixed bg-white z-[9999] right-0": isSectionPage,
+        "left-[270px]": isSectionPage && expand,
+        "left-[75px]": isSectionPage && !expand,
+      })}>
         <div className="flex items-center gap-x-2">
           <div
             onClick={() => setExpand((e) => !e)}
@@ -96,6 +117,28 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
             </div>
           }
         </div>
+
+        {isSectionPage && <div className="flex gap-x-2">
+          <Button
+            onClick={() => window.open(window.location.origin)}
+            variant="ghost"
+            className="border border-gray-600 gap-x-2 flex items-center justify-center !rounded-full">
+            <IoIosGlobe size={20}/>
+            <span >Website</span>
+          </Button>
+          <Button
+            isLoading={isLoading}
+            className="!rounded-full"
+            size="lg"
+            onClick={() => onPublish()}
+          >
+            {isLoading ? (
+              <SpinnerIcon width="w-4" height="h-4" />
+            ) : (
+              "Publish"
+            )}
+          </Button>
+        </div>}
         <div className="group flex items-center gap-x-2 rounded-lg px-3 pb-3 pt-2 hover:bg-primary  hover:text-white">
           <MdOutlineAccountCircle
             size={33}

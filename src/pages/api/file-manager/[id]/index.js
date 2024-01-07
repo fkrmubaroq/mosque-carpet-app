@@ -45,7 +45,6 @@ export default async function handler(req, res) {
     const path = deleteFolder.path;
     const src = `${DIR_FILE_UPLOAD}${path}${folderName}`
 
-    console.log(src);
     deleteFolderAsync(src, { recursive: true , force: true });
     
     const listIds = findByPath.map(item => item.id);

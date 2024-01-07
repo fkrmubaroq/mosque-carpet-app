@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { debounce } from "./utils";
 
 export function useOnClickOutside(ref, handler) {
   useEffect(
@@ -19,6 +20,35 @@ export function useOnClickOutside(ref, handler) {
   );
 }
 
+export function useMobile() {
+  const [mobileMd, setMobileMdWidth] = useState(false);
+  const [mobileSm, setMobileSm] = useState(false);
+  const mobile = {
+    mobileMd,
+    mobileSm,
+  };
+
+  useEffect(() => {
+    const checkScreenWidth = () => {
+      const width = window.innerWidth;
+      const mobileMdWidth = width <= 968;
+      const mobileSmWidth = width <= 640;
+      if (mobileSmWidth) {
+        setMobileSm(true);
+        setMobileMdWidth(false);
+        return;
+      }
+      setMobileSm(false);
+      setMobileMdWidth(mobileMdWidth);
+    };
+    const debounceCheckScreenWidth = debounce(checkScreenWidth);
+    debounceCheckScreenWidth();
+    window.addEventListener("resize", debounceCheckScreenWidth);
+    return () => window.removeEventListener("resize", debounceCheckScreenWidth);
+  }, [mobile]);
+
+  return { mobileMd, mobileSm };
+}
 export function useToggle(initialState = false){
   const [state, setState] = useState(initialState);
   const toggle = useCallback(() => setState(state => !state), []);

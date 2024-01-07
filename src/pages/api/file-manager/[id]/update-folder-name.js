@@ -36,7 +36,6 @@ export default async function handler(req, res) {
         path: payload.path,
       }
     });
-    console.log("find ", findById);
 
     // if folder not found
     if (!findById) {
@@ -93,8 +92,6 @@ async function bulkUpdatePathStartWith({
       }
     })
 
-    console.log("findPathContainsOldFolder ", findPathContainsOldFolder);
-
     if (!findPathContainsOldFolder) return;
 
     const level = row.level;
@@ -111,7 +108,6 @@ function renameFolder(oldPath, newPath) {
   try {
     fs.renameSync(oldPath, newPath);
   } catch (e) {
-    console.log("e", e);
     throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.FailedToUpdateFolderName);
   }
 }

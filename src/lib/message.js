@@ -67,6 +67,11 @@ const ERROR_MESSAGE = {
   FailedToUploadFile: {
     code: 1105,
     message: "File gagal diupload"
+  },
+  // feature sections 1200 - 1299
+  SectionIsNull: {
+    code: 1200,
+    message: "Section tidak boleh kosong"
   }
 }
 

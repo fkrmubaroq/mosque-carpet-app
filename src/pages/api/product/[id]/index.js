@@ -27,7 +27,7 @@ async function deleteProduct(req, res) {
       const destinationFileUnlink = `${DIR_FILE_PRODUCTS}/${prevImage.image}`;
       await unlinkFile(destinationFileUnlink);
     }
-    await prismaClient.product.delete({
+    const deleteProduct = await prismaClient.product.delete({
       where: {
         id:+id
       }

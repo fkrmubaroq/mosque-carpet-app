@@ -121,7 +121,7 @@ export const getServerSideProps = async (
       category: true,
     },
   });
-  console.log("response ", response);
+
   return {
     props: {
       data: response,

@@ -142,7 +142,6 @@ function CompanyLocationItem({
 }) {
   
   const onChange = (e) => {
-    console.log("e target ", e.target.name, e.target.value);
     setCompanyLocation(state => { 
       return state.map((item, key) => {
         if (key === number - 1) return { ...item, [e.target.name]: e.target.value }

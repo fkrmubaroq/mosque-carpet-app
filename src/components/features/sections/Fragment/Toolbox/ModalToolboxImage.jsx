@@ -5,7 +5,7 @@ import { Modal, ModalBody, ModalHeader } from "@/components/ui/modal";
 import { Label } from "@radix-ui/react-label";
 import { useState } from "react";
 
-export default function ModalToolboxImage({ value, onHide, show, onUpdateContent }) {
+export default function ModalToolboxImage({ name, value, onHide, show, onUpdateContent }) {
   const [currentValue, setCurrentValue] = useState(value);
 
   return <Modal verticallyCentered className="w-[450px]" show={show} onHide={() => onHide && onHide()}>
@@ -23,7 +23,7 @@ export default function ModalToolboxImage({ value, onHide, show, onUpdateContent
       <Button
         className="w-full mt-3"
         onClick={() => {
-          onUpdateContent("image", currentValue);
+          onUpdateContent(name, currentValue);
         }}
       >
         Simpan

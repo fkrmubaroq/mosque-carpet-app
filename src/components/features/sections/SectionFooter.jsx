@@ -1,55 +1,136 @@
 import { CONTAINER_LP } from "@/lib/constant";
 import cn from "classnames";
 import Image from "next/image";
-import { memo } from "react";
+import { memo, useRef } from "react";
+import ContentEditable from "react-contenteditable";
 import {
   AiOutlineInstagram,
   AiOutlineMail,
-  AiOutlinePhone,
   AiOutlineWhatsApp
 } from "react-icons/ai";
 import { BiLogoTiktok } from "react-icons/bi";
 import { BsFacebook } from "react-icons/bs";
 import { HiOutlineLocationMarker } from "react-icons/hi";
+import ToolboxFooter from "./Fragment/Toolbox/ToolboxFooter";
+import ToolboxImage from "./Fragment/Toolbox/ToolboxImage";
 
-function FooterMemo() {
+function FooterMemo({ edit, section, onUpdateContent }) {
+  const content = section?.content || {};
+  const onUpdate = (name, value) => {
+    onUpdateContent({
+      ...section,
+      content: {
+        ...section.content,
+        [name]: value
+      }
+    });
+  }
+
+  const onUpdateContact = (name, value) => {
+    onUpdateContent({
+      ...section,
+      content: {
+        ...section.content,
+        contact: {
+          ...section.content.contact,
+          [name]: value
+        }
+      }
+    });
+  }
+
+  const onUpdateSocialMedia = (name, value) => {
+    onUpdateContent({
+      ...section,
+      content: {
+        ...section.content,
+        social_media: {
+          ...section.content.social_media,
+          [name]: value
+        }
+      }
+    });
+  }
+
   return (
     <footer className="relative flex gap-x-4 bg-black pt-20 pb-28 md:px-5">
       <div className={cn("flex lg:flex-row flex-col lg:gap-y-0 gap-y-8 justify-between w-full lg:px-0 px-4", CONTAINER_LP)}>
-        <FooterLogo />
-        <FooterContactItem />
-        <FooterSocialMedia />
+        <FooterLogo edit={edit} onUpdateContent={onUpdate} data={content} />
+        <FooterContactItem
+          edit={edit}
+          data={content.contact}
+          onUpdateContent={onUpdateContact}
+        />
+        <FooterSocialMedia edit={edit} onUpdateContent={onUpdateSocialMedia} data={content.social_media} />
         <FooterCopyright />
       </div>
     </footer>
   );
 }
 
-function FooterLogo() {
+function FooterLogo({ edit, onUpdateContent, data }) {
+  
   return (
     <div className="flex flex-col lg:items-center lg:justify-center">
-      <span>
-        <Image src="/img/logo.png" width="80" height="80" alt="" />
-      </span>
-      <span className="text-lg tracking-widest text-white mt-3">AL - HIJRA</span>
-      <span className="text-gray-50 text-sm">Ibadah Semakin Nyaman</span>
+      <div className={cn("relative", {
+        "section-mode-edit group" : edit
+      })}>
+        {edit && <ToolboxImage value={data?.logo} name="logo" onUpdateContent={onUpdateContent} className="group-hover:block hidden" />}
+        {data?.logo && <Image src={data?.logo} width="80" height="80" alt="" />}
+      </div>
+      {
+        edit ?
+        <ContentEditable
+          html={data.logo_text}
+          tagName="span"
+          className="text-lg tracking-widest text-white mt-3 section-mode-edit"
+          onChange={(e) => onUpdateContent("logo_text", e.target.value)}
+         /> :
+        <span className="text-lg tracking-widest text-white mt-3">{data.logo_text}</span>
+      }
+
+      {
+        edit ?
+          <ContentEditable
+            html={data.tagline}
+            tagName="span"
+            className="text-gray-50 text-sm section-mode-edit"
+            onChange={(e) => onUpdateContent("tagline", e.target.value)}
+          />
+          :
+          <span className="text-gray-50 text-sm">{data.tagline}</span>
+      }
     </div>
   );
 }
-function FooterContactItem() {
+function FooterContactItem({ data, edit, onUpdateContent }) {
   return (
     <div className="flex flex-col gap-y-3 text-white">
       <FooterTitleItem title="Contact" />
       <div className="flex flex-col gap-y-2">
         <FooterContentItem
           icon={<HiOutlineLocationMarker />}
-          text="Jl. Saluyu indah 10 no.9h"
+          text={data?.address?.text || ""}
+          data={data}
+          edit={edit}
+          name="address"
+          onUpdateContent={(value) => onUpdateContent("address", value)} 
         />
-        <FooterContentItem icon={<AiOutlinePhone />} text="021 2329 98392" />
-        <FooterContentItem icon={<AiOutlineWhatsApp />} text="0888 753 708" />
+        <FooterContentItem
+          icon={<AiOutlineWhatsApp />}
+          text={data?.phone_wa?.text || ""}
+          data={data}
+          edit={edit} 
+          name="phone_wa"
+          onUpdateContent={(value) => onUpdateContent("phone_wa", value)} 
+        />
         <FooterContentItem
           icon={<AiOutlineMail />}
-          text="alhijra.carpet@mail.com"
+          text={data?.email?.text || ""}
+          data={data}
+          edit={edit}
+          name="email"
+          onUpdateContent={(value) => onUpdateContent("email", value)} 
         />
       </div>
     </div>
@@ -60,21 +141,55 @@ function FooterTitleItem({ title }) {
   return <div className="text-2xl lg:text-3xl font-cinzel ">{title}</div>
 }
 
-function FooterContentItem({ icon, text }) {
-  return <div className="flex gap-x-2 items-center">
+function FooterContentItem({ name, data, icon, text, edit, onUpdateContent }) {
+  const contentRef = useRef();
+  return <div className="flex gap-x-2 items-center group" ref={contentRef}>
     {icon}
-    <div>{text}</div>
+    {edit ?
+      <div className="relative w-full">
+        <ContentEditable html={text} onChange={(e) => onUpdateContent({ ...data[name], text: e.target.value })} className="section-mode-edit peer" /> 
+        <ToolboxFooter
+          name={name}
+          data={data}
+          className="group-hover:block hidden peer-focus:block"
+          onUpdateContent={onUpdateContent}
+        />
+      </div>:
+      <div className="flex w-full">{text}</div>
+    }
   </div>
 }
 
-function FooterSocialMedia() {
+function FooterSocialMedia({ data, edit, onUpdateContent }) {
   return (
     <div className="flex flex-col gap-y-3 text-white">
       <FooterTitleItem title="Social Media" />
       <div className="flex flex-col gap-y-2">
-        <FooterContentItem icon={<AiOutlineInstagram />} text="Instagram" />
-        <FooterContentItem icon={<BsFacebook />} text="Facebook" />
-        <FooterContentItem icon={<BiLogoTiktok />} text="Tiktok" />
+        <FooterContentItem 
+          icon={<AiOutlineInstagram />}
+          text={data?.instagram?.text}
+          data={data}
+          edit={edit}
+          name="instagram"
+          onUpdateContent={(value) => onUpdateContent("instagram", value)} 
+        />
+        <FooterContentItem
+          icon={<BsFacebook />}
+          text={data?.facebook?.text}
+          data={data}
+          edit={edit}
+          name="facebook"
+          onUpdateContent={(value) => onUpdateContent("facebook", value)} 
+        />
+        <FooterContentItem
+          icon={<BiLogoTiktok />}
+          text={data?.tiktok?.text}
+          data={data}
+          edit={edit}
+          name="tiktok"
+          onUpdateContent={(value) => onUpdateContent("tiktok", value)} 
+
+        />
       </div>
     </div>
   );

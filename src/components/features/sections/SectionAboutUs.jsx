@@ -4,7 +4,7 @@ import Image from "next/image";
 import { memo } from "react";
 import ContentEditable from "react-contenteditable";
 import SectionTitle from "./Fragment/SectionTitle";
-import ToolboxImage from "./Fragment/ToolboxImage";
+import ToolboxImage from "./Fragment/Toolbox/ToolboxImage";
 
 
 function SectionAboutUsMemo({ section, edit, onUpdateContent }) {
@@ -47,8 +47,8 @@ function SectionAboutUsMemo({ section, edit, onUpdateContent }) {
         }
       </div>
 
-      <div className="relative shrink-0 flex justify-center w-[500px] group ">
-        {edit && <ToolboxImage name="image" onUpdateContent={onUpdate} className="group-hover:block hidden"/>}
+      <div className="relative shrink-0 flex justify-center w-full lg:w-[500px] group ">
+        {edit && <ToolboxImage value={content.image} name="image" onUpdateContent={onUpdate} className="group-hover:block hidden"/>}
         {content?.image &&
           <div className={cn({ "section-mode-edit p-1": edit })}>
             <Image

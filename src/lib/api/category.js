@@ -12,6 +12,7 @@ export function insertCategory(payload) {
 }
 
 export function updateCategory(payload) {
+  console.log("upda te ", payload);
   const formPayload = objectIntoFormData(payload);
   return putMethod("category", formPayload);
 }
