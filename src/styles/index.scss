@@ -59,3 +59,12 @@ body {
     width: 100%;
   }
 }
+
+.padding-container{
+  @apply px-5;
+  @media (min-width: 1280px) {
+    @apply px-32;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

@@ -14,8 +14,10 @@ import { PiDotsThreeLight } from "react-icons/pi";
 import { RxHamburgerMenu, RxSection } from "react-icons/rx";
 import { TfiPackage } from "react-icons/tfi";
 import { VscFolderLibrary } from "react-icons/vsc";
+import { useShallow } from "zustand/react/shallow";
 import { SpinnerIcon } from "../ui/Spinner";
 import { Button } from "../ui/button";
+import ToggleSwitch from "../ui/switch/toggle";
 import style from "./layout.module.scss";
 
 const sidebarMenus = [
@@ -78,7 +80,7 @@ const sidebarMenus = [
 export function Layout({ children, customTitle, title, classNameTitle }) {
   const [expand, setExpand] = useState(true);
   const route = useRouter();
-  const sectionsLp = useEditSection(state => state.sectionsLp);
+  const [sectionsLp, viewIdSection, setViewIdSection] = useEditSection(useShallow(state => [state.sectionsLp, state.viewIdSection, state.setViewIdSection]));
   const isSectionPage = route.pathname === "/admin/section";
   useEffect(() => {
     if (route.pathname === "/admin/section") {
@@ -99,7 +101,7 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
   return (
     <div className={cn(style["layout"], { [style["expanded"]]: expand })}>
       <div className={cn(style["header"], {
-        "fixed bg-white z-[9999] right-0": isSectionPage,
+        "fixed bg-white z-[99999] right-0 shadow-sm": isSectionPage,
         "left-[270px]": isSectionPage && expand,
         "left-[75px]": isSectionPage && !expand,
       })}>
@@ -139,19 +141,28 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
             )}
           </Button>
         </div>}
-        <div className="group flex items-center gap-x-2 rounded-lg px-3 pb-3 pt-2 hover:bg-primary  hover:text-white">
-          <MdOutlineAccountCircle
-            size={33}
-            className="opacity-50 group-hover:opacity-100"
-          />
-          <div className="flex flex-col gap-y-1">
-            <span className="text-sm font-semibold text-gray-500 group-hover:text-white">
-              Mrs. Dennis Schulist
-            </span>
-            <span className="text-xs text-gray-600 group-hover:text-white">
-              Admin
-            </span>
-          </div>
+        <div className="flex gap-x-5 items-center">
+          {isSectionPage && <div>
+            <ToggleSwitch
+              text="ID Section"
+              checked={viewIdSection}
+              onChange={(checked) => setViewIdSection(checked)}
+            />
+          </div>}
+          <div className="group flex items-center gap-x-2 rounded-lg px-3 pb-3 pt-2 hover:bg-primary  hover:text-white">
+            <MdOutlineAccountCircle
+              size={33}
+              className="opacity-50 group-hover:opacity-100"
+            />
+            <div className="flex flex-col gap-y-1">
+              <span className="text-sm font-semibold text-gray-500 group-hover:text-white">
+                Mrs. Dennis Schulist
+              </span>
+              <span className="text-xs text-gray-600 group-hover:text-white">
+                Admin
+              </span>
+            </div>
+            </div>
         </div>
       </div>
       <div className={style["sidebar"]}>

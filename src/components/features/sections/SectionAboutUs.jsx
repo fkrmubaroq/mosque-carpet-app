@@ -23,6 +23,7 @@ function SectionAboutUsMemo({ section, edit, onUpdateContent }) {
 
   return (
     <section
+      id="section_about_us"
       className={cn(
         "mb-16 flex flex-col items-center gap-x-3 pt-20 lg:flex-row",
         MARGIN_EACH_SECTION

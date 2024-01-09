@@ -33,7 +33,7 @@ export default function SectionOurProduct({ edit, mobile }) {
   });
 
   return (
-    <section className={MARGIN_EACH_SECTION}>
+    <section className={MARGIN_EACH_SECTION} id="section_categories">
       <div className="flex justify-between items-center">
         <div
           className="inline border-b text-lg border-b-green-600 font-cinzel tracking-wide"
@@ -48,9 +48,7 @@ export default function SectionOurProduct({ edit, mobile }) {
         </div>
       </div>
       {edit ? <div className="flex gap-x-2  overflow-auto ">
-        {categories?.data?.map((item, key) => <div key={key} className=" group mb-2 flex cursor-pointer flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary">
-          <PreviewData data={item} />
-        </div>)}
+        {categories?.data?.map((item, key) => <PreviewData key={key} data={item} />)}
       </div>
         :
         <Swiper
@@ -80,7 +78,7 @@ function PreviewData({ data }) {
       const slug = data.category_name?.split(" ").join("-");
       Router.push(`/product-category/${slug.toLowerCase()}`);
     }}
-    className="group mb-2 flex cursor-pointer flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary">
+    className="group w-full mb-2 flex cursor-pointer flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary">
     <div className="shrink-0 relative h-[200px]">
       <Image
         src={mediaPath("categories", data.image)}

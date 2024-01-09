@@ -68,7 +68,7 @@ export default function Collections({ sections }) {
   const content = getContentSection("section_hero")?.content;
   console.log("g", getContentSection("section_hero"));
   return <main className="min-h-screen">
-    <div className="h-[250px] w-full mb-12  lg:mb-20 lg:h-[350px]">
+    <div className="h-[250px] w-full mb-12 lg:mb-20 lg:h-[350px]">
       <Header
         mobile={mobile}
         content={content}
@@ -84,19 +84,20 @@ export default function Collections({ sections }) {
           backgroundSize: `100% ${mobile?.mobileSm ? "100%" : ""}`,
         }}
       >
-        <div className={cn("pt-28 lg:pt-48 relative", CONTAINER_LP)}>
+        <div className={cn("pt-28 lg:pt-48 relative")}>
           <div
             className="absolute inset-0"
             style={{
               backgroundImage:
-                "linear-gradient(180deg, #000000 0%, #00000000 90%)",
+                "linear-gradient(180deg, #000000 0%, #00000000 100%)",
             }}
           ></div>
           <h1
             className={cn(
-              "lg:mb-24 lg:w-full lg:max-w-[750px] lg:px-0 lg:text-5xl",
+              "lg:mb-24 lg:px-0 lg:text-5xl",
               "text-3xl font-light tracking-wider text-white",
-              "relative mx-auto mb-6 max-w-[450px] px-3 text-center font-poppins ",
+              "relative text-center mb-6 font-poppins ",
+              "uppercase",
             )}>
             COLLECTIONS
           </h1>

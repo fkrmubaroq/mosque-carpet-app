@@ -1,5 +1,4 @@
 import cn from "classnames";
-import React from "react";
 
 export default function ToggleSwitch({
   className,
@@ -30,7 +29,7 @@ export default function ToggleSwitch({
           )}
         ></div>
       </div>
-      <span className="ml-3 text-sm">{text}</span>
+      <span className={cn("ml-3 text-sm", { "text-gray-400": !checked })}>{text}</span>
     </label>
   );
 }

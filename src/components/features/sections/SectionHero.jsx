@@ -79,7 +79,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
   })
 
   return (
-    <section className="h-[600px] w-full lg:mb-20 lg:h-[700px]">
+    <section className="h-[600px] w-full lg:mb-20 lg:h-[700px]" id="section_hero">
       <Header
         edit={edit}
         mobile={mobile}
@@ -167,15 +167,47 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
               text={content?.sub_tagline?.text || ""}
               footer={
                 <div className="mt-5 flex flex-col gap-x-4 gap-y-4 lg:flex-row lg:gap-y-0">
-                  <Button className="!rounded-none !px-10 !py-6 font-cinzel">
-                    READ MORE
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="!rounded-none border border-white hover:!text-black !px-10 !py-6 font-cinzel"
-                  >
-                    VIEW COLLECTIONS
-                  </Button>
+                  {edit ? <ContentEditable
+                    html={content?.button_primary}
+                    tagName="div"
+                    className="!rounded-none !px-8 section-mode-edit !py-3 font-cinzel bg-primary"
+                    onChange={(e) => {
+                      const value = e.target.value
+                      onUpdateContent({
+                        ...section,
+                        content: {
+                          ...section.content,
+                          button_primary: value
+                        }
+                      })
+                    }}
+                  /> : content?.button_primary &&
+                    <Button className="!rounded-none !px-10 !py-6 font-cinzel">
+                     {content?.button_primary || ""}
+                    </Button>
+                  }
+                    {edit ? <ContentEditable
+                      html={content?.button_secondary}
+                      tagName="div"
+                      className="!rounded-none !px-8 !py-3 border border-white section-mode-edit font-cinzel"
+                      onChange={(e) => {
+                        const value = e.target.value
+                        onUpdateContent({
+                          ...section,
+                          content: {
+                            ...section.content,
+                            button_secondary: value
+                          }
+                        })
+                      }}
+                  /> : content?.button_secondary &&
+                    <Button
+                        variant="ghost"
+                        className="!rounded-none border border-white hover:!text-black !px-10 !py-6 font-cinzel"
+                      >
+                        {content?.button_secondary || ""}
+                      </Button>
+                    }
                 </div>
               }
             />

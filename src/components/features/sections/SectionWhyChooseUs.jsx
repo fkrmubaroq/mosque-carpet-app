@@ -14,7 +14,7 @@ const icons = [
   <FaRegLightbulb size={50} color="#15803d" />,
   <FiThumbsUp size={50} color="#15803d" />
 ]
-function SectionWhyChooseUsMemo({ section, edit, onUpdateContent }) {
+function SectionWhyChooseUsMemo({ section, edit, onUpdateContent, sectionName }) {
   const content = section?.content || {};
 
   const onUpdateItem = (index,value) => {
@@ -33,6 +33,7 @@ function SectionWhyChooseUsMemo({ section, edit, onUpdateContent }) {
     <>
       <div className="h-1 w-full border-t border-dashed"></div>
       <section
+        id="section_why_choose_us"
         className={cn("flex items-center gap-x-3 pt-20", MARGIN_EACH_SECTION)}
       >
         <div>
@@ -63,10 +64,21 @@ function SectionWhyChooseUsMemo({ section, edit, onUpdateContent }) {
               )}
             </div>
             <div className="flex w-2/3 justify-center">
-              <Button className="flex items-center justify-center gap-x-2 !rounded-none !p-6">
-                <span>OUR SERVICES</span>
-                <AiFillCaretRight />
-              </Button>
+                <Button className="flex items-center justify-center gap-x-2 !rounded-none !p-6" >
+                {edit ? <ContentEditable className="section-mode-edit" html={content?.button_primary} tagName="span" onChange={(e) => {
+                  const value = e.target.value;
+                  onUpdateContent({
+                    ...section,
+                    content: {
+                      ...section.content,
+                      button_primary: value
+                    }
+                  })
+                }} /> :
+                    <span>{content?.button_primary || ""}</span>
+                  }
+                  <AiFillCaretRight />
+                </Button>
             </div>
           </div>
         </div>

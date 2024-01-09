@@ -19,6 +19,9 @@ export function getAllProduct(params) {
 export function getProductByCategory(categoryName) {
   return getMethod(`product/category/${categoryName}`);
 }
+export function getProductByName(name) {
+  return getMethod(`product/name/${name}`);
+}
 
 export function deleteProduct(productId) {
   return deleteMethod(`product/${productId}`);

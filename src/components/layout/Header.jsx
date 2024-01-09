@@ -7,6 +7,7 @@ import { useState } from "react";
 import ContentEditable from "react-contenteditable";
 import { AiOutlineClose } from "react-icons/ai";
 import { RxHamburgerMenu } from "react-icons/rx";
+import ToolboxHero from "../features/sections/Fragment/Toolbox/ToolboxHero";
 import ToolboxImage from "../features/sections/Fragment/Toolbox/ToolboxImage";
 
 const Portal = dynamic(import("@/components/ui/portal").then((module) => module.default), { ssr: false });
@@ -58,13 +59,11 @@ export function Header({ noTransparent, content, edit, mobile, menus, onUpdateCo
   );
 }
 
-function NavigationHeader({ noTransparent, onUpdateContent, edit = false, menus }) {
+function NavigationHeader({ onUpdateContent, edit = false, menus }) {
 
   return (
     <nav className={cn("flex h-16 list-none items-center justify-center gap-x-5 text-lg font-light tracking-wide text-white")}>
       {menus.map((item, key) => (
-
-        item.text ?
           <li className={cn("cursor-pointer h-10 flex items-center px-2")} key={key} onClick={(e) => {
             if (item.link && !edit) {
               Router.push(item.link);
@@ -73,7 +72,7 @@ function NavigationHeader({ noTransparent, onUpdateContent, edit = false, menus 
             {edit ?
               <div className="relative group">
                 <ContentEditable
-                  className="section-mode-edit"
+                  className={cn("section-mode-edit", { "w-5": !item.text })}
                   html={item.text}
                   onChange={(e) => {
                     onUpdateContent({ index: key, value: e.target.value })
@@ -87,7 +86,6 @@ function NavigationHeader({ noTransparent, onUpdateContent, edit = false, menus 
               </div>
               : item.text}
           </li>
-          : <React.Fragment key={key}></React.Fragment>
       ))}
 
     </nav>
@@ -102,7 +100,7 @@ function MobileNavigationHeader({ menus, content }) {
       </div>
 
       <Portal>
-        <div className={cn("inset-0 bg-black absolute opacity-40", { "hidden": !isOpen })} onClick={() => setIsOpen(false)}></div>
+        <div className={cn("inset-0 bg-black fixed z-30 opacity-40", { "hidden": !isOpen })} onClick={() => setIsOpen(false)}></div>
         <div
           className={cn(
             "absolute left-0 right-0 bg-white p-5 transition-all duration-300 z-50",
@@ -127,7 +125,12 @@ function MobileNavigationHeader({ menus, content }) {
             </div>
             <div className="mb-6 flex flex-col gap-y-8">
               {menus.map((item, key) => (
-                <div className="flex justify-center" key={key} onClick={() => item.link && Router.push(item.link)}>
+                <div className="flex justify-center" key={key} onClick={() => {
+                  if (item.link) {
+                    Router.push(item.link);
+                    setIsOpen(false);
+                  }
+                }}>
                   {item.text}
                 </div>
               ))}

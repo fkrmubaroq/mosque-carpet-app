@@ -5,11 +5,12 @@ import ContentEditable from "react-contenteditable";
 import { AiOutlineAim } from "react-icons/ai";
 import { FiTrendingUp } from "react-icons/fi";
 
-function SectionVisionMisionMemo({ section, edit, onUpdateContent }) {
+function SectionVisionMisionMemo({ section, edit, onUpdateContent, sectionName }) {
   const content = section?.content || {};
 
   return (
     <section
+      id="section_vision_mision"
       className={cn(
         "flex flex-col gap-x-12 lg:flex-row",
         MARGIN_EACH_SECTION

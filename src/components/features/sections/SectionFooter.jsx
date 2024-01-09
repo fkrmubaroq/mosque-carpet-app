@@ -53,8 +53,8 @@ function FooterMemo({ edit, section, onUpdateContent }) {
   }
 
   return (
-    <footer className="relative flex gap-x-4 bg-black pt-20 pb-28 md:px-5">
-      <div className={cn("flex lg:flex-row flex-col lg:gap-y-0 gap-y-8 justify-between w-full lg:px-0 px-4", CONTAINER_LP)}>
+    <footer className="relative flex gap-x-4 bg-black pt-20 pb-28 md:px-5" id="section_footer">
+      <div className={cn("flex lg:flex-row flex-col lg:gap-y-0 gap-y-8 justify-between w-full", CONTAINER_LP)}>
         <FooterLogo edit={edit} onUpdateContent={onUpdate} data={content} />
         <FooterContactItem
           edit={edit}
@@ -143,7 +143,7 @@ function FooterTitleItem({ title }) {
 
 function FooterContentItem({ name, data, icon, text, edit, onUpdateContent }) {
   const contentRef = useRef();
-  return <div className="flex gap-x-2 items-center group" ref={contentRef}>
+  return <div className="flex gap-x-2 items-center group cursor-pointer" ref={contentRef}>
     {icon}
     {edit ?
       <div className="relative w-full">
@@ -155,7 +155,7 @@ function FooterContentItem({ name, data, icon, text, edit, onUpdateContent }) {
           onUpdateContent={onUpdateContent}
         />
       </div>:
-      <div className="flex w-full">{text}</div>
+      <div className="flex w-full" onClick={() => data[name]?.link && window.open(data[name].link)}>{text}</div>
     }
   </div>
 }

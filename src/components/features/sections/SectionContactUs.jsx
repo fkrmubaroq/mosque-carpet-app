@@ -38,7 +38,7 @@ export default function SectionContactUs({ mobile = false, edit, section, onUpda
           }}
         />
       }
-    <section className={cn("h-[440px]", MARGIN_EACH_SECTION)}>
+      <section className={cn("h-[440px]", MARGIN_EACH_SECTION)} id="section_contact_us">
       <div
         className="absolute left-0 h-[440px] w-full bg-bottom object-cover"
         style={{
@@ -90,24 +90,27 @@ export default function SectionContactUs({ mobile = false, edit, section, onUpda
             }
             <div className="mt-4">
               <Button
-                  className={cn("flex items-center justify-center gap-x-2 !rounded-none !p-5 text-sm text-white lg:!p-7 lg:text-lg",
-                    {
-                      "section-mode-edit": edit
-                    })}
+                className={cn("flex items-center justify-center gap-x-2 !rounded-none !p-6 text-white")}
                 onClick={() => {
                   if (!edit) { 
                     content.contact_link && window.open(content.contact_link)
                     return;
                   }
-
-                  setModal({
-                    show: true,
-                    data: content?.contact_link
-                  })
                 }}
               >
-                <AiOutlineWhatsApp size={mobile.mobileMd ? 20 : 22} />
-                <span>CONTACT US NOW</span>
+                  <AiOutlineWhatsApp size={mobile.mobileMd ? 20 : 22} />
+                  {edit ? <ContentEditable className="section-mode-edit" html={content?.button_primary} tagName="span" onChange={(e) => {
+                    const value = e.target.value;
+                    onUpdateContent({
+                      ...section,
+                      content: {
+                        ...section.content,
+                        button_primary: value
+                      }
+                    })
+                  }} /> :
+                    <span>{content?.button_primary || ""}</span>
+                  }
               </Button>
             </div>
           </div>

@@ -125,5 +125,5 @@ export const INIT_SECTIONS = [
   }
 ]
 
-export const CONTAINER_LP = "!px-10 lg:mx-auto xl:w-[1280px]";
+export const CONTAINER_LP = "padding-container xl:w-[1280px]";
 export const MARGIN_EACH_SECTION = "lg:mb-[100px] mb-16";

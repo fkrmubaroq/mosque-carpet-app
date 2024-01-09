@@ -23,6 +23,7 @@ export const landingPageQuery = {
 export const collectionsQuery = {
   getCategories: ["collections"]
 }
-export const productsCategoryQuery = {
-  getProducts: ["products-category"]
+export const productsQuery = {
+  getProducts: ["products-category"],
+  detailProduct: (slug) => ["products-detail", slug]
 }
