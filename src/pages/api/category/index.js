@@ -20,7 +20,12 @@ export default function handler(req, res) {
     case "PUT":
       put(req, res);
       break;
+    default:
+      responseNotFound(res);
+      break;
   }
+
+  
 }
 async function get(req, res) {
   try { 

@@ -24,6 +24,10 @@ const TOAST_MESSAGE = {
   "error-insert-category": "Kategori gagal ditambahkan",
   "error-update-category": "Kategori gagal diubah",
   "error-delete-category": "Kategori gagal dihapus",
+
+  // setting 
+  "success-update-setting": "Pengaturan telah di terapkan",
+  "error-update-setting": "Pengaturan gagal diterapkan"
 }
 
 const CONFIRMATION_MESSAGE = {

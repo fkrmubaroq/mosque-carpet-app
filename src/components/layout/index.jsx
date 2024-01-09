@@ -82,6 +82,7 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
   const route = useRouter();
   const [sectionsLp, viewIdSection, setViewIdSection] = useEditSection(useShallow(state => [state.sectionsLp, state.viewIdSection, state.setViewIdSection]));
   const isSectionPage = route.pathname === "/admin/section";
+  const isSettingPage = route.pathname === "/admin/settings";
   useEffect(() => {
     if (route.pathname === "/admin/section") {
       setExpand(false);
@@ -101,9 +102,9 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
   return (
     <div className={cn(style["layout"], { [style["expanded"]]: expand })}>
       <div className={cn(style["header"], {
-        "fixed bg-white z-[99999] right-0 shadow-sm": isSectionPage,
-        "left-[270px]": isSectionPage && expand,
-        "left-[75px]": isSectionPage && !expand,
+        "fixed bg-white z-[99999] right-0 shadow-sm": isSectionPage || isSettingPage,
+        "left-[270px]": (isSettingPage || isSectionPage) && expand,
+        "left-[75px]": (isSettingPage || isSectionPage) && !expand,
       })}>
         <div className="flex items-center gap-x-2">
           <div
@@ -120,27 +121,32 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
           }
         </div>
 
-        {isSectionPage && <div className="flex gap-x-2">
-          <Button
-            onClick={() => window.open(window.location.origin)}
-            variant="ghost"
-            className="border border-gray-600 gap-x-2 flex items-center justify-center !rounded-full">
-            <IoIosGlobe size={20}/>
-            <span >Website</span>
-          </Button>
-          <Button
-            isLoading={isLoading}
-            className="!rounded-full"
-            size="lg"
-            onClick={() => onPublish()}
-          >
-            {isLoading ? (
-              <SpinnerIcon width="w-4" height="h-4" />
-            ) : (
-              "Publish"
-            )}
-          </Button>
-        </div>}
+        {/* IS SECTION PAGE */}
+        {
+          isSectionPage &&
+          <div className="flex gap-x-2">
+            <Button
+              onClick={() => window.open(window.location.origin)}
+              variant="ghost"
+              className="border border-gray-600 gap-x-2 flex items-center justify-center !rounded-full">
+              <IoIosGlobe size={20}/>
+              <span >Website</span>
+            </Button>
+            <Button
+              disabled={isLoading}
+              className="!rounded-full"
+              size="lg"
+              onClick={() => onPublish()}
+            >
+              {isLoading ? (
+                <SpinnerIcon width="w-4" height="h-4" />
+              ) : (
+                "Publish"
+              )}
+            </Button>
+          </div>
+        }
+
         <div className="flex gap-x-5 items-center">
           {isSectionPage && <div>
             <ToggleSwitch

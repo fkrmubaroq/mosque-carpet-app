@@ -1,62 +1,73 @@
 import { Layout } from "@/components/layout";
+import { SpinnerIcon } from "@/components/ui/Spinner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import ContainerInput from "@/components/ui/container/ContainerInput";
 import Textarea from "@/components/ui/form/Textarea";
-import UploadFile from "@/components/ui/form/UploadFile";
 import { Input } from "@/components/ui/form/input";
+import ToggleSwitch from "@/components/ui/switch/toggle";
+import { insertSetting } from "@/lib/api/setting";
+import { useDialogStore } from "@/lib/hookStore";
+import { prismaClient } from "@/lib/prisma";
 import { Label } from "@radix-ui/react-label";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { CiSquarePlus } from "react-icons/ci";
 import { FaFacebook, FaInstagram, FaRegTrashAlt, FaWhatsapp } from "react-icons/fa";
-
-const listCompanyLocation = [
-  {
-    address: "address 1",
-    link_google_map: ""
-  },
-  {
-    address: "adsress 2",
-    link_google_map: ""
-  }
-];
-
-const initSocialMedia = {
-  facebook: "",
-  instagram: ""
-}
 
 const iconSocialMedia = {
   facebook: <FaFacebook size={26}/>,
   instagram: <FaInstagram size={26}/>,
 };
-export default function Settings() {
-  const [companyLocations, setCompanyLocations] = useState(listCompanyLocation);
-  const [socialMedia, setSocialMedia] = useState(initSocialMedia);
-  const [whatsappNumber, setWhatsappNumber] = useState("");
+
+export async function getServerSideProps() {
+  const response = await prismaClient.setting.findFirst();
+  return {
+    props: {
+      setting: response || {}
+    }
+  }
+}
+
+export default function Settings({ setting }) {
+  const [formSetting, setFormSetting] = useState(setting);
+  const showToast = useDialogStore(state => state.showToast);
+
+  const { mutate: mutateInsertSetting, isLoading } = useMutation({
+    mutationFn: insertSetting,
+    onSuccess: () => showToast("success-update-setting"),
+    onError: () => showToast("error-update-setting")
+  });
+
+  const onSaveSetting = () => {
+    const payload = {
+      ...formSetting,
+      branch: JSON.stringify(formSetting.branch || "[]")
+    }
+    mutateInsertSetting(payload);
+  };
 
   return (
     <Layout title="Pengaturan">
       <div className="flex gap-x-5">
-        <span className="w-[400px] shrink-0">
-          <Card>
-            <CardHeader className="font-semibold">Logo</CardHeader>
-            <CardContent>
-              <UploadFile />
-            </CardContent>
-          </Card>
-        </span>
-
+        <div className="fixed left-1/2 top-4 z-[99999]">
+          <Button
+            disabled={isLoading}
+            className="!rounded-full"
+            size="lg"
+            onClick={() => onSaveSetting()}
+          >
+            {isLoading ? (
+              <SpinnerIcon width="w-4" height="h-4" />
+            ) : (
+              "Simpan"
+            )}
+          </Button>
+        </div>
         <div className="flex w-full flex-col gap-y-4">
           <Card>
-            <CardHeader className="font-semibold">Social Media</CardHeader>
             <CardContent>
-              <FormSocialMedia
-                data={socialMedia}
-                setSocialMedia={setSocialMedia}
-              />
-
-            <CardHeader className="pl-0 font-semibold mt-5 pb-5">Kontak</CardHeader>
+            <CardHeader className="pl-0 font-semibold pb-5">Kontak</CardHeader>
               <div className="rounded-lg bg-gray-100 p-5">
                 <ContainerInput direction="row" className="w-full gap-x-5">
                   <Label className="uppercase">
@@ -66,31 +77,40 @@ export default function Settings() {
                     name="whatsapp"
                     placeholder="Nomor Whatsapp"
                     className="!h-11"
-                    value={whatsappNumber}
-                    onChange={(e) => setWhatsappNumber(e.target.value)}
+                    value={formSetting?.no_wa || ""}
+                    onChange={(e) => setFormSetting(state => ({ ...state, no_wa: e.target.value }))}
                   />
                 </ContainerInput>
               </div>
+              <CardHeader className="!pl-0 font-semibold">Maintenance</CardHeader>
+              <ToggleSwitch
+                checked={formSetting?.is_maintenance === "Y"}
+                text={formSetting?.is_maintenance === "Y" ? "Aktif" : "Tidak Aktif"}
+                onChange={(checked) => {
+                  setFormSetting(state => ({ ...state, is_maintenance: checked ? "Y" : "N" }))
+                }}
+              />
+              <span></span>
+
+              <CardHeader className="!pl-0 font-semibold">Tampilkan Harga Produk</CardHeader>
+              <ToggleSwitch
+                checked={formSetting?.show_price === "Y"}
+                text={formSetting?.show_price === "Y" ? "Aktif" : "Tidak Aktif"}
+                onChange={(checked) => setFormSetting(state => ({ ...state, show_price: checked ? "Y" : "N" }))}
+              />
+              <span></span>
+
             </CardContent>
           </Card>
 
           <Card className="w-full">
             <CardHeader className="font-semibold">Lokasi Kantor</CardHeader>
             <CardContent className="flex flex-col gap-y-5">
-              {/* <ContainerInput direction="row">
-              <Label className="w-80 text-right text-gray-500 text-sm">Nomor Whatsapp</Label>
-              <Input placeholder="628883293003" />
-            </ContainerInput> */}
 
               <FormCompanyLocation
-                data={companyLocations}
-                setCompanyLocation={setCompanyLocations}
+                data={formSetting?.branch}
+                setFormSetting={setFormSetting}
               />
-
-              {/* <ContainerInput direction="row">
-              <Label className="w-80 text-right text-gray-500 text-sm">Sosial Media</Label>
-              <Input placeholder="628883293003" />
-            </ContainerInput> */}
             </CardContent>
           </Card>
         </div>
@@ -101,7 +121,7 @@ export default function Settings() {
 
 function FormCompanyLocation({
   data,
-  setCompanyLocation,
+  setFormSetting,
 }) {
   return (
     <div className="flex flex-col gap-y-5">
@@ -110,7 +130,7 @@ function FormCompanyLocation({
           key={key}
           data={item}
           number={key + 1}
-          setCompanyLocation={setCompanyLocation}
+          setFormSetting={setFormSetting}
         />
       ))}
 
@@ -119,13 +139,16 @@ function FormCompanyLocation({
           className="flex h-[9.188rem] w-full items-center justify-center gap-x-2 text-sm font-semibold text-gray-500 hover:border hover:border-dashed hover:border-gray-300 hover:bg-gray-50"
           variant="ghost"
           onClick={() =>
-            setCompanyLocation((state) => [
+            setFormSetting((state) => ({
               ...state,
-              {
-                address: "",
-                link_google_map: "",
-              },
-            ])
+              branch: [
+                ...state.branch,
+                {
+                  text: "",
+                  link: "",
+                },
+              ]
+            }))
           }
         >
           <CiSquarePlus size={20} color="black" />
@@ -138,16 +161,21 @@ function FormCompanyLocation({
 function CompanyLocationItem({
   data,
   number,
-  setCompanyLocation,
+  setFormSetting,
 }) {
   
   const onChange = (e) => {
-    setCompanyLocation(state => { 
-      return state.map((item, key) => {
+    setFormSetting(state => { 
+      const branch = state.branch.map((item, key) => {
         if (key === number - 1) return { ...item, [e.target.name]: e.target.value }
         
         return { ...item }
-      })
+      });
+
+      return {
+        ...state,
+        branch
+      }
     })
   }
   return (
@@ -159,7 +187,7 @@ function CompanyLocationItem({
             <Label className="w-52 text-right text-sm text-gray-600">
               Alamat
             </Label>
-            <Textarea name="address" placeholder="Masukkan alamat" value={data.address} onChange={onChange}/>
+            <Textarea name="text" placeholder="Masukkan alamat" value={data.text} onChange={onChange}/>
           </ContainerInput>
 
           <ContainerInput direction="row">
@@ -167,9 +195,9 @@ function CompanyLocationItem({
               Link Google map
             </Label>
             <Textarea
-              name="link_google_map"
+              name="link"
               placeholder="Masukkan Link"
-              value={data.link_google_map}
+              value={data.link}
               onChange={onChange}
             />
           </ContainerInput>
@@ -178,7 +206,13 @@ function CompanyLocationItem({
           <Button
             variant="danger"
             className="rounded-md py-4 !px-2.5 text-white"
-            onClick={() => setCompanyLocation((state) => state.filter((_,key) => key !== number - 1))}
+            onClick={() => setFormSetting((state) => {
+              const branch = state.branch.filter((_, key) => key !== number - 1);
+              return {
+                ...state,
+                branch
+              }
+            })}
           >
             <FaRegTrashAlt size={20} />
           </Button>
