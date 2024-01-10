@@ -41,7 +41,7 @@ export default function SectionOurProduct({ edit, mobile }) {
           Our Products
         </div>
         <div className="mb-3 font-cinzel text-3xl font-medium">
-          <Button className="flex items-center justify-center gap-x-2 rounded-none !p-6">
+          <Button className="flex items-center justify-center gap-x-2 rounded-none !p-6" onClick={() => Router.push("/collections")}>
             <span className="mt-0.5">VIEW MORE</span>
             <AiFillCaretRight />
           </Button>

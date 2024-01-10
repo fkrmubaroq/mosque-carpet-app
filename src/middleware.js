@@ -1,26 +1,35 @@
-import { NextResponse } from 'next/server';
- 
-export function middleware(req, res) {
-  const url = req.nextUrl.clone();
-  if (url.pathname === "/api/login") {
-    // res.cookies.set("token", "value-token");
+import { NextResponse } from "next/server";
+
+export async function middleware(req, res) {
+  if (req.nextUrl.pathname.startsWith("/admin")) {
+    return NextResponse.next();
   }
-  if (url.pathname.includes("/api/auth")) {
-    return middlewareAuth(req);
+
+  const isMaintenance = await checkIsMaintenance();
+
+  if (isMaintenance) {
+    return NextResponse.rewrite(new URL("/maintenance", req.url));
   }
+
   return NextResponse.next();
 }
 
-function middlewareAuth(req) {
-  const headers = req.headers;
-  const token = headers.get("Authorization");
-  
-  if (!token) {    
-    req.nextUrl.pathname = "/api/_errorAuthorization";
-    return NextResponse.rewrite(req.nextUrl)
-  }
-  return NextResponse.next();
+async function checkIsMaintenance() {
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const response = await fetch(`${baseUrl}/setting`);
+  const data = await response.json();
+  return data?.data?.is_maintenance === "Y";
 }
+
 export const config = {
-  matcher: '/api/:path*',
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|img|favicon.ico).*)',
+  ],
 }

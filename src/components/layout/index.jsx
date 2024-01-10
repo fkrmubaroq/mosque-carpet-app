@@ -66,7 +66,7 @@ const sidebarMenus = [
       },
       {
         icon: <VscFolderLibrary size={20} />,
-        menu: "File Manager",
+        menu: "Media Manager",
         path: "/admin/file-manager",
       },
       {

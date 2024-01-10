@@ -26,6 +26,7 @@ export const BASE_DIR = "./files"
 export const DIR_FILE_UPLOAD = `${BASE_DIR}/upload`;
 export const DIR_FILE_PRODUCTS = `${BASE_DIR}/products`;
 export const DIR_FILE_CATEGORY = `${BASE_DIR}/categories`;
+export const DIR_FILE_THUMBNAIL = `${BASE_DIR}/articles-thumbnail`;
 
 export const DIR_ACCESS_FILE = `/api/files`;
 export const placeholderImage = `/img/placeholder.webp`;

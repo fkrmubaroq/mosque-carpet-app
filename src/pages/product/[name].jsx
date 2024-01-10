@@ -24,14 +24,17 @@ export async function getServerSideProps() {
     where: {
       active: "Y"
     }
-  })
+  });
+  const prismaSetting = await prismaClient.setting.findFirst();
+
   return {
     props: {
-      sections: prismaSections || []
+      sections: prismaSections || [],
+      setting: prismaSetting || {}     
     }
   }
 }
-export default function ProductByName({ sections }) {
+export default function ProductByName({ sections, setting }) {
   const mobile = useMobile();
   const getContentSection = (sectionName) => {
     const section = sections.find(section => section.section_name === sectionName);
@@ -54,7 +57,7 @@ export default function ProductByName({ sections }) {
       menus={content?.menus || []}
     />
     <div className={cn("pt-20 lg:pt-32",CONTAINER_LP)}>
-      <SectionDetailProduct />
+      <SectionDetailProduct setting={setting} />
     </div>
     <SectionFooter section={getContentSection("section_footer")} />
     <ButtonWhatsapp phone="" />
@@ -63,7 +66,7 @@ export default function ProductByName({ sections }) {
 
 }
 
-function SectionDetailProduct() {
+function SectionDetailProduct({ setting }) {
   const router = useRouter()
   const slug = router.query?.name;
 
@@ -83,7 +86,7 @@ function SectionDetailProduct() {
     />
     <div className="flex flex-col lg:flex-row gap-x-10 mb-32">
       <ProductImage data={data} />
-      <ProductInfo data={data} />
+      <ProductInfo data={data} setting={setting} />
     </div>
   </section>
 }
@@ -94,7 +97,7 @@ function ProductImage({ data }) {
   </div>
 }
 
-function ProductInfo({ data }) {
+function ProductInfo({ data, setting }) {
   return (
     <div className="flex flex-col justify-between w-full">
 
@@ -109,14 +112,14 @@ function ProductInfo({ data }) {
             <span className="text-gray-500">{data.description}</span>
           </div>
         }
-        {data?.price &&
+        {data?.price && setting?.no_wa &&
         <div className="text-primary text-2xl font-semibold">
           Rp {formatNumberToPrice(data.price)}
         </div>
         }
       </div>
       <div className="lg:mt-0 mt-4 mb-10">
-        <Button className="w-full !p-6 !rounded-none flex gap-x-2 uppercase">
+        <Button className="w-full !p-6 !rounded-none flex gap-x-2 uppercase" onClick={() => window.open(`https://wa.me/${setting.no_wa}`)}>
           <FaWhatsapp size={20}/>
         <span>Pesan melalui Whatsapp</span>  
         </Button>

@@ -125,14 +125,18 @@ function MobileNavigationHeader({ menus, content }) {
             </div>
             <div className="mb-6 flex flex-col gap-y-8">
               {menus.map((item, key) => (
-                <div className="flex justify-center" key={key} onClick={() => {
-                  if (item.link) {
-                    Router.push(item.link);
-                    setIsOpen(false);
-                  }
-                }}>
+                <li 
+                  className="flex justify-center"
+                  key={key}
+                  onClick={() => {
+                    if (item.link) {
+                      Router.push(item.link);
+                      setIsOpen(false);
+                    }
+                  }}
+                >
                   {item.text}
-                </div>
+                </li>
               ))}
             </div>
           </div>

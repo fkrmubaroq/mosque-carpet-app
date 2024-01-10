@@ -22,19 +22,22 @@ export async function getServerSideProps() {
 
   const prismaSections = await prismaClient.sections.findMany({
     orderBy: {
-      position:"asc"
+      position: "asc"
     },
     where: {
       active: "Y"
     }
-  })
+  });
+  const prismaSetting = await prismaClient.setting.findFirst();
+
   return {
     props: {
-      sections: prismaSections || []
+      sections: prismaSections || [],
+      setting: prismaSetting || {}
     }
   }
 }
-export default function Home({ sections }) {  
+export default function Home({ sections, setting }) {  
   const [mobileMd, setMobileMdWidth] = useState(false);
   const [mobileSm, setMobileSm] = useState(false);
   const mobile = {
@@ -79,12 +82,12 @@ export default function Home({ sections }) {
         <SectionAboutUs section={getContentSection("section_about_us")} />
         <SectionVisionMision section={getContentSection("section_vision_mision")} />
         <SectionWhyChooseUs section={getContentSection("section_why_choose_us")} />
-        <SectionContactUs mobile={mobile} section={getContentSection("section_contact_us")} />
+        <SectionContactUs setting={setting} mobile={mobile} section={getContentSection("section_contact_us")} />
         <SectionArticles mobile={mobile} />
         <SectionOurProduct mobile={mobile} />
       </div>
       <SectionFooter section={getContentSection("section_footer")} />
-      <ButtonWa phone=""/>
+      <ButtonWa phone={setting?.no_wa} />
     </main>
   );
 }

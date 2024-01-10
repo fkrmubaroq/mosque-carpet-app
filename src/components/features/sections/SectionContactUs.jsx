@@ -11,7 +11,7 @@ import ModalContactLink from "./Fragment/ModalContactLink";
 const initModal = Object.freeze({
   show: false,
 })
-export default function SectionContactUs({ mobile = false, edit, section, onUpdateContent }) {
+export default function SectionContactUs({ setting, mobile = false, edit, section, onUpdateContent }) {
   const content = section?.content || {};
   const [modal, setModal] = useState(initModal);
 
@@ -92,8 +92,8 @@ export default function SectionContactUs({ mobile = false, edit, section, onUpda
               <Button
                 className={cn("flex items-center justify-center gap-x-2 !rounded-none !p-6 text-white")}
                 onClick={() => {
-                  if (!edit) { 
-                    content.contact_link && window.open(content.contact_link)
+                  if (!edit && setting?.no_wa) { 
+                    window.open(`https://wa.me/${setting.no_wa}`);
                     return;
                   }
                 }}

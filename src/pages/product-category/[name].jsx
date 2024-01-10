@@ -22,15 +22,18 @@ export async function getServerSideProps() {
     where: {
       active: "Y"
     }
-  })
+  });
+  const prismaSetting = await prismaClient.setting.findFirst();
+
   return {
     props: {
-      sections: prismaSections || []
+      sections: prismaSections || [],
+      setting: prismaSetting || {}
     }
   }
 }
 
-export default function ProductCategory({ sections }) {
+export default function ProductCategory({ sections, setting }) {
   const mobile = useMobile();
 
   const router = useRouter()
@@ -94,7 +97,7 @@ export default function ProductCategory({ sections }) {
       </div>
     </div>
     <div className={cn(CONTAINER_LP, "px-4")}>
-      <SectionOurProduct data={data} isLoading={isLoading} />
+      <SectionOurProduct data={data} isLoading={isLoading} showPrice={setting?.show_price} />
     </div>
     <SectionFooter section={getContentSection("section_footer")} />
     <ButtonWhatsapp phone="" />
@@ -102,7 +105,7 @@ export default function ProductCategory({ sections }) {
   </main>
 }
 
-function SectionOurProduct({ data }) {
+function SectionOurProduct({ data, showPrice }) {
 
   const onClick = (data) => {
     const slug = data.category_name?.split(" ").join("-");
@@ -119,13 +122,13 @@ function SectionOurProduct({ data }) {
     </div>
     <div className="flex gap-x-5 gap-y-5 flex-wrap mt-5">
       {
-        data?.map((item, key) => <PreviewData key={key} data={item} onClick={onClick} />)
+        data?.map((item, key) => <PreviewData key={key} data={item} onClick={onClick} showPrice={showPrice} />)
       }
     </div>
   </section>
 }
 
-function PreviewData({ data, onClick }) {
+function PreviewData({ data, onClick, showPrice }) {
   return <div
     onClick={() => onClick(data) }
     className=" lg:max-w-[330px] group mb-2 flex cursor-pointer flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary">
@@ -133,7 +136,7 @@ function PreviewData({ data, onClick }) {
     <div className="pb-5 pl-5 pt-4 flex gap-y-1 flex-col font-poppins tracking-wider text-slate-700 group-hover:bg-primary group-hover:text-white">
       <span className="text-slate-900 group-hover:text-white text-lg">{data.name}</span>
       {data?.description && <span className="text-sm text-gray-400 line-clamp-2">{data?.description || ""}</span>}
-      {data?.price && <div className="text-primary text-xl font-semibold mt-2 group-hover:text-white">Rp {formatNumberToPrice(data?.price)}</div>}
+      {data?.price && showPrice === "Y" && <div className="text-primary text-xl font-semibold mt-2 group-hover:text-white">Rp {formatNumberToPrice(data?.price)}</div>}
     </div>
   </div>
 }

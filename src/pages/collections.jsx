@@ -66,7 +66,7 @@ export default function Collections({ sections }) {
   }, [mobile]);
 
   const content = getContentSection("section_hero")?.content;
-  console.log("g", getContentSection("section_hero"));
+
   return <main className="min-h-screen">
     <div className="h-[250px] w-full mb-12 lg:mb-20 lg:h-[350px]">
       <Header
@@ -146,7 +146,7 @@ function SectionOurProduct() {
 function PreviewData({ data, onClick }) {
   return <div
     onClick={() => onClick(data)}
-    className="max-w-[380px] group mb-2 flex cursor-pointer flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary">
+    className="max-w-[330px] group mb-2 flex cursor-pointer flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary">
     <Image src={mediaPath("categories", data.image)} width="400" height="300" alt="" className="w-full object-cover" />
     <div className="pb-5 pt-4 text-center font-poppins tracking-wider text-slate-700 group-hover:bg-primary group-hover:text-white">
       {data.category_name}

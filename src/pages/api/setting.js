@@ -9,6 +9,9 @@ export default function handler(req, res) {
     case "POST":
       post(req, res);
       break;
+    case "GET":
+      get(req, res);
+      break;
     default:
       responseNotFound(res);
       break;
@@ -18,8 +21,6 @@ export default function handler(req, res) {
 async function post(req, res) {
   try {
     const { id, ...validateRequest } = validation(insertSettingValidation, req.body);
-    console.log("id ", id);
-    console.log("validateRequest ", validateRequest);
     validateRequest.branch = JSON.parse(validateRequest.branch || "[]");
     const data = await prismaClient.setting.update({
       data: validateRequest,
@@ -30,5 +31,14 @@ async function post(req, res) {
     res.status(STATUS_MESSAGE_ENUM.Ok).json({ data })
   } catch (e) {
     responseErrorMessage(e, res);
+  }
+}
+
+async function get(req, res) {
+  try {
+    const data = await prismaClient.setting.findFirst();
+    res.status(STATUS_MESSAGE_ENUM.Ok).json({ data })
+  } catch (e) {
+    responseErrorMessage(e, res);    
   }
 }

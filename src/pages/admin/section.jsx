@@ -51,7 +51,6 @@ export default function Section({ sections }) {
     )
   }
 
-  console.log("section, ", sectionsLp);
   return <Layout title="Sections">
     <div className="flex flex-col gap-y-3 relative">
       {sectionsLp?.map((section, key) => <div className="relative">
