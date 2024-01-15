@@ -33,7 +33,8 @@ async function get(req, res) {
 
     const response = await prismaClient.product.findMany({
       where: {
-        category_id: findCategoryBySlug.id
+        category_id: findCategoryBySlug.id,
+        active: "Y"
       },
       include: {
         category: {

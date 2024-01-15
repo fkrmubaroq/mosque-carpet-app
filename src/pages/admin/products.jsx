@@ -94,7 +94,10 @@ export default function Index() {
   });
 
   const onEditForm = (payload) => {
-    const { category_name, ...restPayload } = payload;
+    const { category_name, image, ...restPayload } = payload;
+    if (typeof image === "object") {
+      restPayload.image = image;
+    }
     mutateUpdateProduct(restPayload);
   };
 

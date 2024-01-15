@@ -11,7 +11,14 @@ export function decodeJwt(token) {
   return jwt.verify(token, secret);
 }
 
-export function encodeJwt(data) {
-  return jwt.sign(data, secret, { expiresIn: EXPIRED_DAYS });
-
+export function encodeJwt(payload) {
+  return new Promise((resolve) => {
+    jwt.sign(payload, secret, { expiresIn: EXPIRED_DAYS }, (err, token) => {
+      if (err) {
+        resolve(err);
+        return;
+      };
+      resolve(token);
+    });
+  });
 }

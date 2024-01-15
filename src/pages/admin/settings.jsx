@@ -47,8 +47,14 @@ export default function Settings({ setting }) {
     mutateInsertSetting(payload);
   };
 
+  if (!Object.keys(setting).length) {
+    return <Layout title="Pengaturan">
+
+    </Layout>
+  }
   return (
     <Layout title="Pengaturan">
+
       <div className="flex gap-x-5">
         <div className="fixed left-1/2 top-4 z-[99999]">
           <Button
@@ -125,7 +131,7 @@ function FormCompanyLocation({
 }) {
   return (
     <div className="flex flex-col gap-y-5">
-      {data.map((item, key) => (
+      {data?.map((item, key) => (
         <CompanyLocationItem
           key={key}
           data={item}

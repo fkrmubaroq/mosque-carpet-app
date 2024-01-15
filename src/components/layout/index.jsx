@@ -1,20 +1,25 @@
 import { updateSections } from "@/lib/api/section";
-import { useEditSection } from "@/lib/hookStore";
+import { useDialogStore, useEditSection } from "@/lib/hookStore";
+import { useCookie, useOnClickOutside } from "@/lib/hooks";
+import { eraseCookie } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import cn from "classnames";
 import Image from "next/image";
 import Router, { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { BiHomeAlt } from "react-icons/bi";
 import { CiBoxList, CiBoxes } from "react-icons/ci";
-import { IoIosGlobe } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp, IoIosGlobe } from "react-icons/io";
+import { LuUser } from "react-icons/lu";
 import { MdOutlineAccountCircle, MdOutlineArticle } from "react-icons/md";
 import { PiDotsThreeLight } from "react-icons/pi";
+import { RiShutDownLine } from "react-icons/ri";
 import { RxHamburgerMenu, RxSection } from "react-icons/rx";
 import { TfiPackage } from "react-icons/tfi";
 import { VscFolderLibrary } from "react-icons/vsc";
 import { useShallow } from "zustand/react/shallow";
+import Meta from "../Meta";
 import { SpinnerIcon } from "../ui/Spinner";
 import { Button } from "../ui/button";
 import ToggleSwitch from "../ui/switch/toggle";
@@ -55,7 +60,7 @@ const sidebarMenus = [
     label: "Lainnya",
     menus: [
       {
-        icon: <RxSection size={20}/>,
+        icon: <RxSection size={20} />,
         menu: "Sections",
         path: "/admin/section",
       },
@@ -78,11 +83,23 @@ const sidebarMenus = [
   },
 ];
 export function Layout({ children, customTitle, title, classNameTitle }) {
+  const [cookie, setCookie] = useCookie("adm");
   const [expand, setExpand] = useState(true);
+  const [dropdown, setDropdown] = useState(false);
   const route = useRouter();
+  const [showToast, showConfirmation, hideConfirmation] = useDialogStore(state => [state.showToast, state.showConfirmation, state.hideConfirmation]);
   const [sectionsLp, viewIdSection, setViewIdSection] = useEditSection(useShallow(state => [state.sectionsLp, state.viewIdSection, state.setViewIdSection]));
   const isSectionPage = route.pathname === "/admin/section";
   const isSettingPage = route.pathname === "/admin/settings";
+  const isCreateArticlePage = route.pathname === "/admin/articles/create";
+  const isUpdateArticlePage = route.pathname.includes("/admin/articles/edit");
+
+  const dropdownRef = useRef();
+  useOnClickOutside(dropdownRef, () => {
+    if (!dropdownRef.current) return;
+    setDropdown(false);
+  })
+
   useEffect(() => {
     if (route.pathname === "/admin/section") {
       setExpand(false);
@@ -90,8 +107,11 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
   }, []);
 
   const { mutate: mutateUpdateSection, isLoading } = useMutation({
-    mutationFn: updateSections
+    mutationFn: updateSections,
+    onSuccess: () => showToast("success-update-section"),
+    onError: () => showToast("error-update-section")
   })
+
   const onPublish = () => {
     const sections = sectionsLp.map(section => ({ ...section, content: JSON.stringify(section.content) }));
     mutateUpdateSection({
@@ -99,12 +119,31 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
     });
   }
 
+  const onClickDropdown = (menu) => {
+    switch (menu.text) {
+      case "Keluar":
+        showConfirmation("logout", {
+          onConfirm() {
+            eraseCookie("adm");
+            window.location.href = "/login"
+          }
+        })
+        break;
+
+      case "Profil":
+        Router.push("/admin/profile");
+        break;
+    }
+  }
+
   return (
+    <>
+    <Meta title={title} />
     <div className={cn(style["layout"], { [style["expanded"]]: expand })}>
       <div className={cn(style["header"], {
-        "fixed bg-white z-[99999] right-0 shadow-sm": isSectionPage || isSettingPage,
-        "left-[270px]": (isSettingPage || isSectionPage) && expand,
-        "left-[75px]": (isSettingPage || isSectionPage) && !expand,
+        "fixed bg-white z-[99999] right-0 shadow-sm": isSectionPage || isSettingPage || isCreateArticlePage || isUpdateArticlePage,
+        "left-[270px]": (isSettingPage || isSectionPage || isCreateArticlePage || isUpdateArticlePage) && expand,
+        "left-[75px]": (isSettingPage || isSectionPage || isCreateArticlePage || isUpdateArticlePage) && !expand,
       })}>
         <div className="flex items-center gap-x-2">
           <div
@@ -129,7 +168,7 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
               onClick={() => window.open(window.location.origin)}
               variant="ghost"
               className="border border-gray-600 gap-x-2 flex items-center justify-center !rounded-full">
-              <IoIosGlobe size={20}/>
+              <IoIosGlobe size={20} />
               <span >Website</span>
             </Button>
             <Button
@@ -146,7 +185,6 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
             </Button>
           </div>
         }
-
         <div className="flex gap-x-5 items-center">
           {isSectionPage && <div>
             <ToggleSwitch
@@ -154,21 +192,29 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
               checked={viewIdSection}
               onChange={(checked) => setViewIdSection(checked)}
             />
-          </div>}
-          <div className="group flex items-center gap-x-2 rounded-lg px-3 pb-3 pt-2 hover:bg-primary  hover:text-white">
+          </div>
+          }
+          <div
+            ref={dropdownRef}
+            onClick={() => setDropdown(o => !o)}
+            className="cursor-pointer bg-white relative flex items-center gap-x-2 rounded-lg p-2  ">
             <MdOutlineAccountCircle
               size={33}
-              className="opacity-50 group-hover:opacity-100"
+              className="opacity-50"
             />
-            <div className="flex flex-col gap-y-1">
-              <span className="text-sm font-semibold text-gray-500 group-hover:text-white">
-                Mrs. Dennis Schulist
+            <div className="flex flex-col gap-y-1 border-r pr-3 ">
+              <span className="text-sm font-semibold text-gray-500 ">
+                {cookie?.name || "-"}
               </span>
-              <span className="text-xs text-gray-600 group-hover:text-white">
+              <span className="text-xs text-gray-600 ">
                 Admin
               </span>
             </div>
+            <div className=" h-full ">
+              {dropdown ? <IoIosArrowUp /> : <IoIosArrowDown/> }
             </div>
+            <DropdownMenu show={dropdown} onClick={onClickDropdown} />
+          </div>
         </div>
       </div>
       <div className={style["sidebar"]}>
@@ -227,7 +273,8 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
         </div>
       </div>
       <div className={style["content"]}>{children}</div>
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -236,7 +283,7 @@ function MenuItem({
   expand,
   activeMenu,
 }) {
-  
+
   const isActiveMenu = activeMenu.includes(data.path);
   return (
     <div
@@ -262,4 +309,37 @@ function MenuItem({
       )}
     </div>
   );
+}
+
+const listMenu = [
+  {
+    icon: <LuUser />,
+    text: "Profil"
+  },
+  {
+    icon: <RiShutDownLine />,
+    text: "Keluar"
+  }
+];
+function DropdownMenu({ show, onClick }) {
+  return <div className={cn("absolute transition-all -left-0 border w-[160px] bg-white rounded-md",
+    {
+      "top-14 opacity-100": show,
+      "top-8 opacity-0 -z-10": !show
+    })}>
+    {listMenu.map((menu, key) =>
+      <div
+        key={key}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick(menu)
+        }}
+        className={cn("px-3 py-2 text-gray-500 group items-center flex gap-x-2.5 first:rounded-t-md last:rounded-b-md",
+          { "hover:bg-primary hover:text-white": show }
+        )}>
+        {menu.icon}
+        <span className="text-sm">{menu.text}</span>
+      </div>
+    )}
+  </div>
 }

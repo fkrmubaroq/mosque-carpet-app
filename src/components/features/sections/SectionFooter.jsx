@@ -84,7 +84,7 @@ function FooterLogo({ edit, onUpdateContent, data }) {
           html={data.logo_text}
           tagName="span"
           className="text-lg tracking-widest text-white mt-3 section-mode-edit"
-          onChange={(e) => onUpdateContent("logo_text", e.target.value)}
+          onChange={(e) => onUpdateContent("logo_text", e.currentTarget.textContent)}
          /> :
         <span className="text-lg tracking-widest text-white mt-3">{data.logo_text}</span>
       }
@@ -95,7 +95,7 @@ function FooterLogo({ edit, onUpdateContent, data }) {
             html={data.tagline}
             tagName="span"
             className="text-gray-50 text-sm section-mode-edit"
-            onChange={(e) => onUpdateContent("tagline", e.target.value)}
+            onChange={(e) => onUpdateContent("tagline", e.currentTarget.textContent)}
           />
           :
           <span className="text-gray-50 text-sm">{data.tagline}</span>
@@ -147,7 +147,7 @@ function FooterContentItem({ name, data, icon, text, edit, onUpdateContent }) {
     {icon}
     {edit ?
       <div className="relative w-full">
-        <ContentEditable html={text} onChange={(e) => onUpdateContent({ ...data[name], text: e.target.value })} className="section-mode-edit peer" /> 
+        <ContentEditable html={text} onChange={(e) => onUpdateContent({ ...data[name], text: e.currentTarget.textContent })} className="section-mode-edit peer" /> 
         <ToolboxFooter
           name={name}
           data={data}

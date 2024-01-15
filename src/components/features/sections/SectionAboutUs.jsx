@@ -1,4 +1,4 @@
-import { MARGIN_EACH_SECTION } from "@/lib/constant";
+import { MARGIN_EACH_SECTION, placeholderImage } from "@/lib/constant";
 import cn from "classnames";
 import Image from "next/image";
 import { memo } from "react";
@@ -40,7 +40,7 @@ function SectionAboutUsMemo({ section, edit, onUpdateContent }) {
         {edit ? <ContentEditable
           html={content?.text}
           className="mb-5 font-poppins text-lg tracking-wide text-gray-500 lg:mb-0 section-mode-edit"
-          onChange={(e) => onUpdate("text", e.target.value)}
+          onChange={(e) => onUpdate("text", e.currentTarget.textContent)}
         /> :
           <div className="mb-5 font-poppins text-lg tracking-wide text-gray-500 lg:mb-0">
             {content?.text || ""}
@@ -50,17 +50,16 @@ function SectionAboutUsMemo({ section, edit, onUpdateContent }) {
 
       <div className="relative shrink-0 flex justify-center w-full lg:w-[500px] group ">
         {edit && <ToolboxImage value={content.image} name="image" onUpdateContent={onUpdate} className="group-hover:block hidden"/>}
-        {content?.image &&
-          <div className={cn({ "section-mode-edit p-1": edit })}>
-            <Image
-              className="rounded-lg"
-              src={content?.image}
-              width="450"
-              height="300"
-              alt=""
-            />
-          </div>
-          }
+        <div className={cn({ "section-mode-edit p-1": edit })}>
+          <Image
+            className="rounded-lg"
+            src={content?.image || placeholderImage}
+            width="450"
+            height="300"
+            alt=""
+          />
+        </div>
+          
       </div>
     </section>
   );

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { debounce } from "./utils";
+import { debounce, getCookie, setCookie } from "./utils";
 
 export function useOnClickOutside(ref, handler) {
   useEffect(
@@ -53,4 +53,19 @@ export function useToggle(initialState = false){
   const [state, setState] = useState(initialState);
   const toggle = useCallback(() => setState(state => !state), []);
   return [state, toggle];
+}
+
+
+export function useCookie(key) {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    const cookie = getCookie(key);
+    setData(JSON.parse(cookie) || null);
+  }, [key]);
+
+  const setCookieValue = (value) => {
+    setData(value);
+    setCookie(key, JSON.stringify(value));
+  }
+  return [data, setCookieValue];
 }

@@ -8,7 +8,7 @@ export default function ButtonBack({
   text
 }) {
   return (
-    <Button variant="ghost" onClick={onClick} className={cn("flex cursor-pointer items-center gap-x-2", className)}>
+    <Button variant="ghost" onClick={onClick} className={cn("flex cursor-pointer items-center gap-x-2 hover:bg-transparent", className)}>
       <IoChevronBackOutline size={20} />
       <span className="text-gray-600">{text ? text : "Kembali"}</span>
     </Button>

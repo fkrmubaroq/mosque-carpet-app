@@ -24,7 +24,7 @@ function HeroCard({
           tagName="h1"
             className="mb-4 text-xl lg:text-3xl font-cinzel text-primary section-mode-edit outline-none"
           html={title}
-          onChange={(e) => onUpdateContent("title", e.target.value)}
+          onChange={(e) => onUpdateContent("title", e.currentTarget.textContent)}
         />
           :
         <div className="mb-4 text-xl lg:text-3xl font-cinzel text-primary">{title}</div>
@@ -36,7 +36,7 @@ function HeroCard({
             tagName="div"
             className="font-poppins text-sm lg:text-md font-light tracking-wide section-mode-edit outline-none"
             html={text}
-            onChange={(e) => onUpdateContent("text",e.target.value)}
+            onChange={(e) => onUpdateContent("text",e.currentTarget.textContent)}
           />
           :
         <span className="font-poppins text-sm lg:text-md font-light tracking-wide">
@@ -128,7 +128,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
               "section-mode-edit"
             )}
             onChange={(e) => {
-              const value = e.target.value;
+              const value = e.currentTarget.textContent;
               onUpdateContent({
                 ...section,
                 content: {
@@ -172,7 +172,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
                     tagName="div"
                     className="!rounded-none !px-8 section-mode-edit !py-3 font-cinzel bg-primary"
                     onChange={(e) => {
-                      const value = e.target.value
+                      const value = e.currentTarget.textContent
                       onUpdateContent({
                         ...section,
                         content: {
@@ -191,7 +191,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
                       tagName="div"
                       className="!rounded-none !px-8 !py-3 border border-white section-mode-edit font-cinzel"
                       onChange={(e) => {
-                        const value = e.target.value
+                        const value = e.currentTarget.textContent
                         onUpdateContent({
                           ...section,
                           content: {

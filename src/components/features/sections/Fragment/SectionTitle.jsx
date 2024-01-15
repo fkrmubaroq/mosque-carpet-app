@@ -19,7 +19,7 @@ export default function SectionTitle({
                 "section-mode-edit",
                 classNameContext
               )}
-            onChange={(e) => onUpdateContent("heading", e.target.value)}
+            onChange={(e) => onUpdateContent("heading", e.currentTarget.textContent)}
           /> :
           <div
             className={cn(
@@ -35,7 +35,7 @@ export default function SectionTitle({
       {edit ? <ContentEditable
         html={title}
         className="mb-3 font-cinzel text-3xl font-medium section-mode-edit"
-        onChange={(e) => onUpdateContent("title", e.target.value)}
+        onChange={(e) => onUpdateContent("title", e.currentTarget.textContent)}
       /> :
         <div className="mb-3 font-cinzel text-3xl font-medium">{title}</div>
       }

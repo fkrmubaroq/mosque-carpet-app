@@ -26,7 +26,7 @@ export default async function handler(req, res) {
         name: true
       }
     });
-
+    
     if (!user) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.Unauthorized, ERROR_MESSAGE.UsernameOrPasswordWrong);
     }
@@ -36,7 +36,8 @@ export default async function handler(req, res) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.Unauthorized, ERROR_MESSAGE.UsernameOrPasswordWrong);
     }
     
-    const token = encodeJwt({ user: user.username });
+    const token = await encodeJwt({ user: user.username });
+
     setTokenToHeaderCookie(token, res);
     res.status(200).json({
       data: {

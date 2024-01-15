@@ -14,7 +14,11 @@ const Portal = dynamic(import("@/components/ui/portal").then((module) => module.
 
 export function Header({ noTransparent, content, edit, mobile, menus, onUpdateContent, onUpdateLogo }) {
   return (
-    <header className={cn("absolute left-0 right-0 z-50 px-3 lg:px-0 text-white", { "bg-primary shadow-md": noTransparent })}>
+    <header className={cn("absolute left-0 right-0 z-50 px-3 lg:px-0 ",
+      {
+        "bg-white shadow-md": noTransparent,
+        "text-white": !noTransparent
+      })}>
       <div className={cn("flex items-center justify-between", CONTAINER_LP, {
         "mt-4": !noTransparent
       })}>
@@ -33,14 +37,14 @@ export function Header({ noTransparent, content, edit, mobile, menus, onUpdateCo
               />
             }
             {content?.logo &&
-              <Image src={content.logo} width="36" height="36" alt="" />
+              <Image src={noTransparent ? "/img/logo-black_180x180.png" : content.logo} width="36" height="36" alt="" />
             }
           </div>
           {edit ?
             <ContentEditable
               className="text-lg text-white section-mode-edit"
               tagName="span"
-              html={content?.logo_text}
+              html={content?.logo_text || "-"}
               onChange={(e) => onUpdateLogo("logo_text", e.target.value)}
             />
             :
@@ -59,10 +63,14 @@ export function Header({ noTransparent, content, edit, mobile, menus, onUpdateCo
   );
 }
 
-function NavigationHeader({ onUpdateContent, edit = false, menus }) {
+function NavigationHeader({ noTransparent, onUpdateContent, edit = false, menus }) {
 
   return (
-    <nav className={cn("flex h-16 list-none items-center justify-center gap-x-5 text-lg font-light tracking-wide text-white")}>
+    <nav className={cn("flex h-16 list-none items-center justify-center gap-x-5 text-lg font-light tracking-wide ",
+      {
+        "text-white": !noTransparent
+    }
+    )}>
       {menus.map((item, key) => (
           <li className={cn("cursor-pointer h-10 flex items-center px-2")} key={key} onClick={(e) => {
             if (item.link && !edit) {

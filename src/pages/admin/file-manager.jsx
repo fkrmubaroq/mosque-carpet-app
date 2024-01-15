@@ -9,7 +9,6 @@ import {
 import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/form/input";
-import SearchInput from "@/components/ui/form/input/SearchInput";
 import { createFolder, deleteFolder, getFileItems, updateFolderName, uploadFiles } from "@/lib/api/file-manager";
 import { DIR_ACCESS_FILE } from "@/lib/constant";
 import { useDialogStore, useFileManagerStore } from "@/lib/hookStore";
@@ -218,13 +217,11 @@ export default function FileManager() {
       }
       <Layout
         classNameTitle="w-full"
-        customTitle={
-          <SearchInput className="!w-[31.25rem]" placeholder="Temukan File" />
-        }
+        title="Media Manager"
       >
         <div className="flex justify-between">
           <div className="mb-4 text-xl font-medium tracking-wide">
-            File Manager
+            Media
           </div>
           <ActionButtonManager
             onClickCreateFolder={onCreateFolder}
@@ -276,7 +273,7 @@ function ActionButtonManager({
   });
   return (
     <div className="relative flex gap-x-2" ref={dropdownRef}>
-      <Button size="lg" className="flex gap-x-2 !px-8">
+      <Button size="lg" className="flex gap-x-2 !px-8" onClick={() => onClickUploadFile()}>
         <LuUpload size={15} />
         <span>Upload File</span>
       </Button>

@@ -6,7 +6,7 @@ import { CONTAINER_LP, MARGIN_EACH_SECTION } from "@/lib/constant";
 import { useMobile } from "@/lib/hooks";
 import { prismaClient } from "@/lib/prisma";
 import { productsQuery } from "@/lib/queryKeys";
-import { formatNumberToPrice, mediaPath } from "@/lib/utils";
+import { formatNumberToPrice, mediaPath, slugString } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import cn from "classnames";
 import Image from "next/image";
@@ -37,7 +37,8 @@ export default function ProductCategory({ sections, setting }) {
   const mobile = useMobile();
 
   const router = useRouter()
-  const categoryName = router.query?.name;
+  const categoryName = router.query?.category;
+  console.log("router", router.query);
 
   const { data, isLoading } = useQuery({
     queryKey: productsQuery.getProducts,
@@ -89,7 +90,7 @@ export default function ProductCategory({ sections, setting }) {
               "lg:mb-24 lg:px-0 lg:text-5xl",
               "text-3xl font-light tracking-wider text-white",
               "relative text-center mb-6 font-poppins ",
-              "uppercase", 
+              "uppercase",
             )}>
             {removeSlug}
           </h1>
@@ -106,10 +107,12 @@ export default function ProductCategory({ sections, setting }) {
 }
 
 function SectionOurProduct({ data, showPrice }) {
-
+  const router = useRouter();
+  const categoryName = router.query?.category;
   const onClick = (data) => {
-    const slug = data.category_name?.split(" ").join("-");
-    Router.push(`/product/${slug.toLowerCase()}-${data.id}`);
+    const slug = slugString(data.name);
+    const category = slugString(categoryName);
+    Router.push(`/collections/${category}/${slug}-${data.id}`);
   }
 
   return <section className={MARGIN_EACH_SECTION}>
@@ -130,7 +133,7 @@ function SectionOurProduct({ data, showPrice }) {
 
 function PreviewData({ data, onClick, showPrice }) {
   return <div
-    onClick={() => onClick(data) }
+    onClick={() => onClick(data)}
     className=" lg:max-w-[330px] group mb-2 flex cursor-pointer flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary">
     <Image src={mediaPath("products", data.image)} width="400" height="300" alt="" className="w-full object-cover" />
     <div className="pb-5 pl-5 pt-4 flex gap-y-1 flex-col font-poppins tracking-wider text-slate-700 group-hover:bg-primary group-hover:text-white">

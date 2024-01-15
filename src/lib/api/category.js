@@ -12,11 +12,14 @@ export function insertCategory(payload) {
 }
 
 export function updateCategory(payload) {
-  console.log("upda te ", payload);
   const formPayload = objectIntoFormData(payload);
   return putMethod("category", formPayload);
 }
 
 export function deleteCategory(id) {
   return deleteMethod(`category/${id}`);
+}
+
+export function getCategoryBySlug(slug) {
+  return getMethod(`category/slug/${slug}`);
 }

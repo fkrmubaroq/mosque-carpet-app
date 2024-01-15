@@ -17,6 +17,10 @@ export const adminFileManagerQuery = {
   getFIleItems: (path) => ["admin","file-manager", path]
 }
 
+export const adminArticleQuery = {
+  getAll: ["admin", "article"],
+  getDetail: (id) => ["admin", "article", id]
+}
 export const landingPageQuery = {
   getCategories: ["lp", "category"]
 }
@@ -25,5 +29,6 @@ export const collectionsQuery = {
 }
 export const productsQuery = {
   getProducts: ["products-category"],
-  detailProduct: (slug) => ["products-detail", slug]
+  detailProduct: (slug) => ["products-detail", slug],
+  similarCategory: (slug) => ["similar-category", slug]
 }

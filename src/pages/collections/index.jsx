@@ -5,7 +5,7 @@ import { getCategory } from "@/lib/api/category";
 import { CONTAINER_LP, MARGIN_EACH_SECTION } from "@/lib/constant";
 import { prismaClient } from "@/lib/prisma";
 import { collectionsQuery } from "@/lib/queryKeys";
-import { debounce, mediaPath } from "@/lib/utils";
+import { debounce, mediaPath, slugString } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import cn from "classnames";
 import Image from "next/image";
@@ -125,8 +125,8 @@ function SectionOurProduct() {
   });
 
   const onClickCard = (data) => {
-    const slug = data.category_name?.split(" ").join("-");
-    Router.push(`/product-category/${slug.toLowerCase()}`);
+    const slug = slugString(data.category_name);
+    Router.push(`/collections/${slug}`);
   };
 
   return <section className={MARGIN_EACH_SECTION}>

@@ -32,7 +32,7 @@ export function Modal({
   return (
     <Portal>
       <div
-        className={cn("fixed top-0 z-50 h-full w-full overflow-y-auto bg-transparent px-2 font-jasans",
+        className={cn("fixed top-0 z-[999999] h-full w-full overflow-y-auto bg-transparent px-2 font-jasans",
           {
           "flex justify-center items-center": verticallyCentered
         })}

@@ -4,6 +4,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "./heading";
 html,
 body {
   scroll-behavior: smooth;
@@ -67,5 +68,58 @@ body {
     @apply px-32;
     margin-left: auto;
     margin-right: auto;
+  }
+}
+
+.tiptap-editor{
+  @apply bg-white tracking-wide p-3 border text-gray-500 focus:text-slate-900 border-gray-300 focus:outline-primary rounded-md;
+  blockquote{
+    p{
+      @apply mb-2;
+    }
+  }
+  a{
+    @apply text-blue-700 font-medium cursor-pointer hover:underline;
+  }
+  p{
+    @apply mb-4;
+  }
+
+  img {
+    margin-left: auto;
+    margin-right: auto;
+      &:hover{
+        @apply border-blue-400 border-2;
+      }
+      &.ProseMirror-selectednode {
+        @apply outline-2 outline-primary;
+      }
+  }
+  blockquote {
+    @apply border-l-4 border-l-gray-200 bg-gray-50 pl-4 ml-2 py-2 text-gray-600 mb-3 text-sm;
+  }
+}
+
+.tiptap-reader{
+  blockquote {
+    p {
+      @apply mb-2;
+    }
+  }
+  
+  a {
+    @apply text-blue-700 font-medium cursor-pointer hover:underline;
+  }
+
+  p {
+    @apply mb-4 tracking-wide text-gray-700 text-base;
+  }
+
+  img {
+    @apply mx-auto
+  }
+
+  blockquote {
+    @apply border-l-4 border-l-gray-200 bg-gray-50 pl-4 ml-2 py-2 text-gray-600 mb-3 text-sm;
   }
 }

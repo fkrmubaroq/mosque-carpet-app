@@ -36,6 +36,7 @@ const Selection = ({
   children,
   onClick,
   readOnly,
+  classNameToggle
 }) => {
   const [opened, setOpened] = useState(false);
   const [keyword, setKeyword] = useState("");
@@ -94,7 +95,7 @@ const Selection = ({
             "py-2 pl-4 pr-16",
             "text-sm outline-none",
             "border border-gray-300",
-            "h-[2.375rem] cursor-pointer rounded-md",
+            "cursor-pointer rounded-md",
             "overflow-hidden text-ellipsis whitespace-nowrap break-all",
             className,
             {
@@ -121,6 +122,7 @@ const Selection = ({
                 opened={opened}
                 onClick={handleToggle}
                 variant={variant}
+                className={classNameToggle}
               />
             )}
             <SelectionList
@@ -204,7 +206,7 @@ const SelectionList = ({
   if (!show) return <></>;
 
   return (
-    <div className="absolute inset-x-0 top-10 z-50 rounded-md bg-white pb-2 pt-4 drop-shadow-md">
+    <div className="absolute inset-x-0 top-10 z-50 rounded-md bg-white pb-2 pt-2 drop-shadow-md">
       {enableSearch && (
         <div className="relative mb-2.5 px-2.5">
           <Input
@@ -250,7 +252,7 @@ const SelectionList = ({
                 <li
                   key={key}
                   className={cn(
-                    "group flex cursor-pointer list-none gap-x-3 px-4 text-sm text-slate-600 hover:bg-gray-100",
+                    "group flex cursor-pointer list-none gap-x-3 px-4 text-xs text-slate-600 hover:bg-gray-100",
                     {
                       "bg-gray-100": item.text === value,
                     }
@@ -310,12 +312,14 @@ const ToggleOpen = ({
   opened,
   onClick,
   variant = "default",
+  className
 }) => {
   return (
     <div
       className={cn(
         "absolute bottom-0 right-0 top-0 flex h-[2.375rem] w-[2.375rem] cursor-pointer items-center justify-center ",
-        listVariantToggle[variant]
+        listVariantToggle[variant],
+        className
       )}
       onClick={onClick}
     >

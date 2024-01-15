@@ -27,7 +27,22 @@ const TOAST_MESSAGE = {
 
   // setting 
   "success-update-setting": "Pengaturan telah di terapkan",
-  "error-update-setting": "Pengaturan gagal diterapkan"
+  "error-update-setting": "Pengaturan gagal diterapkan",
+
+  // sections
+  "success-update-section": "Landing page telah disimpan",
+  "error-update-section": "Landing page gagal disimpan",
+
+  // articles
+  "success-create-article": "Artikel telah disimpan",
+  "error-create-article": "Artikel gagal disimpan",
+  "success-update-article": "Artikel telah diubah",
+  "error-update-article": "Artikel gagal diubah",
+  "success-delete-article": "Artikel telah dihapus",
+  "error-delete-article": "Artikel gagal dihapus",
+
+  // login
+  "error-wrong-password": "Username atau password salah"
 }
 
 const CONFIRMATION_MESSAGE = {
@@ -37,6 +52,8 @@ const CONFIRMATION_MESSAGE = {
   // category
   "confirm-delete-category": "Apakah anda yakin ingin menghapus kategori ini ?",
 
+  // logout
+  "logout": "Apakah anda yakin keluar dari halaman admin ?",
   "costum-message": "custom-message"
 }
 

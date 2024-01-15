@@ -66,7 +66,7 @@ export default function SectionContactUs({ setting, mobile = false, edit, sectio
               <ContentEditable
                 className="mb-4 font-cinzel text-2xl leading-normal text-white lg:max-w-[700px] lg:text-5xl section-mode-edit"
                 html={content?.title}
-                onChange={(e) => onUpdate("title", e.target.value)}
+                onChange={(e) => onUpdate("title", e.currentTarget.textContent)}
               /> : 
               content?.title &&
               <div className="mb-4 font-cinzel text-2xl leading-normal text-white lg:max-w-[700px] lg:text-5xl">
@@ -80,7 +80,7 @@ export default function SectionContactUs({ setting, mobile = false, edit, sectio
                 tagName="span"
                 className="text-lg tracking-wider text-white section-mode-edit"
                 html={content?.text}
-                onChange={(e) => onUpdate("text", e.target.value)}
+                onChange={(e) => onUpdate("text", e.currentTarget.textContent)}
               />
               :
               content?.text &&
@@ -100,7 +100,7 @@ export default function SectionContactUs({ setting, mobile = false, edit, sectio
               >
                   <AiOutlineWhatsApp size={mobile.mobileMd ? 20 : 22} />
                   {edit ? <ContentEditable className="section-mode-edit" html={content?.button_primary} tagName="span" onChange={(e) => {
-                    const value = e.target.value;
+                    const value = e.currentTarget.textContent;
                     onUpdateContent({
                       ...section,
                       content: {

@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import ButtonBack from "@/components/ui/button/ButtonBack";
 import ButtonWhatsapp from "@/components/ui/button/ButtonWa";
+import { getCategoryBySlug } from "@/lib/api/category";
 import { getProductByName } from "@/lib/api/product";
 import { CONTAINER_LP } from "@/lib/constant";
 import { useMobile } from "@/lib/hooks";
@@ -12,8 +13,12 @@ import { formatNumberToPrice, mediaPath } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import cn from "classnames";
 import Image from "next/image";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { FaWhatsapp } from "react-icons/fa";
+import 'swiper/css';
+import 'swiper/css/navigation';
+import { Navigation } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 export async function getServerSideProps() {
 
@@ -57,7 +62,7 @@ export default function ProductByName({ sections, setting }) {
       menus={content?.menus || []}
     />
     <div className={cn("pt-20 lg:pt-32",CONTAINER_LP)}>
-      <SectionDetailProduct setting={setting} />
+      <SectionDetailProduct mobile={mobile} setting={setting} />
     </div>
     <SectionFooter section={getContentSection("section_footer")} />
     <ButtonWhatsapp phone="" />
@@ -66,7 +71,7 @@ export default function ProductByName({ sections, setting }) {
 
 }
 
-function SectionDetailProduct({ setting }) {
+function SectionDetailProduct({ mobile, setting }) {
   const router = useRouter()
   const slug = router.query?.name;
 
@@ -76,18 +81,53 @@ function SectionDetailProduct({ setting }) {
       const response = await getProductByName(slug);
       return response.data?.data || []
     }
-  })
+  });
 
+  const { data:categories } = useQuery({
+    queryKey: productsQuery.similarCategory(slug),
+    queryFn: async () => {
+      const response = await getCategoryBySlug(slug);
+      return response.data?.data || []
+    }
+  });
+  const getSlidePerPreviewByScreen = () => {
+    if (mobile?.mobileSm) return 1;
+    if (mobile?.mobileMd) return 2;
+    return 4;
+  };
+
+  console.log("cate", categories);
   return <section>
     <ButtonBack
       className="mb-3 pl-0 hover:bg-transparent"
-      onClick={() => Router.push("/")}
-      text="Kembali Ke Halaman utama"
+      onClick={() => window.history.back(-1)}
+      text="Kembali"
     />
     <div className="flex flex-col lg:flex-row gap-x-10 mb-32">
       <ProductImage data={data} />
       <ProductInfo data={data} setting={setting} />
     </div>
+
+    <div>
+      <div>Jenis Serupa</div>
+      <Swiper
+        slidesPerView={getSlidePerPreviewByScreen()}
+        spaceBetween={20}
+        navigation={true}
+        loop
+        modules={[Navigation]}
+        className="swipper-category"
+      >
+        {categories?.data?.map((item, key) => (
+          <SwiperSlide
+            key={key}
+          >
+            <PreviewData data={item} />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+
   </section>
 }
 
@@ -104,18 +144,18 @@ function ProductInfo({ data, setting }) {
     <div>
       <div className="flex flex-col gap-y-2 border-b pb-5 mb-5">
         {data?.category_name && <span className="text-gray-500 uppercase text-lg tracking-wider">{data.category_name}</span>}
-        {data?.name && <span className="font-semibold text-slate-800 text-xl">{data.name}</span>}
+          {data?.name && <span className="font-semibold text-slate-800 text-xl tracking-wide">{data.name}</span>}
+        {data?.price && setting?.no_wa &&
+          <div className="text-primary text-2xl font-semibold tracking-wide">
+            Rp {formatNumberToPrice(data.price)}
+          </div>
+        }
         </div>
         {data?.description &&
           <div className="flex flex-col gap-y-3 mb-5">
             <h2 className="text-xl tracking-wide text-gray-600 font-semibold">Deskripsi</h2>
-            <span className="text-gray-500">{data.description}</span>
+            <span className="text-gray-500 tracking-wide text-justify">{data.description}</span>
           </div>
-        }
-        {data?.price && setting?.no_wa &&
-        <div className="text-primary text-2xl font-semibold">
-          Rp {formatNumberToPrice(data.price)}
-        </div>
         }
       </div>
       <div className="lg:mt-0 mt-4 mb-10">

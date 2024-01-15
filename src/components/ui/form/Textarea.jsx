@@ -20,9 +20,10 @@ const Textarea = ({
   const setAutoSize = () => {
     if (!inputRef.current) return;
     if (!initHeight.current) {
+      
       initHeight.current = parseInt(
         getComputedStyle(inputRef.current).getPropertyValue("height")
-      );
+        );
     }
     inputRef.current.style.height = `${initHeight.current}px`;
 
@@ -52,10 +53,10 @@ const Textarea = ({
         className={cn(
           "text-input",
           "w-full resize-none px-4 py-2 text-sm outline-none",
-          "rounded-md border border-gray-300  text-gray-500 focus:border-primary focus:bg-white focus:text-gray-900",
+          "rounded-md border border-gray-300 text-gray-500 focus:border-primary focus:bg-white focus:text-gray-900",
           className,
           {
-            "bg-gray-50": !disabled,
+            "bg-white": !disabled,
             "bg-gray-200": disabled
           }
         )}

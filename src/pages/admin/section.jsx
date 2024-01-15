@@ -51,9 +51,11 @@ export default function Section({ sections }) {
     )
   }
 
+  console.log("sectionsLp ", sectionsLp);
+
   return <Layout title="Sections">
     <div className="flex flex-col gap-y-3 relative">
-      {sectionsLp?.map((section, key) => <div className="relative">
+      {sectionsLp?.map((section, key) => <div key={key} className="relative">
         <SectionId name={section.section_name} show={viewIdSection} />
         <SectionContainer
           onUpdateContent={(updatedSection) => onUpdateContent(updatedSection, key)}

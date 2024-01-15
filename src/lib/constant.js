@@ -43,21 +43,27 @@ export const INIT_SECTIONS = [
       "menus": [
         {
           "menu": "",
-          "link": ""
+          "link": "",
+          "text": "About Us"
         },
         {
           "menu": "",
-          "link": ""
+          "link": "",
+          "text": "Collections"
         },
         {
           "menu": "",
-          "link": ""
+          "link": "",
+          "text": "undefined"
         },
         {
           "menu": "",
           "link": ""
         }
-      ]
+      ],
+      "banner": "",
+      "button_secondary": "",
+      "button_primary": ""
     }
   },
   {
@@ -65,7 +71,8 @@ export const INIT_SECTIONS = [
     "content": {
       "heading": "",
       "title": "",
-      "text": ""
+      "text": "",
+      "image": ""
     }
   },
   {
@@ -87,7 +94,8 @@ export const INIT_SECTIONS = [
     "content": {
       "heading": "",
       "title": "",
-      "text": [""]
+      "text": ["lorem", "ipsum"],
+      "button_primary": ""
     }
   },
   {
@@ -95,7 +103,7 @@ export const INIT_SECTIONS = [
     "content": {
       "title": "",
       "text": "",
-      "contact_link": ""
+      "button_primary": ""
     }
   },
   {
@@ -104,24 +112,33 @@ export const INIT_SECTIONS = [
       "logo_text": "AL-HIJRA",
       "tagline": "Ibadah Semakin nyaman",
       "contact": {
-        "address": [
-          {
+        "address": {
             "link": "https://map",
             "text": "Jln Saluyu Indah"
-          },
-          {
-            "link": "https://map",
-            "text": "Jln Antapani"
-          }
-        ],
-        "phone_wa": "088828372",
-        "email": "alhijra@carpet.com",
-        "social_media": {
-          "instagram": "https://instagram/",
-          "facebook": "https://facebook/",
-          "tiktok": "https://tiktok/",
-        }
+        },
+        "phone_wa": {
+          "link": "https://map",
+          "text": "Jln Saluyu Indah"
+        },
+        "email": {
+          "link": "https://map",
+          "text": "Jln Saluyu Indah"
+        },
       },
+      "social_media": {
+        "instagram": {
+          "link": "https://map",
+          "text": "Jln Saluyu Indah"
+        },
+        "facebook": {
+          "link": "https://map",
+          "text": "Jln Saluyu Indah"
+        },
+        "tiktok": {
+          "link": "https://map",
+          "text": "Jln Saluyu Indah"
+        }
+      }
     }
   }
 ]

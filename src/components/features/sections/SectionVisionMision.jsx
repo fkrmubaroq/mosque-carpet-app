@@ -44,7 +44,7 @@ function SectionVisionMisionMemo({ section, edit, onUpdateContent, sectionName }
           content: {
             ...section.content,
             mision: {
-              ...section.content.vision,
+              ...section.content.mision,
               [name]: value
             }
           }
@@ -64,7 +64,7 @@ function CardContent({ textGray, className, icon, title, description, edit, onUp
         <ContentEditable
           html={title}
           className="text-2xl font-cinzel section-mode-edit"
-          onChange={(e) => onUpdateContent("title", e.target.value)}
+          onChange={(e) => onUpdateContent("title", e.currentTarget.textContent)}
         />
         : <span className="text-2xl font-cinzel">{title}</span>
       }
@@ -74,7 +74,7 @@ function CardContent({ textGray, className, icon, title, description, edit, onUp
         <ContentEditable
           html={description}
           className={cn("font-poppins tracking-wide opacity-90 leading-7  section-mode-edit", { "text-gray-600": textGray })}
-          onChange={(e) => onUpdateContent("text", e.target.value)}
+          onChange={(e) => onUpdateContent("text", e.currentTarget.textContent)}
         /> :
           <span className={cn("font-poppins tracking-wide opacity-90 leading-7", { "text-gray-600": textGray })}>
           {description}

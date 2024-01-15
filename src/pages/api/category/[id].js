@@ -26,3 +26,4 @@ async function deleteRow(req, res) {
     responseErrorMessage(e, res)
   }
 }
+

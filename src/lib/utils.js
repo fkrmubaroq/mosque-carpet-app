@@ -164,3 +164,60 @@ export function setCursorPosition(el, position) {
   sel.addRange(range);
   el.focus();
 }
+
+export function strippedStrings(originalString) {
+  return originalString.replace(/(<([^>]+)>)/gi, "");
+}
+
+export function slugString(string) {
+  return string.toLowerCase()
+    .replace(/ /g, "-")
+    .replace(/[^\w-]+/g, "");;
+}
+
+function getDomain() {
+  const env = process.env.ENVIRONMENT;
+  if (env === "local") return "localhost";
+  if (env === "staging") return `dev.bursakarpetmasjid.com`;
+  if (env === "production") return "bursakarpetmasjid.com";
+}
+
+export function getCookieName(name) {
+  const env = process.env.ENVIRONMENT;
+  return `${env}-${name}`;
+}
+
+export const isClient = () => typeof window !== "undefined";
+
+export function getCookie(name, serverRequest) {
+  if (serverRequest) return serverRequest?.cookies.get(getCookieName(name)) || null
+  const cookieName = `${getCookieName(name)}=`;
+  const cookies = document.cookie.split(';');
+  for (let i = 0; i < cookies.length; i++) {
+    let cookie = cookies[i];
+    while (cookie.charAt(0) == ' ') {
+      cookie = cookie.substring(1);
+    }
+    if (cookie.indexOf(cookieName) == 0) {
+      return cookie.substring(cookieName.length, cookie.length);
+    }
+  }
+  return null;
+}
+
+export function setCookie(name, value, expireDays) {
+  const date = new Date();
+  let expires = "";
+  if (expireDays) {
+    date.setTime(date.getTime() + expireDays * 24 * 60 * 60 * 1000);
+    expires = `expires=${date.toUTCString()}`;
+  }
+  document.cookie = `${getCookieName(name)}=${value}; ${expires};path=/; domain=${getDomain()};`;
+}
+
+
+export function eraseCookie(name) {
+  document.cookie = `${getCookieName(
+    name
+  )}=; domain=${getDomain()}; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+}

@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
+import { getCookie } from "./lib/utils";
 
 export async function middleware(req, res) {
+  const user = getCookie("adm", req);
+  const userParsed = JSON.parse(user || null);
+  if (req.nextUrl.pathname.startsWith("/login") && userParsed?.username) {
+    return NextResponse.redirect(new URL("/admin/dashboard", req.url) );
+  }
+
   if (req.nextUrl.pathname.startsWith("/admin")) {
+    if (!userParsed?.username) return NextResponse.redirect(new URL("/login", req.url));
     return NextResponse.next();
   }
 
