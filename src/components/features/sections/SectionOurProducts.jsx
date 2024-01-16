@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { getCategory } from "@/lib/api/category";
 import { MARGIN_EACH_SECTION } from "@/lib/constant";
 import { landingPageQuery } from "@/lib/queryKeys";
-import { mediaPath } from "@/lib/utils";
+import { mediaPath, slugString } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Router from "next/router";
@@ -75,8 +75,8 @@ export default function SectionOurProduct({ edit, mobile }) {
 function PreviewData({ data }) {
   return <div
     onClick={() => {
-      const slug = data.category_name?.split(" ").join("-");
-      Router.push(`/product-category/${slug.toLowerCase()}`);
+      const slug = slugString(data.category_name);
+      Router.push(`/collections/${slug}`);
     }}
     className="group w-full mb-2 flex cursor-pointer flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary">
     <div className="shrink-0 relative h-[200px]">

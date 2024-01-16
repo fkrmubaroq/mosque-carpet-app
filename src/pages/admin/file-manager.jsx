@@ -9,6 +9,7 @@ import {
 import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/form/input";
+import { Line, Shimmer } from "@/components/ui/shimmer";
 import { createFolder, deleteFolder, getFileItems, updateFolderName, uploadFiles } from "@/lib/api/file-manager";
 import { DIR_ACCESS_FILE } from "@/lib/constant";
 import { useDialogStore, useFileManagerStore } from "@/lib/hookStore";
@@ -42,7 +43,7 @@ export default function FileManager() {
   const [selectedRenameFile, setSelectedRenameFile] = useState();
   const queryClient = useQueryClient();
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: adminFileManagerQuery.getFIleItems(currentPath),
     queryFn: async () => {
       const params = {
@@ -238,7 +239,8 @@ export default function FileManager() {
           ))}
         </span>
         <div className="grid grid-cols-3 gap-6">
-          {data?.map((item, key) => (
+          {isLoading ? <ShimmerMediaManager total={9} /> :
+            data?.map((item, key) => (
             <React.Fragment key={key}>
               {item.type === "FOLDER" && (
                 <Folder
@@ -355,12 +357,11 @@ function File({
     }
   };
   const src = `${DIR_ACCESS_FILE}${data.path}${data.name}`;
-  console.log("SRC ", src);
 
   return (
     <div
       ref={fileRef}
-      className="group flex cursor-pointer items-center justify-between gap-x-4 rounded-md bg-gray-100 py-3 pl-3.5 pr-3 shadow-sm transition-all duration-200 hover:bg-primary hover:text-white focus:bg-primary focus:text-white"
+      className="group flex cursor-pointer items-center justify-between gap-x-4 rounded-md bg-gray-50 py-3 pl-3.5 pr-3 shadow-sm transition-all duration-200 hover:bg-primary hover:text-white focus:bg-primary focus:text-white"
     >
       <div className="flex gap-x-4">
         <span className="flex shrink-0">
@@ -412,7 +413,6 @@ function Folder({
   const [edit, setEdit] = useState(data.name);
 
   useEffect(() => {
-    console.log(selected, data, editInputRef.current);
     if (selected?.id !== data.id || !editInputRef.current) return;
     editInputRef.current.select();
     setEdit(data.name);
@@ -448,7 +448,7 @@ function Folder({
         e.stopPropagation();
         onSelect(data.name);
       }}
-      className="group relative flex cursor-pointer items-center justify-between gap-x-4 rounded-md bg-gray-100 py-3 pl-5 pr-3 shadow-sm transition-all duration-200 hover:bg-primary hover:text-white focus:bg-primary focus:text-white"
+      className="group relative flex cursor-pointer items-center justify-between gap-x-4 rounded-md bg-gray-50 py-3 pl-5 pr-3 shadow-sm transition-all duration-200 hover:bg-primary hover:text-white focus:bg-primary focus:text-white"
     >
       <div className="flex items-center gap-x-4">
         <span>
@@ -470,7 +470,6 @@ function Folder({
             }}
             onKeyUp={(e) => {
               if (e.key === "Enter") {
-                console.log(e.currentTarget.value, "===", data.name);
                 if (e.currentTarget.value === data.name) {
                   setSelectedRenameFile(undefined);
                   return;
@@ -504,3 +503,17 @@ function Folder({
   );
 }
 
+function ShimmerMediaManager({ total }) {
+  return Array(total).fill(1)
+    .map((_, key) =>
+        <Shimmer key={key}>
+          <div className="flex items-center justify-between gap-x-4 rounded-md w-full bg-gray-100 py-3 pl-5 pr-3 shadow-sm">
+            <Line width="w-[42px]" height="h-[37px]" />
+            <div className="flex justify-between w-full gap-x-4">
+              <Line width="w-full" />
+              <Line width="w-[30px]"/>
+            </div>
+          </div>
+        </Shimmer>
+    )
+}

@@ -56,6 +56,7 @@ export default function ProductByName({ sections, setting }) {
     <Header
       noTransparent
       fixedHeader
+      hiddenMenu
       mobile={mobile}
       content={content}
       menus={content?.menus || []}
@@ -99,8 +100,8 @@ function SectionDetailProduct({ mobile, setting }) {
   console.log("cate", categories);
   return <section>
     <ButtonBack
-      className="mb-3 pl-0 hover:bg-transparent"
       onClick={() => window.history.back(-1)}
+      className="inline-flex !pl-0 items-center cursor-pointer gap-x-2 mb-3 text-lg font-cinzel tracking-wide"
       text="Kembali"
     />
     <div className="flex flex-col lg:flex-row gap-x-10 mb-32">

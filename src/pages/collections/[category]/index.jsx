@@ -1,6 +1,9 @@
 import SectionFooter from "@/components/features/sections/SectionFooter";
 import { Header } from "@/components/layout/Header";
+import ButtonBack from "@/components/ui/button/ButtonBack";
 import ButtonWhatsapp from "@/components/ui/button/ButtonWa";
+import { Card, CardContent } from "@/components/ui/card";
+import { Line, Shimmer } from "@/components/ui/shimmer";
 import { getProductByCategory } from "@/lib/api/product";
 import { CONTAINER_LP, MARGIN_EACH_SECTION } from "@/lib/constant";
 import { useMobile } from "@/lib/hooks";
@@ -11,7 +14,6 @@ import { useQuery } from "@tanstack/react-query";
 import cn from "classnames";
 import Image from "next/image";
 import Router, { useRouter } from "next/router";
-import { FaArrowLeftLong } from "react-icons/fa6";
 
 export async function getServerSideProps() {
 
@@ -98,7 +100,9 @@ export default function ProductCategory({ sections, setting }) {
       </div>
     </div>
     <div className={cn(CONTAINER_LP, "px-4")}>
-      <SectionOurProduct data={data} isLoading={isLoading} showPrice={setting?.show_price} />
+      {isLoading ? <ShimmerSection total={8} /> :
+        <SectionOurProduct data={data} isLoading={isLoading} showPrice={setting?.show_price} />
+      }
     </div>
     <SectionFooter section={getContentSection("section_footer")} />
     <ButtonWhatsapp phone="" />
@@ -116,13 +120,11 @@ function SectionOurProduct({ data, showPrice }) {
   }
 
   return <section className={MARGIN_EACH_SECTION}>
-    <div
+    <ButtonBack
       onClick={() => Router.push("/collections")}
-      className="inline-flex items-center cursor-pointer gap-x-2 text-lg font-cinzel tracking-wide"
-    >
-      <FaArrowLeftLong />
-      <span>Kembali Ke Kategori</span>
-    </div>
+      className="inline-flex !pl-0 items-center cursor-pointer gap-x-2 text-lg font-cinzel tracking-wide"
+      text="Kembali"
+    />
     <div className="flex gap-x-5 gap-y-5 flex-wrap mt-5">
       {
         data?.map((item, key) => <PreviewData key={key} data={item} onClick={onClick} showPrice={showPrice} />)
@@ -141,5 +143,25 @@ function PreviewData({ data, onClick, showPrice }) {
       {data?.description && <span className="text-sm text-gray-400 line-clamp-2">{data?.description || ""}</span>}
       {data?.price && showPrice === "Y" && <div className="text-primary text-xl font-semibold mt-2 group-hover:text-white">Rp {formatNumberToPrice(data?.price)}</div>}
     </div>
+  </div>
+}
+
+function ShimmerSection({ total }) {
+  return <div className="flex gap-x-5 gap-y-5 flex-wrap">
+    {Array(total).fill(1).map((item, key) =>
+    <Shimmer>
+      <Card key={key} className="lg:w-[330px]">
+          <Line width="w-full" height="h-[247px]" />
+          <CardContent className="flex flex-col mt-5 gap-y-5">
+            <Line width="w-[150px]" />
+            <div className="flex flex-col gap-y-3">
+              <Line width="w-full" />
+              <Line width="w-full" />
+            </div>
+            </CardContent>
+      </Card>
+    </Shimmer>
+    )
+  }
   </div>
 }

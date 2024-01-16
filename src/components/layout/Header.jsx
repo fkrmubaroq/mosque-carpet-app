@@ -12,15 +12,17 @@ import ToolboxImage from "../features/sections/Fragment/Toolbox/ToolboxImage";
 
 const Portal = dynamic(import("@/components/ui/portal").then((module) => module.default), { ssr: false });
 
-export function Header({ noTransparent, content, edit, mobile, menus, onUpdateContent, onUpdateLogo }) {
+export function Header({ noTransparent, hiddenMenu, content, edit, mobile, menus, onUpdateContent, onUpdateLogo }) {
   return (
     <header className={cn("absolute left-0 right-0 z-50 px-3 lg:px-0 ",
       {
         "bg-white shadow-md": noTransparent,
-        "text-white": !noTransparent
+        "text-white": !noTransparent,
+        "flex items-center h-16 !fixed": hiddenMenu
       })}>
       <div className={cn("flex items-center justify-between", CONTAINER_LP, {
-        "mt-4": !noTransparent
+        "mt-4": !noTransparent,
+        "!mx-0": hiddenMenu
       })}>
         <div className={cn("flex items-center justify-center gap-x-3 cursor-pointer")} onClick={() => Router.push("/")}>
           <div className={cn("flex ", {
@@ -56,15 +58,15 @@ export function Header({ noTransparent, content, edit, mobile, menus, onUpdateCo
         {mobile.mobileMd || mobile.mobileSm ? (
           <MobileNavigationHeader edit={edit} menus={menus} content={content} />
         ) : (
-          <NavigationHeader noTransparent={noTransparent} edit={edit} menus={menus} onUpdateContent={onUpdateContent} />
+          <NavigationHeader hiddenMenu={hiddenMenu} noTransparent={noTransparent} edit={edit} menus={menus} onUpdateContent={onUpdateContent} />
         )}
       </div>
     </header>
   );
 }
 
-function NavigationHeader({ noTransparent, onUpdateContent, edit = false, menus }) {
-
+function NavigationHeader({ hiddenMenu, noTransparent, onUpdateContent, edit = false, menus }) {
+  if (hiddenMenu) return <></>;
   return (
     <nav className={cn("flex h-16 list-none items-center justify-center gap-x-5 text-lg font-light tracking-wide ",
       {
