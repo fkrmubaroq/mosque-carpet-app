@@ -22,7 +22,9 @@ export const adminArticleQuery = {
   getDetail: (id) => ["admin", "article", id]
 }
 export const landingPageQuery = {
-  getCategories: ["lp", "category"]
+  getCategories: ["lp", "category"],
+  getArticles: ["lp", "articles"],
+  getAllArticles: ["all", "articles"]
 }
 export const collectionsQuery = {
   getCategories: ["collections"]

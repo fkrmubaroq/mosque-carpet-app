@@ -4,7 +4,7 @@ const defaultFavicon = [
   "/img/logo-black.ico",
   "/img/logo-black_180x180.png"
 ]
-export default function Meta({ children, description, title, favicon, faviconMedium }) {
+export default function Meta({ children, customTitle, description, title, favicon, faviconMedium }) {
   return (
     <Head>
       <meta charSet="UTF-8" />
@@ -24,7 +24,9 @@ export default function Meta({ children, description, title, favicon, faviconMed
         sizes="180x180"
         href={faviconMedium || defaultFavicon[1]}
       />
-      <title>{title ? `Al-Hijra | ${title}` : "Al-Hijra"}</title>
+      {customTitle ? <title>{customTitle}</title> :
+        <title>{title ? `Al-Hijra | ${title}` : "Al-Hijra"}</title>
+      }
       {children}
     </Head>
   );

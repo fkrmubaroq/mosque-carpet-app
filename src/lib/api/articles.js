@@ -18,6 +18,10 @@ export function getArticleById(id) {
   return getMethod(`article/${id}`);
 }
 
+export function getArticleBySlug(slug) {
+  return getMethod(`article/slug/${slug}`);
+}
+
 export function deleteArticle(id) {
   return deleteMethod(`article/${id}`);
 }

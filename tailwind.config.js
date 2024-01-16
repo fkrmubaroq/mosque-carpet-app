@@ -12,7 +12,8 @@ module.exports = {
       fontFamily: {
         "poppins": ["Poppins", "sans-serif"],
         "cinzel": ["Cinzel", "sans-serif"],
-        "jasans": ["Plus Jakarta Sans", "sans-serif"]
+        "jasans": ["Plus Jakarta Sans", "sans-serif"],
+        "soserif": ["'Source Serif 4'", "sans-serif"],
       },
       colors: {
         "background": "white",

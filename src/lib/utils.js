@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import fs from "fs";
 import { DIR_ACCESS_FILE } from "./constant";
 
@@ -220,4 +221,17 @@ export function eraseCookie(name) {
   document.cookie = `${getCookieName(
     name
   )}=; domain=${getDomain()}; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+}
+
+export const getArticleTime = (date) => {
+  const formatDate = dayjs(date).format("YYYY-MM-DD");
+  const year = formatDate.split("-")?.[0];
+  const now = new Date();
+  if (now.getFullYear() > +year) return dayjs(date).format("DD MMMM YYYY HH:mm");
+  return dayjs().to(dayjs(date));
+}
+
+export function getWord(writerName,totalWord, separator=" ") {
+  const data = writerName.split(separator);
+  return data.slice(0, totalWord).join(" ");
 }

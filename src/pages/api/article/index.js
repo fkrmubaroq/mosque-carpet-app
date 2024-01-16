@@ -33,6 +33,9 @@ async function get(req, res) {
             total: true,
           }
         }
+      },
+      orderBy: {
+        id:"desc"
       }
     });
 

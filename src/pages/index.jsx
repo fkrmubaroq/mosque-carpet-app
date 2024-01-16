@@ -72,9 +72,6 @@ export default function Home({ sections, setting }) {
     return () => window.removeEventListener("resize", debounceCheckScreenWidth);
   }, [mobile]);
 
-  useEffect(() => {
-    document.body.classList.add("bg-slate-50");
-  }, []);
   return (
     <main className="min-h-screen">
       <SectionHero mobile={mobile} section={getContentSection("section_hero")} />

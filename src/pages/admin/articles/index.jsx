@@ -7,7 +7,7 @@ import { deleteArticle, getArticle } from "@/lib/api/articles";
 import { useDialogStore } from "@/lib/hookStore";
 import { useOnClickOutside } from "@/lib/hooks";
 import { adminArticleQuery } from "@/lib/queryKeys";
-import { mediaPath, strippedStrings } from "@/lib/utils";
+import { getWord, mediaPath, strippedStrings } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import cn from "classnames";
 import dayjs from "dayjs";
@@ -16,10 +16,11 @@ import Image from "next/image";
 import Router from "next/router";
 import { useRef, useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { FiUser } from "react-icons/fi";
 import { GoPencil } from "react-icons/go";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { IoMdTime } from "react-icons/io";
-import { IoCreateOutline, IoEyeOutline } from "react-icons/io5";
+import { IoCreateOutline } from "react-icons/io5";
 dayjs.locale("id");
 
 const initConfirmation = Object.freeze({ show: false, type: "" });
@@ -139,8 +140,8 @@ function ArticleCardItem({ data, setIsOpen, index, activeIndex, onEdit, onClickM
         <span className="text-xs text-gray-400">{dayjs(data.created_at).format("DD MMMM YYYY HH:mm")}</span>
       </div>
       <div className="flex gap-x-2 items-be mt-3">
-        <IoEyeOutline color="gray" />
-        <span className="text-xs text-gray-400">{data.total_viewers || 0}</span>
+        <FiUser color="gray" />
+        <span className="text-xs text-gray-400">{getWord(data.writer,2)}</span>
       </div>
     </CardFooter>
   </Card>
