@@ -7,9 +7,9 @@ import ModalToolboxFooter from "./ModalToolboxFooter";
 const initModal = Object.freeze({
   show: false,
 })
-export default function ToolboxFooter({ data, name, className, onUpdateContent }) {
+export default function ToolboxFooter({ index, data, name, className, onUpdateContent }) {
   const [modal, setModal] = useState(initModal);
-  
+  console.log("data ", data, name);
   return <>
     {modal.show &&
       <ModalToolboxFooter
@@ -30,6 +30,10 @@ export default function ToolboxFooter({ data, name, className, onUpdateContent }
           icon={<LuPencil color="white" size={17} />}
           text=""
           onClick={() => {
+            if (name === "address") {
+              setModal({ show: true, data: { ...data[name][index] } });
+              return;
+            }
             setModal({ show: true, data:  { ...data[name] } })
           }}
         />

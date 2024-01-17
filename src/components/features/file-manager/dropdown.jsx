@@ -1,6 +1,7 @@
 import { FaRegEye, FaRegFolderOpen, FaRegTrashAlt } from "react-icons/fa";
 import { FiCopy } from "react-icons/fi";
 import { GoPlus } from "react-icons/go";
+import { IoCloudDownloadOutline } from "react-icons/io5";
 import { LuUpload } from "react-icons/lu";
 import { MdOutlineDriveFileRenameOutline } from "react-icons/md";
 
@@ -56,6 +57,7 @@ export function DropdownActionFile({
   onRenameFile,
   onDeleteFile,
   onCopySource,
+  onDownloadFile
 }) {
   return (
     <nav className="absolute right-0 top-10 z-[999] flex w-56 flex-col gap-y-2 rounded-md bg-white py-2 shadow">
@@ -63,6 +65,11 @@ export function DropdownActionFile({
         text="Lihat"
         icon={<FaRegEye size={18} />}
         onClick={() => onOpenFile()}
+      />
+      <DropdownItem
+        text="Download"
+        icon={<IoCloudDownloadOutline size={18} />}
+        onClick={() => onDownloadFile()}
       />
       <DropdownItem
         text="Ganti Nama"

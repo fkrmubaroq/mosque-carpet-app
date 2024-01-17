@@ -90,7 +90,7 @@ export default function SectionContactUs({ setting, mobile = false, edit, sectio
             }
             <div className="mt-4">
               <Button
-                className={cn("flex items-center justify-center gap-x-2 !rounded-none !p-6 text-white")}
+                  className={cn("flex font-cinzel text-lg items-center justify-center gap-x-2 !rounded-none !p-6 text-white")}
                 onClick={() => {
                   if (!edit && setting?.no_wa) { 
                     window.open(`https://wa.me/${setting.no_wa}`);
@@ -98,7 +98,7 @@ export default function SectionContactUs({ setting, mobile = false, edit, sectio
                   }
                 }}
               >
-                  <AiOutlineWhatsApp size={mobile.mobileMd ? 20 : 22} />
+                  <AiOutlineWhatsApp size={mobile.mobileMd ? 18 : 20} />
                   {edit ? <ContentEditable className="section-mode-edit" html={content?.button_primary} tagName="span" onChange={(e) => {
                     const value = e.currentTarget.textContent;
                     onUpdateContent({

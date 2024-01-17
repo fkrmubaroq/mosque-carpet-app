@@ -124,6 +124,18 @@ export async function incomingRequest(form, req){
 
 }
 
+export async function fileIsExists(src) {
+  return new Promise((resolve, reject) => {
+    fs.access(src, async (err) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(true);
+    })
+  })
+}
+
 export async function unlinkFile(src) {
   return new Promise((resolve) => {
     fs.access(src, async (err) => {
@@ -234,4 +246,28 @@ export const getArticleTime = (date) => {
 export function getWord(writerName,totalWord, separator=" ") {
   const data = writerName.split(separator);
   return data.slice(0, totalWord).join(" ");
+}
+
+export function selectedFileName(inputEl) {
+  const split = inputEl.value.split(".");
+  const endRangeFileName = (split) => {
+    let count = 0;
+    for (let i = 0; i < split.length - 1; i++) {
+      count += split[i].length;
+    }
+    return count;
+  }
+  const end = endRangeFileName(split);
+  inputEl.focus();
+  inputEl.setSelectionRange(0,end)
+  
+}
+
+export function downloadFileUrl(url, fileName) {
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }

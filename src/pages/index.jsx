@@ -9,6 +9,7 @@ import SectionArticles from "@/components/features/sections/SectionArticles";
 import SectionContactUs from "@/components/features/sections/SectionContactUs";
 import SectionFooter from "@/components/features/sections/SectionFooter";
 import SectionHero from "@/components/features/sections/SectionHero";
+import SectionMapAddress from "@/components/features/sections/SectionMapAddress";
 import SectionOurProduct from "@/components/features/sections/SectionOurProducts";
 import SectionVisionMision from "@/components/features/sections/SectionVisionMision";
 import SectionWhyChooseUs from "@/components/features/sections/SectionWhyChooseUs";
@@ -82,8 +83,9 @@ export default function Home({ sections, setting }) {
         <SectionContactUs setting={setting} mobile={mobile} section={getContentSection("section_contact_us")} />
         <SectionArticles mobile={mobile} />
         <SectionOurProduct mobile={mobile} />
+        <SectionMapAddress section={getContentSection("section_map_address")} mobile={mobile} />
       </div>
-      <SectionFooter section={getContentSection("section_footer")} />
+      <SectionFooter setting={setting} section={getContentSection("section_footer")} />
       <ButtonWa phone={setting?.no_wa} />
     </main>
   );

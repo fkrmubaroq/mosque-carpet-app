@@ -21,7 +21,7 @@ export default function handler(req, res) {
 async function post(req, res) {
   try {
     const { id, ...validateRequest } = validation(insertSettingValidation, req.body);
-    validateRequest.branch = JSON.parse(validateRequest.branch || "[]");
+    console.log("vali", validateRequest);
     const data = await prismaClient.setting.update({
       data: validateRequest,
       where: {

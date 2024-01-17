@@ -40,7 +40,6 @@ model Product {
 model Setting {
   id           Int    @id @default(autoincrement()) @db.UnsignedInt
   no_wa        String @db.VarChar(20)
-  branch       Json
   is_maintenance Active @default(N)
   show_price   Active @default(Y)
   @@map("setting")

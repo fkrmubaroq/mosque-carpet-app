@@ -5,6 +5,7 @@ import SectionVisionMision from "@/components/features/sections/SectionVisionMis
 import SectionWhyChooseUs from "@/components/features/sections/SectionWhyChooseUs";
 import SectionArticles from "./SectionArticles";
 import SectionFooter from "./SectionFooter";
+import SectionMapAddress from "./SectionMapAddress";
 import SectionOurProduct from "./SectionOurProducts";
 
 
@@ -16,7 +17,8 @@ const Sections = {
   section_contact_us: SectionContactUs,
   section_footer: SectionFooter,
   section_articles: SectionArticles,
-  section_categories: SectionOurProduct        
+  section_categories: SectionOurProduct,
+  section_map_address: SectionMapAddress,
 }
 export default function SectionContainer({ onUpdateContent, sectionName, section }) {
   const SectionContainer = Sections[sectionName];

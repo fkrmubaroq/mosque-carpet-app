@@ -16,7 +16,14 @@ const updateFolderNameValidation =  Joi.object({
       "string.max": "Nama folder terlalu panjang",
   }).required(),
 })
+const updateFileNameValidation =  Joi.object({
+  name: Joi.string().max(255).required()
+    .messages({
+      "string.pattern.base": "Nama file tidak valid",
+      "string.max": "Nama file terlalu panjang",
+  }).required(),
+})
 export {
-  createFolderValidation,
-  updateFolderNameValidation
+  createFolderValidation, updateFileNameValidation, updateFolderNameValidation
 };
+

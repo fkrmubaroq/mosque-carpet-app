@@ -10,12 +10,12 @@ import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/form/input";
 import { Line, Shimmer } from "@/components/ui/shimmer";
-import { createFolder, deleteFolder, getFileItems, updateFolderName, uploadFiles } from "@/lib/api/file-manager";
+import { createFolder, deleteFile, deleteFolder, getFileItems, updateFileName, updateFolderName, uploadFiles } from "@/lib/api/file-manager";
 import { DIR_ACCESS_FILE } from "@/lib/constant";
 import { useDialogStore, useFileManagerStore } from "@/lib/hookStore";
 import { useOnClickOutside } from "@/lib/hooks";
 import { adminFileManagerQuery } from "@/lib/queryKeys";
-import { copyToClipboard } from "@/lib/utils";
+import { copyToClipboard, downloadFileUrl, selectedFileName } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -92,6 +92,22 @@ export default function FileManager() {
     }
   });
 
+  const { mutate: mutateUpdateFile } = useMutation({
+    mutationFn: (payload) => updateFileName(payload.id, { name: payload.name }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: adminFileManagerQuery.getFIleItems(currentPath),
+      });
+    },
+    onError: (e) => {
+      if (e.response?.data?.message) {
+        showToast("custom-message", e.response.data.message,"danger");
+        return;
+      }
+      showToast("error-update-file");
+    }
+  });
+
   const { mutate: mutateDeleteFolder } = useMutation({
     mutationFn: (id) => deleteFolder(id),
     onSuccess: () => {
@@ -101,6 +117,18 @@ export default function FileManager() {
       showToast("success-delete-folder")
     },
     onError: () => showToast("error-update-folder"),
+    onSettled: hideConfirmation
+  });
+
+  const { mutate: mutateDeleteFile } = useMutation({
+    mutationFn: (id) => deleteFile(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: adminFileManagerQuery.getFIleItems(currentPath),
+      });
+      showToast("success-delete-file")
+    },
+    onError: () => showToast("error-delete-file"),
     onSettled: hideConfirmation
   });
 
@@ -158,6 +186,20 @@ export default function FileManager() {
     );
   };
 
+  const onDeleteFile = (selected) => {
+    showConfirmation(
+      "costum-message",
+      {
+        onConfirm: () => {
+          mutateDeleteFile(selected.id)
+        },
+      },
+      <>
+        File <span className="font-bold mx-0.5">{selected.name}</span> akan dihapus, apakah anda yakin?
+      </>
+    );
+  };
+
   const onOpenFolder = (selectedFolder) => {
     setPath(`${currentPath}${selectedFolder}${selectedFolder ? '/' : ''}`)
   };
@@ -177,6 +219,11 @@ export default function FileManager() {
     mutateUpdateFolder(selected);
   }
 
+  const onUpdateFile = (selected) => {
+    setSelectedRenameFile(undefined);
+    mutateUpdateFile(selected);
+  }
+
   const onPreviewFile = (selected) => {
     setModal({
       show: true,
@@ -190,6 +237,14 @@ export default function FileManager() {
     copyToClipboard(text);
     showToast("custom-message","Teks telah disalin","default")
   }
+
+  const onDownloadFile = (selected) => {
+    const path = `${selected.path}${selected.name}`
+    const splitPath = path.split("/");
+    const fileName = splitPath[splitPath.length - 1];
+    downloadFileUrl(`${DIR_ACCESS_FILE}/${path}`, fileName)
+  }
+
   return (
     <>
       {modal.type === "add-folder" && (
@@ -232,6 +287,7 @@ export default function FileManager() {
         <span className="mb-5 flex gap-x-2 text-sm text-gray-400">
           {getCumulativePathSegments(currentPath).map((segment, key, arr) => (
             <PathItem
+              key={key}
               segment={segment}
               appendArrow={key !== arr.length - 1}
               onSelect={setPath}
@@ -253,7 +309,17 @@ export default function FileManager() {
                   setSelectedRenameFile={setSelectedRenameFile}
                 />
               )}
-              {item.type === "FILE" && <File data={item} onPreviewFile={onPreviewFile} onCopySource={onCopySource} />}
+                {item.type === "FILE" &&
+                  <File
+                    data={item}
+                    onPreviewFile={onPreviewFile}
+                    onCopySource={onCopySource}
+                    setSelectedRenameFile={setSelectedRenameFile}
+                    selected={selectedRenameFile}
+                    onUpdateFile={onUpdateFile}
+                    onDeleteFile={onDeleteFile}
+                    onDownloadFile={onDownloadFile}
+                />}
             </React.Fragment>
           ))}
         </div>
@@ -324,11 +390,23 @@ function File({
   data,
   onPreviewFile,
   onCopySource,
+  setSelectedRenameFile,
+  selected,
+  onUpdateFile,
+  onDeleteFile,
+  onDownloadFile
 }) {
   const [opened, setOpened] = useState(false);
   const fileRef = useRef(null);
   const editInputRef = useRef(null);
   const [edit, setEdit] = useState(data.name);
+
+
+  useEffect(() => {
+    if (selected?.id !== data.id || !editInputRef.current) return;
+    selectedFileName(editInputRef.current);
+    setEdit(data.name);
+  }, [selected]);
 
   useOnClickOutside(fileRef, () => {
     if (!opened) return;
@@ -343,16 +421,22 @@ function File({
     }
     if (action === "rename") {
       setSelectedRenameFile(data);
+      console.log("edi", editInputRef.current);
       editInputRef.current?.select();
       return;
     }
 
     if (action === "delete") {
-      onDeleteFolder(data);
+      onDeleteFile(data);
       return;
     }
     if (action === "copy-source") {
       onCopySource(data);
+      return;
+    }
+
+    if (action === "download") {
+      onDownloadFile(data);
       return;
     }
   };
@@ -373,9 +457,35 @@ function File({
             height={45}
           />
         </span>
-        <span className="flex items-center font-semibold tracking-wide">
-          {data.name}
-        </span>
+        {selected?.id === data.id ? (
+          <Input
+            ref={editInputRef}
+            onChange={(e) => setEdit(e.target.value)}
+            value={edit}
+            className="w-72 !pl-1  hover:text-gray-800 group-hover:text-gray-800"
+            onDoubleClick={(e) => e.stopPropagation()}
+            onBlur={(e) => {
+              if (e.currentTarget.value === data.name) {
+                setSelectedRenameFile(undefined);
+                return;
+              }
+              onUpdateFile({ ...data, name: edit });
+            }}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                if (e.currentTarget.value === data.name) {
+                  setSelectedRenameFile(undefined);
+                  return;
+                }
+                onUpdateFile({ ...data, name: edit });
+              }
+            }}
+          />
+        ) : (
+          <span className="flex items-center font-semibold tracking-wide">
+            {data.name}
+          </span>
+        )}
       </div>
       <div className="relative">
         <Button
@@ -392,6 +502,7 @@ function File({
             onOpenFile={() => onAction("preview")}
             onRenameFile={() => onAction("rename")}
             onCopySource={() => onAction("copy-source")}
+            onDownloadFile={() => onAction("download")}
           />
         )}
       </div>
@@ -431,7 +542,7 @@ function Folder({
     }
     if (action === "rename") {
       setSelectedRenameFile(data);
-      editInputRef.current?.select();
+
       return;
     }
 

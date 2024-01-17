@@ -1,5 +1,5 @@
 import { responseErrorMessage, responseNotFound } from "@/errors/response-error";
-import { DIR_FILE_THUMBNAIL } from "@/lib/constant";
+import { DIR_FILE_THUMBNAIL, OFFSET } from "@/lib/constant";
 import { STATUS_MESSAGE_ENUM } from "@/lib/enum";
 import { prismaClient } from "@/lib/prisma";
 import { incomingRequest, slugString } from "@/lib/utils";
@@ -26,6 +26,28 @@ export default function handler(req, res) {
 
 async function get(req, res) {
   try {
+    const query = req.query;
+    const q = query?.q;
+    const page = query?.page ? +query.page : 1;
+    const skip = (page - 1) * OFFSET;
+    let filters = {
+      where: {
+        OR: [
+          {
+            title: {
+              contains: q,
+            }
+          },
+          {
+            writer: {
+              contains: q
+            }
+          }
+        ]
+      }
+    }
+
+
     const data = await prismaClient.article.findMany({
       include: {
         viewers: {
@@ -34,13 +56,28 @@ async function get(req, res) {
           }
         }
       },
+      ...filters,
+      skip,
+      take: +(query?.limit) || OFFSET,
       orderBy: {
         id:"desc"
       }
     });
 
+    const paginationInfo = await prismaClient.article.count({
+      ...filters
+    });
+    const totalPage = Math.ceil(paginationInfo / OFFSET)
+
     const parsedData = data.map(({ viewers, ...item }) => ({ ...item, total_viewers: viewers?.total || null }));
-    res.status(STATUS_MESSAGE_ENUM.Ok).json({ data: parsedData })
+    res.status(STATUS_MESSAGE_ENUM.Ok).json({
+      data: parsedData,
+      paging: {
+        page,
+        total_page: totalPage,
+        total_items: paginationInfo
+      }
+    })
   } catch (e) {
     responseErrorMessage(e, res);
   }

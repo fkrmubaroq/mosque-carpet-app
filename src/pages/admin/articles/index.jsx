@@ -1,13 +1,15 @@
 import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import SearchInput from "@/components/ui/form/input/SearchInput";
 import { Confirmation } from "@/components/ui/modal/Confirmation";
 import { Line, Shimmer } from "@/components/ui/shimmer";
+import Pagination from "@/components/ui/table/PaginationTable";
 import { deleteArticle, getArticle } from "@/lib/api/articles";
 import { useDialogStore } from "@/lib/hookStore";
 import { useOnClickOutside } from "@/lib/hooks";
 import { adminArticleQuery } from "@/lib/queryKeys";
-import { getWord, mediaPath, strippedStrings } from "@/lib/utils";
+import { debounce, getWord, mediaPath, strippedStrings } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import cn from "classnames";
 import dayjs from "dayjs";
@@ -26,10 +28,12 @@ dayjs.locale("id");
 const initConfirmation = Object.freeze({ show: false, type: "" });
 export default function Articles() {
   const articleRef = useRef();
+  const [page, setPage] = useState(1);
+  const [keyword, setKeyword] = useState("");
   const [confirmation, setConfirmation] = useState(initConfirmation);
   const [isOpen, setIsOpen] = useState(null);
-  const showToast = useDialogStore(state => state.showToast);
   const queryClient = useQueryClient();
+  const showToast = useDialogStore(state => state.showToast);
 
   const { mutate: mutateDeleteArticle, isLoading:isLoadingDeleteArticle } = useMutation({
     mutationFn: deleteArticle,
@@ -45,11 +49,12 @@ export default function Articles() {
     if (!articleRef.current) return;
     setIsOpen(false);
   })
-  const { data, isLoading } = useQuery({
-    queryKey: adminArticleQuery.getAll,
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: adminArticleQuery.getAll(page,keyword),
     queryFn: async () => {
       const params = {
-
+        q: keyword,
+        page
       };
       const response = await getArticle(params);
       return response.data || []
@@ -76,6 +81,9 @@ export default function Articles() {
     mutateDeleteArticle(confirmation.data.id);
   }
 
+  const debounceSearch = debounce(setKeyword);
+  const onNextPrev = (current) => setPage(page => page + current);
+
   return (
     <>
       <Confirmation
@@ -89,16 +97,16 @@ export default function Articles() {
         </div>
       </Confirmation>
     <Layout title="Artikel">
-      <div className="flex justify-end mb-5">
-        
-        <Button size="lg" className="flex gap-x-2" onClick={() => Router.push("/admin/articles/create")}>
+      <div className="flex justify-between mb-5">
+        <SearchInput placeholder="Cari Artikel" className="w-[300px]" onChange={e => debounceSearch(e.target.value)}/>
+        <Button className="flex gap-x-2 !h-11 w-[180px]" onClick={() => Router.push("/admin/articles/create")}>
           <IoCreateOutline size={20} />
           <span>Buat Artikel</span>
         </Button>
       </div>
       <div className={cn("flex flex-wrap gap-5")} ref={articleRef} >
         {
-          isLoading ?
+            isLoading || isFetching ?
             <ShimmerArticle total={8} />
             :
             data?.data?.map((item, key) =>
@@ -112,7 +120,15 @@ export default function Articles() {
                 onClickMenuDropdown={onClickMenuDropdown}
               />)
         }
-      </div>
+        </div>
+        {data?.paging && (
+          <Pagination
+            currentPage={page}
+            pagination={data.paging}
+            onNext={onNextPrev}
+            onPrev={onNextPrev}
+          />
+        )}
       </Layout>
     </>
   );

@@ -1,14 +1,14 @@
 .layout{
   @apply min-h-screen font-jasans; 
   display: grid;
-  grid-template-rows: 70px 1fr;
-  grid-template-columns: 75px 1fr;  
+  grid-template-rows: 70px calc(100% - 70px);
+  grid-template-columns: 75px calc(100% - 75px);  
   grid-template-areas: "sidebar header"
                        "sidebar content";
 
   @apply transition-all ease-in-out duration-300;
   &.expanded {
-    grid-template-columns: 270px 1fr;
+    grid-template-columns: 270px calc(100% - 270px);
     .sidebar{
       @apply overflow-hidden;
     }

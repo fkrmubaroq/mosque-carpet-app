@@ -23,9 +23,7 @@ export default function SectionOurProduct({ edit, mobile }) {
   const { data: categories } = useQuery({
     queryKey: landingPageQuery.getCategories,
     queryFn: async () => {
-      const params = {
-        limit: edit ? 4 : 5,
-      }
+      const params = {};
       const response = await getCategory(params);
       if (response.status !== 200) throw new Error();
       return response.data || [];
@@ -41,16 +39,12 @@ export default function SectionOurProduct({ edit, mobile }) {
           Our Products
         </div>
         <div className="mb-3 font-cinzel text-3xl font-medium">
-          <Button className="flex items-center justify-center gap-x-2 rounded-none !p-6" onClick={() => Router.push("/collections")}>
+          <Button className="flex items-center justify-center gap-x-2 rounded-none !p-6" onClick={() => !edit && Router.push("/collections")}>
             <span className="mt-0.5">VIEW MORE</span>
             <AiFillCaretRight />
           </Button>
         </div>
       </div>
-      {edit ? <div className="flex gap-x-2  overflow-auto ">
-        {categories?.data?.map((item, key) => <PreviewData key={key} data={item} />)}
-      </div>
-        :
         <Swiper
           slidesPerView={getSlidePerPreviewByScreen()}
           spaceBetween={20}
@@ -60,21 +54,19 @@ export default function SectionOurProduct({ edit, mobile }) {
           className="swipper-category"
         >
           {categories?.data?.map((item, key) => (
-            <SwiperSlide
-              key={key}              
-            >
-              <PreviewData data={item} />
+          <SwiperSlide key={key}>
+              <PreviewData data={item} edit={edit} />
           </SwiperSlide>
           ))}
         </Swiper>
-      }
     </section>
   );
 }
 
-function PreviewData({ data }) {
+function PreviewData({ data, edit }) {
   return <div
     onClick={() => {
+      if (edit) return;
       const slug = slugString(data.category_name);
       Router.push(`/collections/${slug}`);
     }}

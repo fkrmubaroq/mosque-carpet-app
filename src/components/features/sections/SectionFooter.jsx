@@ -10,11 +10,12 @@ import {
 } from "react-icons/ai";
 import { BiLogoTiktok } from "react-icons/bi";
 import { BsFacebook } from "react-icons/bs";
+import { FiPlus } from "react-icons/fi";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import ToolboxFooter from "./Fragment/Toolbox/ToolboxFooter";
 import ToolboxImage from "./Fragment/Toolbox/ToolboxImage";
 
-function FooterMemo({ edit, section, onUpdateContent }) {
+function FooterMemo({ setting, edit, section, onUpdateContent }) {
   const content = section?.content || {};
   const onUpdate = (name, value) => {
     onUpdateContent({
@@ -26,7 +27,26 @@ function FooterMemo({ edit, section, onUpdateContent }) {
     });
   }
 
-  const onUpdateContact = (name, value) => {
+  const onUpdateContact = (name, value, index) => {
+    if (name === "address" && index >= 0) {
+      const cloneAddress = structuredClone(section.content.contact.address);
+      cloneAddress.splice(index, 1, {
+        ...cloneAddress[index],
+        ...value,
+      });
+
+      onUpdateContent({
+        ...section,
+        content: {
+          ...section.content,
+          contact: {
+            ...section.content.contact,
+            address: cloneAddress
+          }
+        }
+      })
+      return;
+    }
     onUpdateContent({
       ...section,
       content: {
@@ -52,14 +72,29 @@ function FooterMemo({ edit, section, onUpdateContent }) {
     });
   }
 
+  const onAddItemContact = (name) => {
+    onUpdateContent({
+      ...section,
+      content: {
+        ...section.content,
+        contact: {
+          ...section.content.contact,
+          [name]: [...section.content.contact[name], { link:"", text: "" }]
+        }
+      }
+    })
+  }
+
   return (
     <footer className="relative flex gap-x-4 bg-black pt-20 pb-28 md:px-5" id="section_footer">
       <div className={cn("flex lg:flex-row flex-col lg:gap-y-0 gap-y-8 justify-between w-full", CONTAINER_LP)}>
         <FooterLogo edit={edit} onUpdateContent={onUpdate} data={content} />
         <FooterContactItem
+          setting={setting}
           edit={edit}
           data={content.contact}
           onUpdateContent={onUpdateContact}
+          onAddItem={onAddItemContact}
         />
         <FooterSocialMedia edit={edit} onUpdateContent={onUpdateSocialMedia} data={content.social_media} />
         <FooterCopyright />
@@ -103,19 +138,13 @@ function FooterLogo({ edit, onUpdateContent, data }) {
     </div>
   );
 }
-function FooterContactItem({ data, edit, onUpdateContent }) {
+function FooterContactItem({ setting, onAddItem, data, edit, onUpdateContent }) {
+  console.log("setting ", data);
   return (
     <div className="flex flex-col gap-y-3 text-white">
       <FooterTitleItem title="Contact" />
       <div className="flex flex-col gap-y-2">
-        <FooterContentItem
-          icon={<HiOutlineLocationMarker />}
-          text={data?.address?.text || ""}
-          data={data}
-          edit={edit}
-          name="address"
-          onUpdateContent={(value) => onUpdateContent("address", value)} 
-        />
+        
         <FooterContentItem
           icon={<AiOutlineWhatsApp />}
           text={data?.phone_wa?.text || ""}
@@ -132,6 +161,24 @@ function FooterContactItem({ data, edit, onUpdateContent }) {
           name="email"
           onUpdateContent={(value) => onUpdateContent("email", value)} 
         />
+        {data.address?.map((item, key) =>
+          <FooterContentItem
+            key={key}
+            icon={<HiOutlineLocationMarker />}
+            text={item.text || ""}
+            data={data}
+            edit={edit}
+            index={key}
+            name="address"
+            onUpdateContent={(value) => onUpdateContent("address", value, key)}
+          />
+        )}
+        {edit &&
+        <div onClick={() => onAddItem("address")} className="flex bg-primary rounded-md hover:bg-primary-hover gap-x-1 cursor-pointer mt-2 p-2 justify-center items-center">
+          <FiPlus color="white" size={17} />
+          <span className="text-sm">Tambah Alamat</span>
+          </div>
+        }
       </div>
     </div>
   );
@@ -141,7 +188,7 @@ function FooterTitleItem({ title }) {
   return <div className="text-2xl lg:text-3xl font-cinzel ">{title}</div>
 }
 
-function FooterContentItem({ name, data, icon, text, edit, onUpdateContent }) {
+function FooterContentItem({ index, name, data, icon, text, edit, onUpdateContent, onAddAddress }) {
   const contentRef = useRef();
   return <div className="flex gap-x-2 items-center group cursor-pointer" ref={contentRef}>
     {icon}
@@ -150,6 +197,7 @@ function FooterContentItem({ name, data, icon, text, edit, onUpdateContent }) {
         <ContentEditable html={text} onChange={(e) => onUpdateContent({ ...data[name], text: e.currentTarget.textContent })} className="section-mode-edit peer" /> 
         <ToolboxFooter
           name={name}
+          index={index}
           data={data}
           className="group-hover:block hidden peer-focus:block"
           onUpdateContent={onUpdateContent}

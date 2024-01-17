@@ -1,5 +1,5 @@
 import cn from "classnames";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const Textarea = ({
   value,
@@ -17,6 +17,10 @@ const Textarea = ({
   const inputRef = useRef(null);
   const initHeight = useRef(0);
 
+  useEffect(() => {
+    if (!inputRef.current) return;
+    setAutoSize();
+  }, []);
   const setAutoSize = () => {
     if (!inputRef.current) return;
     if (!initHeight.current) {

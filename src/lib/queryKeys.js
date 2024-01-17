@@ -18,7 +18,7 @@ export const adminFileManagerQuery = {
 }
 
 export const adminArticleQuery = {
-  getAll: ["admin", "article"],
+  getAll: (page,keyword) => ["admin", "article",page, keyword],
   getDetail: (id) => ["admin", "article", id]
 }
 export const landingPageQuery = {

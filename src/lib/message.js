@@ -12,8 +12,12 @@ const TOAST_MESSAGE = {
   // file manager
   "error-create-folder": "Gagal membuat folder",
   "error-update-folder": "Gagal mengubah folder",
+  "error-update-file": "Gagal mengubah file",
   "error-upload-file": "Gagal upload file",
+  "error-delete-file": "Gagal menghapus file",
+  "error-download-file": "File gagal didownload",
   "success-delete-folder": "Folder telah dihapus",
+  "success-delete-file": "File telah dihapus",
   "success-upload-file": "File telah diupload",
   "custom-message": "custom-message",
 
@@ -76,7 +80,10 @@ const ERROR_MESSAGE = {
     code: 1101,
     message: "Folder tidak ditemukan"
   },
-  
+  FileIsNotFound: {
+    code: 1102,
+    message: "File Tidak ditemukan"
+  },
   FailedToUpdateFolderName: {
     code: 1103,
     message: "Folder gagal di ubah"
@@ -89,6 +96,23 @@ const ERROR_MESSAGE = {
     code: 1105,
     message: "File gagal diupload"
   },
+  FileAlreadyExists: {
+    code: 1106,
+    message: "Nama File telah digunakan"
+  },
+  FailedToUpdateFileName: {
+    code: 1107,
+    message: "File gagal di ubah"
+  },
+  ExtensionFileIsUnknown: {
+    code: 1108,
+    message: "Extension file tidak diketahui"
+  },
+  FailedToDeleteFile: {
+    code: 1109,
+    message: "File gagal di hapus"
+  },
+
   // feature sections 1200 - 1299
   SectionIsNull: {
     code: 1200,

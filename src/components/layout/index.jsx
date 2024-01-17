@@ -322,9 +322,9 @@ const listMenu = [
   }
 ];
 function DropdownMenu({ show, onClick }) {
-  return <div className={cn("absolute transition-all -left-0 border w-[160px] bg-white rounded-md",
+  return <div className={cn("absolute transition-all -left-0 border  w-[160px] bg-white rounded-md",
     {
-      "top-14 opacity-100": show,
+      "top-14 opacity-100 z-[999]": show,
       "top-8 opacity-0 -z-10": !show
     })}>
     {listMenu.map((menu, key) =>

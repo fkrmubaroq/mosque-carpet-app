@@ -27,7 +27,18 @@ export function uploadFiles(payload){
 export function updateFolderName(id, payload){
   return putMethod(`file-manager/${id}/update-folder-name`, payload);
 }
+export function updateFileName(id, payload){
+  return putMethod(`file-manager/${id}/update-file-name`, payload);
+}
 
 export function deleteFolder(id){
-  return deleteMethod(`file-manager/${id}`);
+  return deleteMethod(`file-manager/folder/${id}`);
+}
+
+export function deleteFile(id) {
+  return deleteMethod(`file-manager/file/${id}`);
+}
+
+export function downloadFile(src) {
+  return getMethod(`file-manager/download/${src}`);
 }
