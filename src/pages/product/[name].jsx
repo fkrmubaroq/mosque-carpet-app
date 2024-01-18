@@ -96,7 +96,6 @@ function SectionDetailProduct({ mobile, setting }) {
     return 4;
   };
 
-  console.log("cate", categories);
   return <section>
     <ButtonBack
       className="mb-3 pl-0 hover:bg-transparent"

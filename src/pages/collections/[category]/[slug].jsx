@@ -97,7 +97,6 @@ function SectionDetailProduct({ mobile, setting }) {
     return 4;
   };
 
-  console.log("cate", categories);
   return <section>
     <ButtonBack
       onClick={() => window.history.back(-1)}

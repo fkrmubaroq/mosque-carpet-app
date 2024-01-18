@@ -9,7 +9,6 @@ const headings = {
 };
 
 export default function Heading({ value,onClickOption }) {
-  console.log("value ", value);
   const getHeading = (heading, content) => {
     if (heading === '0')  return <div>{content}</div>
     if (heading === '1')  return <h1>{content}</h1>

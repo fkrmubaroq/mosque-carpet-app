@@ -56,8 +56,6 @@ export default function SectionArticles({ mobile, edit, section }) {
     }
   });
 
-  console.log({ articles })
-
   return (
     <section className={cn(MARGIN_EACH_SECTION)} id="section_articles">
       <div className="flex justify-between items-center">

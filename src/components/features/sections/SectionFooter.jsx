@@ -4,9 +4,9 @@ import Image from "next/image";
 import { memo, useRef } from "react";
 import ContentEditable from "react-contenteditable";
 import {
-  AiOutlineInstagram,
-  AiOutlineMail,
-  AiOutlineWhatsApp
+    AiOutlineInstagram,
+    AiOutlineMail,
+    AiOutlineWhatsApp
 } from "react-icons/ai";
 import { BiLogoTiktok } from "react-icons/bi";
 import { BsFacebook } from "react-icons/bs";
@@ -139,7 +139,6 @@ function FooterLogo({ edit, onUpdateContent, data }) {
   );
 }
 function FooterContactItem({ setting, onAddItem, data, edit, onUpdateContent }) {
-  console.log("setting ", data);
   return (
     <div className="flex flex-col gap-y-3 text-white">
       <FooterTitleItem title="Contact" />

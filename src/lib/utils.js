@@ -164,7 +164,6 @@ export function objectIntoFormData(payload) {
 }
 
 export function mediaPath(dir, fileName) {
-  console.log("media ", `${DIR_ACCESS_FILE}/${dir}/${fileName}`);
   return `${DIR_ACCESS_FILE}/${dir}/${fileName}`
 }
 

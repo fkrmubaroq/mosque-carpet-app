@@ -2,9 +2,9 @@ import ModalFormFolder from "@/components/features/file-manager/ModalForm";
 import ModalPreviewFile from "@/components/features/file-manager/ModalPreviewFile";
 import ModalUploadFile from "@/components/features/file-manager/ModalUpload";
 import {
-  DropdownActionFile,
-  DropdownActionFolder,
-  DropdownFileManager,
+    DropdownActionFile,
+    DropdownActionFolder,
+    DropdownFileManager,
 } from "@/components/features/file-manager/dropdown";
 import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
@@ -421,7 +421,6 @@ function File({
     }
     if (action === "rename") {
       setSelectedRenameFile(data);
-      console.log("edi", editInputRef.current);
       editInputRef.current?.select();
       return;
     }

@@ -21,7 +21,6 @@ export default function Login() {
   const { mutate:mutateLogin, isLoading } = useMutation({
     mutationFn: loginAdmin,
     onSuccess: (response) => {
-      console.log({ response })
       const data = JSON.stringify(response.data.data);
       setCookie("adm", data, 7);
       location.href = "/admin/dashboard";

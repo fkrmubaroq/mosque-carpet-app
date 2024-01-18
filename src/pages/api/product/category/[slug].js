@@ -13,9 +13,7 @@ async function get(req, res) {
   try {
     const { slug } = req.query;
     const removeCategoryNameSlug = slug.split("-").join(" ");
-    console.log("slug ", slug);
-    console.log("removeCategoryNameSlug ", removeCategoryNameSlug);
-
+ 
     const findCategoryBySlug = await prismaClient.category.findFirst({
       where: {
         category_name: {
@@ -23,7 +21,6 @@ async function get(req, res) {
         }
       }
     });
-    console.log("find ", findCategoryBySlug);
     if (!findCategoryBySlug) {
       res.status(200).json({
         data: []

@@ -40,7 +40,6 @@ export default function ProductCategory({ sections, setting }) {
 
   const router = useRouter()
   const categoryName = router.query?.category;
-  console.log("router", router.query);
 
   const { data, isLoading } = useQuery({
     queryKey: productsQuery.getProducts,

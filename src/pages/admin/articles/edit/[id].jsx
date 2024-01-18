@@ -28,7 +28,6 @@ export async function getServerSideProps(context) {
   const id = context.params.id;
 
   const response = await getArticleById(+id);
-  console.log("res", response.data);
   if (!response.data?.data) return { notFound: true };
 
   return {

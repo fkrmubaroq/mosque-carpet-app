@@ -30,23 +30,25 @@ async function get(req, res) {
     const q = query?.q;
     const page = query?.page ? +query.page : 1;
     const skip = (page - 1) * OFFSET;
-    let filters = {
-      where: {
-        OR: [
-          {
-            title: {
-              contains: q,
+    let filters = {};
+    if (q) {
+      filters = {
+        where: {
+          OR: [
+            {
+              title: {
+                contains: q,
+              }
+            },
+            {
+              writer: {
+                contains: q
+              }
             }
-          },
-          {
-            writer: {
-              contains: q
-            }
-          }
-        ]
+          ]
+        }
       }
     }
-
 
     const data = await prismaClient.article.findMany({
       include: {
@@ -102,7 +104,6 @@ async function post(req, res) {
 
     const slug = slugString(insertData.title);
     insertData.slug = slug;
-    console.log("insertData", insertData);
     const data = await prismaClient.article.create({
       data: insertData
     });

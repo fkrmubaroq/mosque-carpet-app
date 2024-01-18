@@ -9,7 +9,6 @@ const initModal = Object.freeze({
 })
 export default function ToolboxFooter({ index, data, name, className, onUpdateContent }) {
   const [modal, setModal] = useState(initModal);
-  console.log("data ", data, name);
   return <>
     {modal.show &&
       <ModalToolboxFooter

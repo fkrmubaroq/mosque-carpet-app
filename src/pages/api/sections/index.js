@@ -21,7 +21,6 @@ async function put(req, res) {
     }
 
     for (let i = 0; i < sections.length; i++){
-      console.log("sectm", sections[i])
       const {id, ...requestValidate } = validation(updateSectionValidation, sections[i]);
       await prismaClient.sections.update({
         data: requestValidate,
