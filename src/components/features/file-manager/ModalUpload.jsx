@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import UploadFile from "@/components/ui/form/UploadFile";
 import { Modal, ModalBody, ModalHeader } from "@/components/ui/modal";
+import { MIME_TYPE_IMAGE } from "@/lib/constant";
 import { useState } from "react";
 
 export default function ModalUploadFile({ onUpload, onHide }) {
@@ -13,15 +14,10 @@ export default function ModalUploadFile({ onUpload, onHide }) {
         <UploadFile
           multiple
           className="max-h-[500px] min-h-[350px]"
-          placeholder="PNG, JPG, WEBP, GIF (Ukuran Maksimal 1Mb)"
+          placeholder="PNG, JPG, WEBP, GIF, SVG (Ukuran Maksimal 1Mb)"
           maxFileSizeMb={1}
-          accept={[
-            "image/jpeg",
-            "image/jpg",
-            "image/png",
-            "image/webp",
-            "image/gif",
-          ]}
+          accept={Object.keys(MIME_TYPE_IMAGE)}
+
           onChange={(files, next) => {
             next && next(files);
             if (!files) return;

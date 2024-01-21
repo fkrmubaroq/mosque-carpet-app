@@ -7,6 +7,7 @@ import UploadFile from "@/components/ui/form/UploadFile";
 import { Input } from "@/components/ui/form/input";
 import { Label } from "@/components/ui/label";
 import { Modal, ModalBody, ModalHeader } from "@/components/ui/modal";
+import { MIME_TYPE_IMAGE } from "@/lib/constant";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { SelectionCategory } from "../SelectionFeature";
@@ -87,14 +88,9 @@ export default function ModalForm({
                   next && next(file);
                   setForm(form => ({ ...form, image: file[0]}))
                 }}
-                placeholder="PNG, JPG, WEBP, GIF (Ukuran Maksimal 1.5Mb)"
-                accept={[
-                  "image/jpeg",
-                  "image/jpg",
-                  "image/png",
-                  "image/webp",
-                  "image/gif",
-                ]}
+                placeholder="PNG, JPG, WEBP, GIF, SVG (Ukuran Maksimal 1.5Mb)"
+                accept={Object.keys(MIME_TYPE_IMAGE)}
+
               />
             {type === "edit" && form.image && <div className="flex flex-col items-center gap-y-2 mt-3">
               <Label>Gambar sebelumnya</Label>

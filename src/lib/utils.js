@@ -270,3 +270,19 @@ export function downloadFileUrl(url, fileName) {
   a.click();
   document.body.removeChild(a);
 }
+
+export function objectDataToQueryBind({
+  data,
+  allValues,
+  separator
+}) {
+  let query = "";
+  Object.keys(data).forEach((key, i) => {
+    if (i === Object.keys(data).length - 1) {
+      query += ` ${key}=${allValues ? allValues : `'${data[key]}'`}`;      
+      return;
+    }
+    query += `${key}=${allValues ? allValues : `'${data[key]}'`} ${separator || ","} `;
+  });
+  return query;
+}

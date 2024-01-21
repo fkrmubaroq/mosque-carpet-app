@@ -23,6 +23,7 @@ const UploadFile = ({
   placeholder,
   className,
   onRemove,
+  clearDefaultPlaceholder
 }) => {
   const fileRef = useRef(null);
   const [error, setError] = useState("");
@@ -177,11 +178,13 @@ const UploadFile = ({
         ) : (
           <div className="flex flex-col items-center justify-center pb-6 pt-5">
             <AiOutlineCloudUpload size={30} color="#6b7280" />
-            <div className="flex flex-col items-center justify-center text-center">
-              <p className="mb-2 text-sm text-gray-400">
-                <span className="font-semibold">Klik untuk upload</span> atau
-                drop file disini
-              </p>
+              <div className="flex flex-col items-center justify-center text-center">
+                {!clearDefaultPlaceholder &&
+                <p className="mb-2 text-sm text-gray-400">
+                  <span className="font-semibold">Klik untuk upload</span> atau
+                  drop file disini
+                </p>
+                }
               <p className="text-xs text-gray-400">{placeholder}</p>
             </div>
           </div>

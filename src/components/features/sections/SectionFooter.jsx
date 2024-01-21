@@ -4,12 +4,9 @@ import Image from "next/image";
 import { memo, useRef } from "react";
 import ContentEditable from "react-contenteditable";
 import {
-    AiOutlineInstagram,
-    AiOutlineMail,
-    AiOutlineWhatsApp
+  AiOutlineMail,
+  AiOutlineWhatsApp
 } from "react-icons/ai";
-import { BiLogoTiktok } from "react-icons/bi";
-import { BsFacebook } from "react-icons/bs";
 import { FiPlus } from "react-icons/fi";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import ToolboxFooter from "./Fragment/Toolbox/ToolboxFooter";
@@ -28,62 +25,49 @@ function FooterMemo({ setting, edit, section, onUpdateContent }) {
   }
 
   const onUpdateContact = (name, value, index) => {
-    if (name === "address" && index >= 0) {
-      const cloneAddress = structuredClone(section.content.contact.address);
-      cloneAddress.splice(index, 1, {
-        ...cloneAddress[index],
-        ...value,
-      });
-
-      onUpdateContent({
-        ...section,
-        content: {
-          ...section.content,
-          contact: {
-            ...section.content.contact,
-            address: cloneAddress
-          }
+    onUpdateContent({
+      ...section,
+      content: {
+        ...section.content,
+        contact: {
+          ...section.content.contact,
+          [name]: value
         }
-      })
-      return;
+      }
+    });
+  }
+
+  const onUpdateContentArray = (name, value, index) => {
+    const cloneData = structuredClone(section.content[name]);
+    cloneData.splice(index, 1, {
+      ...cloneData[index],
+      ...value,
+    });
+
+    onUpdateContent({
+      ...section,
+      content: {
+        ...section.content,
+        [name]: cloneData
+      }
+    });
+  }
+
+  const onAddItem = (name) => {
+    const newData = { link: "", text: "" };
+    if (name === "social_media") {
+      newData.image = "";
     }
     onUpdateContent({
       ...section,
       content: {
         ...section.content,
-        contact: {
-          ...section.content.contact,
-          [name]: value
-        }
-      }
-    });
-  }
-
-  const onUpdateSocialMedia = (name, value) => {
-    onUpdateContent({
-      ...section,
-      content: {
-        ...section.content,
-        social_media: {
-          ...section.content.social_media,
-          [name]: value
-        }
-      }
-    });
-  }
-
-  const onAddItemContact = (name) => {
-    onUpdateContent({
-      ...section,
-      content: {
-        ...section.content,
-        contact: {
-          ...section.content.contact,
-          [name]: [...section.content.contact[name], { link:"", text: "" }]
-        }
+        [name]: [...section.content[name], newData]
       }
     })
   }
+
+  console.log("sections ", section);
 
   return (
     <footer className="relative flex gap-x-4 bg-black pt-20 pb-28 md:px-5" id="section_footer">
@@ -94,9 +78,9 @@ function FooterMemo({ setting, edit, section, onUpdateContent }) {
           edit={edit}
           data={content.contact}
           onUpdateContent={onUpdateContact}
-          onAddItem={onAddItemContact}
         />
-        <FooterSocialMedia edit={edit} onUpdateContent={onUpdateSocialMedia} data={content.social_media} />
+        <FooterCompanyAddress edit={edit} onUpdateContent={onUpdateContentArray} data={content.address} onAddItem={onAddItem} />
+        <FooterSocialMedia edit={edit} onUpdateContent={onUpdateContentArray} data={content.social_media} onAddItem={onAddItem} />
         <FooterCopyright />
       </div>
     </footer>
@@ -138,7 +122,8 @@ function FooterLogo({ edit, onUpdateContent, data }) {
     </div>
   );
 }
-function FooterContactItem({ setting, onAddItem, data, edit, onUpdateContent }) {
+
+function FooterContactItem({ setting, data, edit, onUpdateContent }) {
   return (
     <div className="flex flex-col gap-y-3 text-white">
       <FooterTitleItem title="Contact" />
@@ -160,7 +145,8 @@ function FooterContactItem({ setting, onAddItem, data, edit, onUpdateContent }) 
           name="email"
           onUpdateContent={(value) => onUpdateContent("email", value)} 
         />
-        {data.address?.map((item, key) =>
+        {/* TODO : Address */}
+        {/* {data.address?.map((item, key) =>
           <FooterContentItem
             key={key}
             icon={<HiOutlineLocationMarker />}
@@ -177,20 +163,56 @@ function FooterContactItem({ setting, onAddItem, data, edit, onUpdateContent }) 
           <FiPlus color="white" size={17} />
           <span className="text-sm">Tambah Alamat</span>
           </div>
-        }
+        } */}
       </div>
     </div>
   );
+}
+
+function FooterCompanyAddress({ edit, onUpdateContent, data, onAddItem }) {
+  return <div className="flex flex-col gap-y-3 text-white">
+    <FooterTitleItem title="Alamat Kami" />
+    <div className="flex flex-col gap-y-2" >
+    {data?.map((address, key) => 
+      <FooterContentItem
+        key={key}
+        icon={<HiOutlineLocationMarker />}
+        text={address.text || ""}
+        data={data}
+        edit={edit}
+        index={key}
+        name="address"
+        onUpdateContent={(value) => onUpdateContent("address", value, key)}
+        />
+        )}
+    </div>
+    {edit &&
+      <div
+        onClick={() => onAddItem("address")}
+        className="flex bg-primary rounded-md hover:bg-primary-hover gap-x-1 cursor-pointer mt-2 p-2 justify-center items-center">
+        <FiPlus color="white" size={17} />
+        <span className="text-sm">Tambah Alamat</span>
+      </div>
+    }
+  </div>
 }
 
 function FooterTitleItem({ title }) {
   return <div className="text-2xl lg:text-3xl font-cinzel ">{title}</div>
 }
 
-function FooterContentItem({ index, name, data, icon, text, edit, onUpdateContent, onAddAddress }) {
+function FooterContentItem({ index, name, data, icon, text, edit, onUpdateContent }) {
   const contentRef = useRef();
   return <div className="flex gap-x-2 items-center group cursor-pointer" ref={contentRef}>
-    {icon}
+    {name === "social_media" ? icon &&
+      <div className="w-8 h-6 relative">
+        <Image
+          src={icon}
+          alt="image footer"
+          layout="fill"
+        />
+      </div>
+      : icon}
     {edit ?
       <div className="relative w-full">
         <ContentEditable html={text} onChange={(e) => onUpdateContent({ ...data[name], text: e.currentTarget.textContent })} className="section-mode-edit peer" /> 
@@ -207,37 +229,32 @@ function FooterContentItem({ index, name, data, icon, text, edit, onUpdateConten
   </div>
 }
 
-function FooterSocialMedia({ data, edit, onUpdateContent }) {
+function FooterSocialMedia({ data, edit, onUpdateContent, onAddItem }) {
   return (
     <div className="flex flex-col gap-y-3 text-white">
       <FooterTitleItem title="Social Media" />
       <div className="flex flex-col gap-y-2">
-        <FooterContentItem 
-          icon={<AiOutlineInstagram />}
-          text={data?.instagram?.text}
-          data={data}
-          edit={edit}
-          name="instagram"
-          onUpdateContent={(value) => onUpdateContent("instagram", value)} 
-        />
-        <FooterContentItem
-          icon={<BsFacebook />}
-          text={data?.facebook?.text}
-          data={data}
-          edit={edit}
-          name="facebook"
-          onUpdateContent={(value) => onUpdateContent("facebook", value)} 
-        />
-        <FooterContentItem
-          icon={<BiLogoTiktok />}
-          text={data?.tiktok?.text}
-          data={data}
-          edit={edit}
-          name="tiktok"
-          onUpdateContent={(value) => onUpdateContent("tiktok", value)} 
-
-        />
+        {data.map((socialMedia, key) =>
+          <FooterContentItem 
+            key={key}
+            icon={socialMedia?.image || ""}
+            text={socialMedia.text}
+            data={data}
+            index={key}
+            edit={edit}
+            name="social_media"
+            onUpdateContent={(value) => onUpdateContent("social_media", value, key)} 
+          />
+        )}
       </div>
+      {edit &&
+        <div
+          onClick={() => onAddItem("social_media")}
+          className="flex bg-primary rounded-md hover:bg-primary-hover gap-x-1 cursor-pointer mt-2 p-2 justify-center items-center">
+          <FiPlus color="white" size={17} />
+          <span className="text-sm">Tambah Social Media</span>
+        </div>
+      }
     </div>
   );
 }

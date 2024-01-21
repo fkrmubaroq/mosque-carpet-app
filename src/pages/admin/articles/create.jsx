@@ -6,6 +6,7 @@ import Textarea from "@/components/ui/form/Textarea";
 import UploadFile from "@/components/ui/form/UploadFile";
 import { Input } from "@/components/ui/form/input";
 import { createArticle } from "@/lib/api/articles";
+import { MIME_TYPE_IMAGE } from "@/lib/constant";
 import { useDialogStore } from "@/lib/hookStore";
 import { Label } from "@radix-ui/react-label";
 import { useMutation } from "@tanstack/react-query";
@@ -70,14 +71,8 @@ export default function CreateArticle() {
           next && next(file);
           setForm(form => ({ ...form, thumbnail: file[0] }))
         }}
-        placeholder="Thumbnail harus bertipe PNG, JPG, WEBP, GIF (Ukuran Maksimal 1.5Mb)"
-        accept={[
-          "image/jpeg",
-          "image/jpg",
-          "image/png",
-          "image/webp",
-          "image/gif",
-        ]}
+        placeholder="Thumbnail harus bertipe PNG, JPG, WEBP, GIF, SVG (Ukuran Maksimal 1.5Mb)"
+        accept={Object.keys(MIME_TYPE_IMAGE)}
         />
       </ContainerInput>
       

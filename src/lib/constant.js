@@ -10,10 +10,18 @@ export const MIME_TYPE_IMAGE = {
   "image/jpeg": "jpeg",
   "image/jpg": "jpg",
   "image/png": "png",
-  "image/svg+xml": "svg",
   "image/tiff": "tiff",
   "image/webp": "webp",
 };
+
+export const acceptImage = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/svg+xml",
+];
 export const MIME_TYPE = {
   ...MIME_TYPE_IMAGE,
   ...MIME_TYPE_VIDEO,
@@ -59,7 +67,7 @@ export const INIT_SECTIONS = [
   },
   {
     "section_name": "section_footer",
-    "content": { "logo_text": "AL-HIJRA", "tagline": "Ibadah Semakin nyaman", "contact": { "address": [{ "link": "https://map", "text": "Jln Saluyu Indah X No.9H" }], "phone_wa": { "link": "https://map", "text": "08886351120" }, "email": { "link": "https://map", "text": "alhijracarpet@mail.com" } }, "social_media": { "instagram": { "link": "https://map", "text": "Instagram" }, "facebook": { "link": "https://map", "text": "Facebook" }, "tiktok": { "link": "https://map", "text": "Tiktok" } }, "logo": "http://localhost:3000/api/files/Sections/logo.png" },
+    "content": { "logo_text": "AL-HIJRA", "tagline": "Ibadah Semakin nyaman", "contact": { "phone_wa": { "link": "https://map", "text": "08886351120" }, "email": { "link": "https://map", "text": "alhijracarpet@mail.com" } }, "address": [{ "link": "https://map", "text": "Jln Saluyu Indah X No.9H" }], "social_media": [{ "link": "https://map", "text": "Jln Saluyu Indah X No.9H" }], "logo": "http://localhost:3000/api/files/Sections/logo.png" },
     "position": 6,
   },
   {

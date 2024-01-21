@@ -15,6 +15,7 @@ export default function ToolboxFooter({ index, data, name, className, onUpdateCo
         title="Ganti Kontak footer"
         data={modal?.data}
         show={modal.show}
+        formImage={name === "social_media"}
         onHide={() => setModal(initModal)}
         verticallyCentered className="w-[450px]"
         onUpdateContent={(form) => {
@@ -29,8 +30,8 @@ export default function ToolboxFooter({ index, data, name, className, onUpdateCo
           icon={<LuPencil color="white" size={17} />}
           text=""
           onClick={() => {
-            if (name === "address") {
-              setModal({ show: true, data: { ...data[name][index] } });
+            if (name === "address" || name === "social_media") {
+              setModal({ show: true, data: { ...data[index] } });
               return;
             }
             setModal({ show: true, data:  { ...data[name] } })
