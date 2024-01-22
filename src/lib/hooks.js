@@ -69,3 +69,30 @@ export function useCookie(key) {
   }
   return [data, setCookieValue];
 }
+
+export function useKeypress(keyCodes) {
+  const [active, setActive] = useState(false);
+  useEffect(() => {
+    document.onkeydown = (e) => {
+      const code = e.key || e.keyCode || e.which;
+      if (Array.isArray(keyCodes) && keyCodes.includes(code)) {
+        setActive(true);
+        return;
+      }
+      setActive(keyCodes === code);
+    }
+
+    document.onkeyup = (e) => {
+      const code = e.key || e.keyCode || e.which;
+      if (Array.isArray(keyCodes) && keyCodes.includes(code)) {
+        setActive(false);
+        return;
+      }
+    }
+    return () => {
+      document.onkeydown = null;
+      document.onkeyup = null;
+    }
+  }, []);
+  return active;
+}

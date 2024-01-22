@@ -9,6 +9,6 @@ export default function handler(req, res) {
   }
   const pathFile = `${DIR_FILE_UPLOAD}/${(src).join("/")}`;
   const img = fs.readFileSync(pathFile);
-  res.writeHead(200, {'Content-Type': "image/*" });
+  res.writeHead(200, {'ContentType': "image/*" });
   res.end(img, 'binary');
 }

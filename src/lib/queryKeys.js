@@ -14,7 +14,8 @@ export const adminCategoryQuery = {
 }
 
 export const adminFileManagerQuery = {
-  getFIleItems: (path) => ["admin","file-manager", path]
+  getFIleItems: (path) => ["admin", "file-manager", path],
+  modalGetFileItems: (path) => ["modal", "file-manager", path]
 }
 
 export const adminArticleQuery = {

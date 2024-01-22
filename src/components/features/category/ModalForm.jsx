@@ -79,7 +79,7 @@ export default function ModalForm({
                 next && next(file);
                 setForm(form => ({ ...form, image: file[0] }))
               }}
-              placeholder="PNG, JPG, WEBP, GIF, SVG (Ukuran Maksimal 1.5Mb)"
+              placeholder="PNG, JPG, WEBP, GIF (Ukuran Maksimal 1.5Mb)"
               accept={Object.keys(MIME_TYPE_IMAGE)}
             />
             {type === "edit" && form.image && <div className="flex flex-col items-center gap-y-2 mt-3">

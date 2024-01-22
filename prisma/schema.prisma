@@ -23,38 +23,42 @@ enum Active {
 }
 
 model Product {
-  id          Int      @id @unique @default(autoincrement())
-  name        String   @db.VarChar(255)
+  id          Int       @id @unique @default(autoincrement())
+  name        String    @db.VarChar(255)
   description String?   @db.Text
+  discount    Int       @default(0)
   price       Int?
   stock       Int?      @db.SmallInt
-  category_id Int      @db.UnsignedInt
-  image       String?  @db.VarChar(255)
+  category_id Int       @db.UnsignedInt
+  image       String?   @db.MediumText
   category    Category? @relation(fields: [category_id], references: [id])
-  active      Active   @default(N)
+  active      Active    @default(N)
 
   @@index([category_id], name: "category_FK")
   @@map("product")
 }
 
+
 model Setting {
-  id           Int    @id @default(autoincrement()) @db.UnsignedInt
-  no_wa        String @db.VarChar(20)
+  id           Int      @id @default(autoincrement()) @db.UnsignedInt
+  no_wa        String   @db.VarChar(20)
   is_maintenance Active @default(N)
-  show_price   Active @default(Y)
-  @@map("setting")
+  show_price   Active   @default(Y)
+  logo         String?   @db.VarChar(255)
+  logo_title   String?   @db.VarChar(100)
+  @@map("setting")  
 }
 
 model Article {
-  id         Int      @id @default(autoincrement()) @db.UnsignedInt
-  title      String   @unique
+  id         Int        @id @default(autoincrement()) @db.UnsignedInt
+  title      String     @unique
   slug       String
   thumbnail  String? 
-  content    String   @db.LongText
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
+  content    String     @db.LongText
+  created_at DateTime   @default(now())
+  updated_at DateTime   @default(now())
   viewers    ViewerArticle? @relation(fields: [viewers_id], references: [id])
-  viewers_id Int?     @db.UnsignedInt @unique
+  viewers_id Int?       @db.UnsignedInt @unique
   writer     String?
 
   @@index([viewers_id], name: "viewers_FK")
@@ -62,13 +66,13 @@ model Article {
 }
 
 model ViewerArticle {
-  id       Int      @id @default(autoincrement()) @db.UnsignedInt
-  total    Int      @default(0)
+  id       Int          @id @default(autoincrement()) @db.UnsignedInt
+  total    Int          @default(0)
   article  Article?
   @@map("viewers_article")
 }
 model PackageBundle {
-  id           Int    @id @default(autoincrement()) @db.UnsignedInt
+  id           Int       @id @default(autoincrement()) @db.UnsignedInt
   package_name String
   description  String
   price        Int
@@ -80,12 +84,12 @@ model PackageBundle {
 enum Role {
   SUPER_ADMIN
   ADMIN
+  STAFF
 }
 model User {
   username      String @unique 
   password      String @db.VarChar(255)
   name          String @db.VarChar(100)
-  token         String? @db.VarChar(150)
   role          Role @default(ADMIN)       
   @@map("user")
 }
@@ -110,4 +114,14 @@ model sections {
   content      String @db.LongText()
   position     Int    @db.TinyInt()
   active       Active @default(Y)
+}
+
+model Popup {
+  id           Int    @id @default(autoincrement()) @db.UnsignedInt
+  title        String @db.VarChar(255)
+  image        String @db.VarChar(255)
+  start_at     DateTime @db.Date
+  end_at       DateTime @db.Date
+  active       Active @default(Y)
+  @@map("popup")
 }

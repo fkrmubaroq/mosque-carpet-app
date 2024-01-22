@@ -286,3 +286,17 @@ export function objectDataToQueryBind({
   });
   return query;
 }
+
+export const getCumulativePathSegments = (path) => {
+  return path
+    .split("/")
+    .filter(Boolean) // Drop empty strings caused by the splitting
+    .reduce(
+      (segments, segment) => {
+        const previous = segments[segments.length - 1];
+        segments.push(`${previous}${segment}/`);
+        return segments;
+      },
+      ["/"]
+    )
+};

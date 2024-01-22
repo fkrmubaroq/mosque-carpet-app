@@ -77,7 +77,8 @@ export function ModalBody({ children, className }) {
 // Modal Header
 const variantHeader = { 
   primary: "bg-primary text-white",
-  transparent: ""
+  transparent: "",
+  secondary: "bg-secondary text-white"
 }
 export function ModalHeader({
   variant = "primary",

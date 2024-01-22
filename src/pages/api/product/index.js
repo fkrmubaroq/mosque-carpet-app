@@ -1,13 +1,9 @@
 import { responseErrorMessage, responseNotFound } from '@/errors/response-error';
-import { DIR_FILE_PRODUCTS, OFFSET } from '@/lib/constant';
+import { OFFSET } from '@/lib/constant';
 import { STATUS_MESSAGE_ENUM } from '@/lib/enum';
 import { prismaClient } from '@/lib/prisma';
-import { createFile, incomingRequest, unlinkFile } from '@/lib/utils';
 import { insertProductValidation, updateProductValidation } from '@/validation/product-validation';
 import { validation } from '@/validation/validation';
-import fs from "fs";
-import multiparty from "multiparty";
-import { v4 as uuid } from "uuid";
 
 export default function handler(req, res) {
   if (req.method === "POST") {
@@ -28,38 +24,11 @@ export default function handler(req, res) {
 
 async function put(req, res) {
   try {  
-    const multipartyForm = new multiparty.Form();
-    const { files, ...body } = await incomingRequest(multipartyForm, req);
-    const request = { ...body };
-    if (Object.keys(files).length) {
-      request.image = files.image
-    }
-    const { id, ...validateRequest } = validation(updateProductValidation, request);
-    const updateData = { ...validateRequest };
-    if (Object.keys(files).length) {
-      const fileName = `${uuid().toString()}_${files?.image?.originalFilename}`;
-      updateData.image = fileName;
-      const prevImage = await prismaClient.product.findFirst({
-        where: {
-          id
-        },
-      });  
-
-
-      // when prev image is available, then unlink file and 
-      if (prevImage) {
-        const destinationFileUnlink = `${DIR_FILE_PRODUCTS}/${prevImage.image}`;
-        await unlinkFile(destinationFileUnlink);
-      }
-      const destinationCreateFile = `${DIR_FILE_PRODUCTS}/${fileName}`;
-      await createFile(files.image.path, destinationCreateFile);
-      
-    }
-
+    const { id, ...validateRequest } = validation(updateProductValidation, req.body);
     await prismaClient.product.update({
-      data: updateData,
+      data: validateRequest,
       where: {
-        id  
+        id:+id
       },
     });    
     res.status(STATUS_MESSAGE_ENUM.Ok).json({
@@ -72,28 +41,11 @@ async function put(req, res) {
 
 async function post(req, res) {
   try {
-    const multipartyForm = new multiparty.Form();
-    const { files, ...body } = await incomingRequest(multipartyForm, req);
-    const request = { ...body };
-    if (Object.keys(files).length) {
-      request.image = files.image
-    }
     
-    const validateRequest = validation(insertProductValidation, request);
-    const insertData = { ...validateRequest };
-    const fileName = `${uuid().toString()}_${files?.image?.originalFilename}`;
-    if (Object.keys(files).length) {
-      insertData.image = fileName;
-    }
+    const validateRequest = validation(insertProductValidation, req.body);
     const insertProduct = await prismaClient.product.create({
-      data: insertData
+      data: validateRequest
     });
-
-    if (Object.keys(files).length) {
-      const contentData = await fs.promises.readFile(files.image.path);
-      const destination = `${DIR_FILE_PRODUCTS}/${fileName}`;
-      await fs.promises.writeFile(destination, contentData);
-    }
 
     res.status(STATUS_MESSAGE_ENUM.Ok).json({
       data: insertProduct
@@ -161,10 +113,5 @@ async function get(req, res) {
     res.status(400).json({
       message: e.message
     })
-  }
-}
-export const config = {
-  api: {
-    bodyParser: false
   }
 }

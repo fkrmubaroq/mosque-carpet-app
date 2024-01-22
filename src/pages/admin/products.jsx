@@ -93,14 +93,6 @@ export default function Index() {
     onSettled: () => setModal(initModal),
   });
 
-  const onEditForm = (payload) => {
-    const { category_name, image, ...restPayload } = payload;
-    if (typeof image === "object") {
-      restPayload.image = image;
-    }
-    mutateUpdateProduct(restPayload);
-  };
-
   const { mutate: updateStatus } = useMutation({
     mutationFn: (productId) => updateToggleStatus(productId),
     onSuccess: (response) => {
@@ -121,7 +113,7 @@ export default function Index() {
           data={modal?.data ? modal.data : initForm}
           onHide={() => setModal(initModal)}
           onSave={mutateInsertProduct}
-          onEdit={onEditForm}
+          onEdit={mutateUpdateProduct}
           isLoading={isLoadingSaveForm || isLoadingUpdateForm}
         />
       )}
@@ -177,7 +169,7 @@ export default function Index() {
                           <Image
                             src={
                               product.image
-                                ? `/api/files/products/${product.image}`
+                                ? JSON.parse(product.image)?.[0]
                                 : placeholderImage
                             }
                             width={50}
@@ -187,7 +179,17 @@ export default function Index() {
                         </Td>
                         <Td>{product.name}</Td>
                         <Td>{product.category_name}</Td>
-                        <Td>Rp{formatNumberToPrice(product.price)}</Td>
+                      <Td className="relative">
+                        {
+                          product.discount > 0
+                            ? <div className="flex flex-col gap-y-1.5">
+                              <span className="line-through text-xs text-gray-400">Rp{formatNumberToPrice(product.price)}</span>
+                              <span className="">Rp{formatNumberToPrice(product.price - ((product.discount / 100) * product.price) )}</span>
+                              <div className="absolute w-[35px] before:content-[''] before:left-[2px] before:absolute before:w-1 before:h-1 before:bg-white before:rounded-full h-[18px] flex justify-center pl-1.5 items-center right-5 rotate-45 top-3 bg-primary text-white rounded-r-lg text-[8px] font-semibold">{product.discount}%</div>
+                            </div>
+                            : <>Rp{formatNumberToPrice(product.price)}</>
+                        }
+                      </Td>
                         <Td>{product.stock}</Td>
                         <Td>
                           <ToggleSwitch

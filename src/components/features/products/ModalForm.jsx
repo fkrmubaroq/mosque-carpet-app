@@ -3,12 +3,10 @@ import { Button } from "@/components/ui/button";
 import ContainerInput from "@/components/ui/container/ContainerInput";
 import Form from "@/components/ui/form";
 import Textarea from "@/components/ui/form/Textarea";
-import UploadFile from "@/components/ui/form/UploadFile";
 import { Input } from "@/components/ui/form/input";
+import SrcFileManager from "@/components/ui/form/input/SrcFileManager";
 import { Label } from "@/components/ui/label";
 import { Modal, ModalBody, ModalHeader } from "@/components/ui/modal";
-import { MIME_TYPE_IMAGE } from "@/lib/constant";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { SelectionCategory } from "../SelectionFeature";
 
@@ -26,8 +24,8 @@ export default function ModalForm({
   isLoading,
   onEdit,
 }) {
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const formRef = useRef(null);
-  const [prevImage, setPrevImage] = useState();
   const [form, setForm] = useState(data);
   const [validated, setValidated] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState();
@@ -35,7 +33,7 @@ export default function ModalForm({
   useEffect(() => {
     if (type === "edit") {
       if (form.image) {
-        setPrevImage(form.image);
+        setSelectedFiles(JSON.parse(form.image))
       }
       const categoryName = (form)?.category_name;
       if (!categoryName || !form.category_id) return;
@@ -67,37 +65,28 @@ export default function ModalForm({
     setValidated(true);
     if (!valid) return;
 
+    const payload = { ...form };
+
+    if (selectedFiles.length) {
+      payload.image = JSON.stringify(selectedFiles); 
+    }
     setValidated(false);
-    type === "add" && onSave(form);
-    type === "edit" && onEdit(form);
+    type === "add" && onSave(payload);
+    if (type === "edit") {
+      delete payload.category_name;
+      onEdit(payload);
+    }
   };
 
   return (
-    <Modal show={show} size="w-[800px]" onHide={onHide}>
+    <Modal show={show} size="w-[500px]" onHide={onHide}>
       <ModalHeader onHide={() => onHide && onHide()}>
         {titleType[type]} Produk
       </ModalHeader>
       <ModalBody>
         <Form ref={formRef} validated={validated} onSubmit={onSubmitForm}>
-          <div className="mb-4 flex items-center gap-x-7">
-            <div className="w-[320px] shrink-0">            
-              <Label>Gambar</Label>
-              <UploadFile
-                maxFileSizeMb={1.5}
-                onChange={(file, next) => {
-                  next && next(file);
-                  setForm(form => ({ ...form, image: file[0]}))
-                }}
-                placeholder="PNG, JPG, WEBP, GIF, SVG (Ukuran Maksimal 1.5Mb)"
-                accept={Object.keys(MIME_TYPE_IMAGE)}
-
-              />
-            {type === "edit" && form.image && <div className="flex flex-col items-center gap-y-2 mt-3">
-              <Label>Gambar sebelumnya</Label>
-                <div>{<Image src={`/api/files/products/${prevImage}`} width={110} height={110} className="rounded-md" alt="" />}</div>
-            </div>}
-            </div>
-            <div className="flex w-full flex-col gap-y-4">
+          <div className="flex w-full flex-col gap-y-4">
+            
               <ContainerInput>
                 <Label>Nama Produk</Label>
                 <Input
@@ -121,7 +110,8 @@ export default function ModalForm({
                 />
               </ContainerInput>
 
-              <ContainerInput>
+            <ContainerInput direction="row">
+              <div className="flex flex-col gap-y-2 w-full">
                 <Label>Harga</Label>
                 <Input
                   name="price"
@@ -129,8 +119,34 @@ export default function ModalForm({
                   placeholder="Harga"
                   value={form.price || ""}
                   onChange={onChange}
+                  />
+              </div>
+              <div className="flex flex-col gap-y-2">
+                <Label>Diskon</Label>
+                <Input
+                  name="discount"
+                  type="number"
+                  placeholder="%"
+                  className="w-[100px]"
+                  value={form.discount || ""}
+                  onChange={onChange}
                 />
-              </ContainerInput>
+              </div>
+            </ContainerInput>
+
+            <ContainerInput>
+              <Label>Gambar</Label>
+              <SrcFileManager
+                onSave={setSelectedFiles}
+                values={selectedFiles}
+                onRemoveFile={(index) => {
+                  const clone = [...selectedFiles];
+                  clone.splice(index, 1);
+                  setSelectedFiles(clone);
+                }}
+              />
+       
+            </ContainerInput>
 
               <ContainerInput>
                 <Label>Stok</Label>
@@ -152,8 +168,7 @@ export default function ModalForm({
                 />
               </ContainerInput>
             </div>
-          </div>
-          <div className="flex justify-end gap-x-2">
+          <div className="flex justify-end gap-x-2 mt-4">
             <Button
               variant="ghost"
               size="lg"

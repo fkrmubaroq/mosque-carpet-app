@@ -80,6 +80,11 @@ export const INIT_SECTIONS = [
     "content": {},
     "position": 8,
   },
+  {
+    "section_name": "section_projects",
+    "content": { "logo_text": "AL-HIJRA", "tagline": "Ibadah Semakin nyaman", "contact": { "phone_wa": { "link": "https://map", "text": "08886351120" }, "email": { "link": "https://map", "text": "alhijracarpet@mail.com" } }, "address": [{ "link": "https://map", "text": "Jln Saluyu Indah X No.9H" }], "social_media": [{ "link": "https://map", "text": "Jln Saluyu Indah X No.9H" }], "logo": "http://localhost:3000/api/files/Sections/logo.png" },
+    "position": 6,
+  },
 ]
 
 export const CONTAINER_LP = "padding-container xl:w-[1280px]";

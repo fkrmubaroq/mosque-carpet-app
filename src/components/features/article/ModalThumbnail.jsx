@@ -19,7 +19,7 @@ export default function ModalThumbnail({ show, onHide, onSave }) {
             next && next(file);
             setThumbnail(file[0]);
           }}
-          placeholder="Thumbnail harus bertipe PNG, JPG, WEBP, GIF, SVG (Ukuran Maksimal 1.5Mb)"
+          placeholder="Thumbnail harus bertipe PNG, JPG, WEBP, GIF (Ukuran Maksimal 1.5Mb)"
           accept={Object.keys(MIME_TYPE_IMAGE)}
           />
       </ContainerInput>
