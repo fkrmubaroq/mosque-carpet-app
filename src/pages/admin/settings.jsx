@@ -2,19 +2,22 @@ import { Layout } from "@/components/layout";
 import { SpinnerIcon } from "@/components/ui/Spinner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import Ribbon from "@/components/ui/card/ribbon";
 import ContainerInput from "@/components/ui/container/ContainerInput";
 import { Input } from "@/components/ui/form/input";
 import ToggleSwitch from "@/components/ui/switch/toggle";
-import { insertSetting } from "@/lib/api/setting";
+import { updateSetting } from "@/lib/api/setting";
 import { useDialogStore } from "@/lib/hookStore";
 import { prismaClient } from "@/lib/prisma";
 import { Label } from "@radix-ui/react-label";
 import { useMutation } from "@tanstack/react-query";
+import cn from "classnames";
 import { useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
-
+import { IoRibbonOutline } from "react-icons/io5";
 export async function getServerSideProps() {
   const response = await prismaClient.setting.findFirst();
+  console.log("response setting", response);
   return {
     props: {
       setting: response || {}
@@ -22,18 +25,21 @@ export async function getServerSideProps() {
   }
 }
 
+const ribbonList = {
+  basic: ["primary", "secondary","gray", "blue", "red"]
+};
 export default function Settings({ setting }) {
   const [formSetting, setFormSetting] = useState(setting);
   const showToast = useDialogStore(state => state.showToast);
 
-  const { mutate: mutateInsertSetting, isLoading } = useMutation({
-    mutationFn: insertSetting,
+  const { mutate: mutateUpdateSetting, isLoading } = useMutation({
+    mutationFn: updateSetting,
     onSuccess: () => showToast("success-update-setting"),
     onError: () => showToast("error-update-setting")
   });
 
   const onSaveSetting = () => {
-    mutateInsertSetting(formSetting);
+    mutateUpdateSetting(formSetting);
   };
 
   if (!Object.keys(setting).length) {
@@ -41,6 +47,11 @@ export default function Settings({ setting }) {
 
     </Layout>
   }
+
+  const onClickRibbonBasic = (selectedVariant) => {
+    setFormSetting(form => ({ ...form, ribbon:`basic-${selectedVariant}`}))
+  }
+
   return (
     <Layout title="Pengaturan">
 
@@ -78,6 +89,24 @@ export default function Settings({ setting }) {
                 </ContainerInput>
               </div>
 
+              <CardHeader className="pl-0 font-semibold pb-5">Design Pita Diskon</CardHeader>
+              <div className="rounded-lg bg-gray-100 p-5">
+                <ContainerInput direction="row" className="w-full gap-x-5">
+                  <Label className="uppercase">
+                    <IoRibbonOutline size={26} />
+                  </Label>
+                  <div className="flex gap-x-3 flex-wrap">
+                    {ribbonList.basic.map((ribbon, key) => <RibbonCard
+                      key={key}
+                      active={formSetting.ribbon?.includes(ribbon)}
+                      variant={ribbon}
+                      onClick={onClickRibbonBasic}
+                    />)}
+                  </div>
+
+                </ContainerInput>
+              </div>
+              
               <CardHeader className="!pl-0 font-semibold">Maintenance</CardHeader>
               <ToggleSwitch
                 checked={formSetting?.is_maintenance === "Y"}
@@ -104,4 +133,37 @@ export default function Settings({ setting }) {
       </div>
     </Layout>
   );
+}
+const hoverCard = {
+  primary: "hover:border-primary",
+  secondary: "hover:border-secondary",
+  gray: "hover:border-gray-500",
+  blue: "hover:border-blue-500",
+  red: "hover:border-red-500",
+}
+
+const activeRibbon = {
+  primary: "border-primary",
+  secondary: "border-secondary",
+  gray: "border-gray-500",
+  blue: "border-blue-500",
+  red: "border-red-500",
+}
+function RibbonCard({ variant, onClick, active }) {
+  return <div className="relative flex flex-col gap-y-3">
+    <div
+      onClick={() => onClick(variant)}
+      className={cn("relative bg-white border w-56 h-56  cursor-pointer", hoverCard[variant], {
+        [activeRibbon[variant]]: active
+      })}>
+      <Ribbon text="70% OFF" variant={variant} />
+      <div className="bg-gray-200 w-full h-[130px]"></div>
+      <div className="flex mt-3 px-4 flex-col gap-y-4">
+        <div className="bg-gray-200 w-[90px] h-2 rounded-full"></div>
+        <div className="bg-gray-200 w-full h-2 rounded-full"></div>
+        <div className="bg-gray-200 w-full h-2 rounded-full"></div>
+      </div>
+    </div>
+    <div className="text-center first-letter:uppercase text-gray-600">{variant}</div>
+  </div>
 }

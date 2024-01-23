@@ -1,5 +1,5 @@
-import { postMethod } from ".";
+import { putMethod } from ".";
 
-export function insertSetting(payload) {
-  return postMethod("setting", payload);
+export function updateSetting(payload) {
+  return putMethod("setting", payload);
 }

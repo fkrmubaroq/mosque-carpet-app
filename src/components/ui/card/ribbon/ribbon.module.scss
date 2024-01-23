@@ -1,0 +1,6 @@
+.ribbon{
+  @apply w-[100px] h-[50px] absolute  rotate-45 overflow-hidden -right-[10px] -top-[10px];
+  .ribbon__text{
+    @apply bg-red-500;
+  }
+}
