@@ -1,10 +1,14 @@
+import { useSetting } from "@/lib/hooks";
 import Head from "next/head";
 
 const defaultFavicon = [
   "/img/logo-black.ico",
   "/img/logo-black_180x180.png"
 ]
-export default function Meta({ children, customTitle, description, title, favicon, faviconMedium }) {
+export default function Meta({ children, customTitle, description, title, faviconMedium }) {
+  const { data: setting } = useSetting();
+  console.log("setting: ", setting);
+  const titleTab = setting?.logo_title ? setting.logo_title : "Al-Hijra";
   return (
     <Head>
       <meta charSet="UTF-8" />
@@ -16,7 +20,7 @@ export default function Meta({ children, customTitle, description, title, favico
       <link
         rel="shortcut icon"
         type="image/x-icon"
-        href={favicon || defaultFavicon[0]}
+        href={setting?.favicon || defaultFavicon[0]}
       />
       <link
         rel="apple-touch-icon"
@@ -25,7 +29,8 @@ export default function Meta({ children, customTitle, description, title, favico
         href={faviconMedium || defaultFavicon[1]}
       />
       {customTitle ? <title>{customTitle}</title> :
-        <title>{title ? `Al-Hijra | ${title}` : "Al-Hijra"}</title>
+        <title>
+          {title ? `${titleTab} | ${title}` : titleTab}</title>
       }
       {children}
     </Head>

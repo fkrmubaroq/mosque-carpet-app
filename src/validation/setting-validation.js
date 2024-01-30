@@ -3,10 +3,13 @@ import Joi from "joi";
 const updateSettingValidation = Joi.object({
   id: Joi.number().required(),
   no_wa: Joi.string().max(20).required(),
-  ribbon: Joi.string().max(20).default("basic-primary"),
-  link_address: Joi.string().optional(),
   is_maintenance: Joi.string().max(1).required(),
   show_price: Joi.string().max(1).required(),
+  logo: Joi.string().max(255).optional(),
+  logo_title: Joi.string().max(100).optional(),
+  favicon: Joi.string().max(255).optional(),
+  popup: Joi.string().optional(),
+  ribbon: Joi.string().max(20).default("basic.primary"),
 })
 
 export {

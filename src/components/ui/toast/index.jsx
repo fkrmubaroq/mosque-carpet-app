@@ -25,7 +25,7 @@ export function Toast({
     <Portal>
       <div
         className={cn(
-          "fixed left-1/2 z-50 mb-4 flex w-full max-w-xs -translate-x-1/2  items-center overflow-hidden rounded-lg p-4  shadow transition-all duration-300 ease-in-out",
+          "fixed left-1/2 z-[9999991] mb-4 flex w-full max-w-xs -translate-x-1/2  items-center overflow-hidden rounded-lg p-4  shadow transition-all duration-300 ease-in-out",
           {
             "bottom-5 ": show,
             "bottom-[-200px]": !show,

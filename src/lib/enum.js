@@ -6,3 +6,9 @@ export const STATUS_MESSAGE_ENUM = {
   InternalServerError: 500,
   BadGateway: 502
 }
+
+export const USER_TYPE_ENUM = {
+  SuperAdmin: "SUPER_ADMIN",
+  Admin: "ADMIN",
+  Staff: "STAFF"
+}

@@ -1,11 +1,11 @@
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { Button } from ".";
 
-export default function ButtonEdit({ text, onClick }) {
+export default function ButtonEdit({ variant="ghost", text, onClick }) {
   return (
     <Button
       className="flex items-center justify-center gap-x-2 hover:bg-gray-100"
-      variant="ghost"
+      variant={variant}
       onClick={onClick}
     >
       <HiOutlinePencilAlt />

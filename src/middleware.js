@@ -8,6 +8,7 @@ export async function middleware(req, res) {
     return NextResponse.redirect(new URL("/admin/dashboard", req.url) );
   }
 
+  // middleware admin
   if (req.nextUrl.pathname.startsWith("/admin")) {
     if (!userParsed?.username) return NextResponse.redirect(new URL("/login", req.url));
     return NextResponse.next();

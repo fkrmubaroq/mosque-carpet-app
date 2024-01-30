@@ -1,8 +1,9 @@
 import cn from "classnames";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // import required modules
+import Meta from "@/components/Meta";
 import SectionTitle from "@/components/features/sections/Fragment/SectionTitle";
 import SectionAboutUs from "@/components/features/sections/SectionAboutUs";
 import SectionArticles from "@/components/features/sections/SectionArticles";
@@ -13,14 +14,14 @@ import SectionMapAddress from "@/components/features/sections/SectionMapAddress"
 import SectionOurProduct from "@/components/features/sections/SectionOurProducts";
 import SectionVisionMision from "@/components/features/sections/SectionVisionMision";
 import SectionWhyChooseUs from "@/components/features/sections/SectionWhyChooseUs";
+import Banner from "@/components/ui/banner";
 import ButtonWa from "@/components/ui/button/ButtonWa";
 import { CONTAINER_LP } from "@/lib/constant";
 import { prismaClient } from "@/lib/prisma";
-import { debounce } from "@/lib/utils";
+import { debounce, getCookieName, setCookie } from "@/lib/utils";
 
 
-export async function getServerSideProps() {
-
+export async function getServerSideProps(context) {
   const prismaSections = await prismaClient.sections.findMany({
     orderBy: {
       position: "asc"
@@ -30,15 +31,22 @@ export async function getServerSideProps() {
     }
   });
   const prismaSetting = await prismaClient.setting.findFirst();
+  const popupCookie = JSON.parse(context.req.cookies?.[getCookieName("popup")] || "null");
+  let showPopupCampaign = true;
+  if (popupCookie?.status && popupCookie?.date) {
+    showPopupCampaign = false;
+  }
 
   return {
     props: {
       sections: prismaSections || [],
-      setting: prismaSetting || {}
+      setting: prismaSetting || {},
+      showPopupCampaign
     }
   }
 }
-export default function Home({ sections, setting }) {  
+export default function Home({ sections, setting, showPopupCampaign }) {  
+  const [showPopup, setShowPopup] = useState(showPopupCampaign);
   const [mobileMd, setMobileMdWidth] = useState(false);
   const [mobileSm, setMobileSm] = useState(false);
   const mobile = {
@@ -73,8 +81,16 @@ export default function Home({ sections, setting }) {
     return () => window.removeEventListener("resize", debounceCheckScreenWidth);
   }, [mobile]);
 
+  
+  const popup = useMemo(() => JSON.parse(setting?.popup || "{}"), []);
   return (
+    <>
+    <Meta title="Pusat Karpet Masjid " description="Ibadah Semakin nyaman"/>
     <main className="min-h-screen">
+      {showPopup && <Banner src={popup?.srcImg} redirectTo={popup.url} onClose={() => {
+        setCookie("popup", JSON.stringify({ status: "active", date: new Date() }), 3);
+        setShowPopup(false)
+      }} />}
       <SectionHero mobile={mobile} section={getContentSection("section_hero")} />
       <div className={cn(CONTAINER_LP, "px-4")}>
         <SectionAboutUs section={getContentSection("section_about_us")} />
@@ -87,7 +103,8 @@ export default function Home({ sections, setting }) {
       </div>
       <SectionFooter setting={setting} section={getContentSection("section_footer")} />
       <ButtonWa phone={setting?.no_wa} />
-    </main>
+      </main>
+    </>
   );
 }
 

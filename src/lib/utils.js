@@ -1,3 +1,4 @@
+
 import dayjs from "dayjs";
 import fs from "fs";
 import { DIR_ACCESS_FILE } from "./constant";
@@ -300,3 +301,10 @@ export const getCumulativePathSegments = (path) => {
       ["/"]
     )
 };
+
+
+export function getCookieServer(req, key) {
+  const cookies = req?.headers?.cookie || req; 
+  const data = cookies?.split(';')?.find(cookie => cookie.trim().startsWith(`${key}=`));
+  return data?.replace(`${key}=`, '')?.trim();
+}

@@ -1,22 +1,24 @@
 import { updateSections } from "@/lib/api/section";
+import { logout } from "@/lib/api/users";
+import { USER_TYPE_ENUM } from "@/lib/enum";
 import { useDialogStore, useEditSection } from "@/lib/hookStore";
-import { useCookie, useOnClickOutside } from "@/lib/hooks";
+import { useCookie, useOnClickOutside, useSetting, useUserData } from "@/lib/hooks";
 import { eraseCookie } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import cn from "classnames";
 import Image from "next/image";
 import Router, { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { BiHomeAlt } from "react-icons/bi";
 import { CiBoxList, CiBoxes } from "react-icons/ci";
+import { FiUsers } from "react-icons/fi";
 import { IoIosArrowDown, IoIosArrowUp, IoIosGlobe } from "react-icons/io";
 import { LuUser } from "react-icons/lu";
 import { MdOutlineAccountCircle, MdOutlineArticle } from "react-icons/md";
 import { PiDotsThreeLight } from "react-icons/pi";
 import { RiShutDownLine } from "react-icons/ri";
 import { RxHamburgerMenu, RxSection } from "react-icons/rx";
-import { TfiPackage } from "react-icons/tfi";
 import { VscFolderLibrary } from "react-icons/vsc";
 import { useShallow } from "zustand/react/shallow";
 import Meta from "../Meta";
@@ -25,68 +27,75 @@ import { Button } from "../ui/button";
 import ToggleSwitch from "../ui/switch/toggle";
 import style from "./layout.module.scss";
 
-const sidebarMenus = [
-  {
-    label: "HOME",
-    menus: [
-      {
-        icon: <BiHomeAlt size={20} />,
-        menu: "Beranda",
-        path: "/admin/dashboard",
-      },
-    ],
-  },
-  {
-    label: "MASTER",
-    menus: [
-      {
-        icon: <CiBoxes size={20} />,
-        menu: "Produk",
-        path: "/admin/products",
-      },
-      {
-        icon: <CiBoxList size={20} />,
-        menu: "Kategori Produk",
-        path: "/admin/category",
-      },
-      {
-        icon: <TfiPackage size={18} />,
-        menu: "Paket Bundle",
-        path: "/admin/package-bundle",
-      },
-    ],
-  },
-  {
-    label: "Lainnya",
-    menus: [
-      {
-        icon: <RxSection size={20} />,
-        menu: "Sections",
-        path: "/admin/section",
-      },
-      {
-        icon: <MdOutlineArticle size={20} />,
-        menu: "Artikel",
-        path: "/admin/articles",
-      },
-      {
-        icon: <VscFolderLibrary size={20} />,
-        menu: "Media Manager",
-        path: "/admin/file-manager",
-      },
-      {
-        icon: <AiOutlineSetting size={20} />,
-        menu: "Pengaturan",
-        path: "/admin/settings",
-      },
-    ],
-  },
-];
 export function Layout({ children, customTitle, title, classNameTitle }) {
-  const [cookie, setCookie] = useCookie("adm");
+  const { data: user } = useUserData();
+  const route = useRouter();
+  const isStaff = user?.role === USER_TYPE_ENUM.Staff;
+  const sidebarMenus = useMemo(() => [
+    {
+      label: "HOME",
+      menus: [
+        {
+          icon: <BiHomeAlt size={20} />,
+          menu: "Beranda",
+          path: "/admin/dashboard",
+        },
+      ],
+    },
+    {
+      label: "MASTER",
+      menus: [
+        {
+          icon: <CiBoxes size={20} />,
+          menu: "Produk",
+          path: "/admin/products",
+        },
+        {
+          icon: <CiBoxList size={20} />,
+          menu: "Kategori Produk",
+          path: "/admin/category",
+        },
+        {
+          icon: <FiUsers size={20} />,
+          menu: "Users",
+          path: "/admin/users",
+          hide: isStaff
+        }
+      ],
+    },
+    {
+      label: "Lainnya",
+      menus: [
+        {
+          icon: <RxSection size={20} />,
+          menu: "Sections",
+          path: "/admin/section",
+          hide: isStaff
+        },
+        {
+          icon: <MdOutlineArticle size={20} />,
+          menu: "Artikel",
+          path: "/admin/articles",
+        },
+        {
+          icon: <VscFolderLibrary size={20} />,
+          menu: "Media Manager",
+          path: "/admin/file-manager",
+        },
+        {
+          icon: <AiOutlineSetting size={20} />,
+          menu: "Pengaturan",
+          path: "/admin/settings",
+          hide: isStaff
+        },
+      ],
+    },
+  ], [isStaff]);
+
+  const { data: setting } = useSetting();
+  const [cookie] = useCookie("adm");
   const [expand, setExpand] = useState(true);
   const [dropdown, setDropdown] = useState(false);
-  const route = useRouter();
   const [showToast, showConfirmation, hideConfirmation] = useDialogStore(state => [state.showToast, state.showConfirmation, state.hideConfirmation]);
   const [sectionsLp, viewIdSection, setViewIdSection] = useEditSection(useShallow(state => [state.sectionsLp, state.viewIdSection, state.setViewIdSection]));
   const isSectionPage = route.pathname === "/admin/section";
@@ -112,6 +121,15 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
     onError: () => showToast("error-update-section")
   })
 
+  const { mutate: logoutApp } = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      eraseCookie("adm");
+      window.location.href = "/login"
+    },
+    onError: () => showToast("error-logout")
+  })
+
   const onPublish = () => {
     const sections = sectionsLp.map(section => ({ ...section, content: JSON.stringify(section.content) }));
     mutateUpdateSection({
@@ -124,8 +142,7 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
       case "Keluar":
         showConfirmation("logout", {
           onConfirm() {
-            eraseCookie("adm");
-            window.location.href = "/login"
+            logoutApp()
           }
         })
         break;
@@ -202,7 +219,7 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
               size={33}
               className="opacity-50"
             />
-            <div className="flex flex-col gap-y-1 border-r pr-3 ">
+            <div className="flex flex-col gap-y-1 border-r pr-3 min-w-[100px] max-w-[300px]">
               <span className="text-sm font-semibold text-gray-500 ">
                 {cookie?.name || "-"}
               </span>
@@ -227,18 +244,18 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
             }
           )}
         >
-          <div className="shrink-0 overflow-hidden">
+            <div className={cn("shrink-0 overflow-hidden relative ", { "w-10 h-10": expand, "w-5 h-5": !expand })}>
             <Image
-              src="/img/logo.png"
-              width={expand ? "35" : "25"}
-              height={expand ? "35" : "25"}
+              src={setting?.logo || "/img/logo.png"}
+                layout="fill"
+                objectFit="contain"
               alt=""
             />
           </div>
           {expand && (
             <div className="flex flex-col overflow-hidden font-jasans">
               <span className="overflow-hidden font-medium tracking-widest text-white">
-                AL - HIJRA
+                {setting?.logo_title || ""}
               </span>
               <span className="text-xs text-gray-200">Admin</span>
             </div>
@@ -283,7 +300,7 @@ function MenuItem({
   expand,
   activeMenu,
 }) {
-
+  if (data?.hide) return <></>;
   const isActiveMenu = activeMenu.includes(data.path);
   return (
     <div
@@ -322,6 +339,7 @@ const listMenu = [
   }
 ];
 function DropdownMenu({ show, onClick }) {
+
   return <div className={cn("absolute transition-all -left-0 border  w-[160px] bg-white rounded-md",
     {
       "top-14 opacity-100 z-[999]": show,

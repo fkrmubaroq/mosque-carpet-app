@@ -1,22 +1,25 @@
+import Meta from "@/components/Meta";
 import SectionFooter from "@/components/features/sections/SectionFooter";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import ButtonBack from "@/components/ui/button/ButtonBack";
 import ButtonWhatsapp from "@/components/ui/button/ButtonWa";
+import Ribbon from "@/components/ui/card/ribbon";
 import { getProductByCategory, getProductByName } from "@/lib/api/product";
 import { CONTAINER_LP } from "@/lib/constant";
 import { useMobile } from "@/lib/hooks";
 import { prismaClient } from "@/lib/prisma";
 import { productsQuery } from "@/lib/queryKeys";
-import { formatNumberToPrice, mediaPath } from "@/lib/utils";
+import { formatNumberToPrice, slugString } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import cn from "classnames";
 import Image from "next/image";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
+import { useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { Navigation } from 'swiper/modules';
+import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 export async function getServerSideProps() {
@@ -65,7 +68,7 @@ export default function ProductByName({ sections, setting }) {
       <SectionDetailProduct mobile={mobile} setting={setting} />
     </div>
     <SectionFooter section={getContentSection("section_footer")} />
-    <ButtonWhatsapp phone="" />
+    <ButtonWhatsapp phone={setting?.no_wa} />
 
   </main>
 
@@ -76,7 +79,7 @@ function SectionDetailProduct({ mobile, setting }) {
   const categoryName = router.query?.category;
   const slug = router.query?.slug;
 
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: productsQuery.detailProduct(slug),
     queryFn: async () => {
       const response = await getProductByName(slug);
@@ -84,7 +87,7 @@ function SectionDetailProduct({ mobile, setting }) {
     }
   });
 
-  const { data: categories } = useQuery({
+  const { data: products } = useQuery({
     queryKey: productsQuery.similarCategory(slug),
     queryFn: async () => {
       const response = await getProductByCategory(categoryName);
@@ -97,43 +100,88 @@ function SectionDetailProduct({ mobile, setting }) {
     return 4;
   };
 
+  const onClick = (data) => {
+    const slug = slugString(data.name);
+    const category = slugString(categoryName);
+    Router.push(`/collections/${category}/${slug}-${data.id}`);
+  }
+
+  const image = JSON.parse(data?.image || "[]");
+  const productSimilar = products?.filter(item => item.id !== data.id);
   return <section>
+    <Meta customTitle={data?.name} />
     <ButtonBack
       onClick={() => window.history.back(-1)}
       className="inline-flex !pl-0 items-center cursor-pointer gap-x-2 mb-3 text-lg font-cinzel tracking-wide"
       text="Kembali"
     />
     <div className="flex flex-col lg:flex-row gap-x-10 mb-32">
-      <ProductImage data={data} />
+      <ProductImage image={image || []} />
       <ProductInfo data={data} setting={setting} />
     </div>
 
-    <div className="mb-32">
-      <div className="inline-flex mb-2 border-b text-lg border-b-green-600 font-cinzel tracking-wide">Jenis Serupa</div>
-      <Swiper
-        slidesPerView={getSlidePerPreviewByScreen()}
-        spaceBetween={20}
-        navigation={true}
-        loop
-        modules={[Navigation]}
-        className="swipper-category"
-      >
-        {categories?.map((item, key) => (
-          <SwiperSlide
-            key={key}
-          >
-            <PreviewData data={item} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </div>
+    {productSimilar?.length > 0 &&
+      <div className="mb-32">
+        <div className="inline-flex mb-2 border-b text-lg border-b-green-600 font-cinzel tracking-wide">Jenis Serupa</div>
+        <Swiper
+          slidesPerView={getSlidePerPreviewByScreen()}
+          spaceBetween={20}
+        
+          navigation={true}
+          loop
+          modules={[Navigation]}
+          className="swipper-category"
+        >
+          {productSimilar.filter(item => item.id !== data.id)?.map((item, key) => (
+            <SwiperSlide
+              key={key}
+            >
+              <PreviewData data={item} setting={setting} showPrice={setting?.show_price} onClick={onClick} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+    }
 
   </section>
 }
 
-function ProductImage({ data }) {
-  return <div className="shrink-0 lg:block flex justify-center">
-    {data?.image && <Image className="aspect-auto" src={mediaPath("products", data.image)} width={600} height={500} alt="" />}
+function ProductImage({ image }) {
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  return <div className="max-w-[500px]">
+    <Swiper
+    slidesPerView={1}
+    style={{
+      '--swiper-navigation-color': '#fff',
+      '--swiper-pagination-color': '#fff',
+    }}
+    spaceBetween={10}
+    navigation={true}
+    thumbs={{ swiper: thumbsSwiper }}
+    modules={[FreeMode, Navigation, Thumbs]}
+    className="mySwiper2"
+  >
+    {image.map((src, key) => <SwiperSlide key={key} className="relative">
+      {image && <Image src={src} width={500} height={400} alt="" className="rounded-md" />}
+    </SwiperSlide>
+    )}
+    </Swiper>
+    <div >
+      <Swiper
+        onSwiper={setThumbsSwiper}
+        spaceBetween={10}
+        slidesPerView={4}
+        freeMode={true}
+        watchSlidesProgress={true}
+        modules={[FreeMode, Navigation, Thumbs]}
+        className="swipper-gallery"
+      >
+        {image.map((src, key) => <SwiperSlide key={key} className="relative">
+          {image && <Image src={src} width={500} height={400} alt="" className="rounded-md" />}
+        </SwiperSlide>
+        )}
+      </Swiper>
+    </div>
   </div>
 }
 
@@ -168,15 +216,30 @@ function ProductInfo({ data, setting }) {
   )
 }
 
-function PreviewData({ data, onClick, showPrice }) {
+function PreviewData({ data, onClick, showPrice, setting }) {
+  const image = JSON.parse(data?.image || "[]");
+  const variantRibbon = setting?.ribbon?.split(".")?.[1] || "primary";
+  const discountPrice = data.price - ((data.discount / 100) * data.price);
+
   return <div
     onClick={() => onClick(data)}
-    className=" lg:max-w-[330px] group mb-2 flex cursor-pointer flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary">
-    <Image src={mediaPath("products", data.image)} width="400" height="300" alt="" className="w-full object-cover" />
+    className="lg:max-w-[330px] relative group mb-2 flex cursor-pointer flex-col shadow mt-2">
+    {data?.discount && <Ribbon text={<span className="font-semibold">DISKON {data.discount}%</span>} variant={variantRibbon} />}
+    {image?.[0] && <Image src={image[0]} width="400" height="300" alt="" className="w-full object-cover" />}
     <div className="pb-5 pl-5 pt-4 flex gap-y-1 flex-col font-poppins tracking-wider text-slate-700 group-hover:bg-primary group-hover:text-white">
-      <span className="text-slate-900 group-hover:text-white text-lg">{data.name}</span>
+      <span className="text-slate-900 group-hover:text-white text-lg font-semibold">{data.name}</span>
       {data?.description && <span className="text-sm text-gray-400 line-clamp-2">{data?.description || ""}</span>}
-      {data?.price && showPrice === "Y" && <div className="text-primary text-xl font-semibold mt-2 group-hover:text-white">Rp {formatNumberToPrice(data?.price)}</div>}
+      {data?.price && showPrice === "Y" && 
+        <>
+          <div className={cn(" mt-2 group-hover:text-white", {
+            "line-through text-gray-400 ": data.discount,
+            "text-primary text-xl font-semibold ": !data.discount
+          })}>Rp {formatNumberToPrice(data?.price)}
+          </div>
+          {data.discount && <div className="text-primary text-xl font-semibold group-hover:text-white">Rp {formatNumberToPrice(discountPrice)}</div>}
+        </>
+
+      }
     </div>
   </div>
 }

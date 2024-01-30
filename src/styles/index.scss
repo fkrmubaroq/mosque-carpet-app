@@ -9,9 +9,6 @@ html,
 body {
   scroll-behavior: smooth;
   font-family: 'Poppins', sans-serif;
-  @media (max-height:700px) {
-    font-size: 13px !important;
-  }
 }
 
 // .swiper {
@@ -35,6 +32,16 @@ body {
       font-size:30px !important;    
     }
   }
+}
+
+.swipper-gallery{
+  .swiper-slide{
+    opacity: 0.6;
+  }
+  .swiper-slide.swiper-slide-thumb-active{
+    opacity: 1;
+  }
+  
 }
 
 .upload-file-drop-zone {
@@ -121,5 +128,19 @@ body {
 
   blockquote {
     @apply border-l-4 border-l-gray-200 bg-gray-50 pl-4 ml-2 py-2 text-gray-600 mb-3 text-sm;
+  }
+}
+
+
+.image-full {
+  width: 100%;
+  >div {
+    position: unset !important;
+  }
+  .image {
+    object-fit: contain;
+    width: 100% !important;
+    position: relative !important;
+    height: unset !important;
   }
 }

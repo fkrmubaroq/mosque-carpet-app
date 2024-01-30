@@ -14,7 +14,7 @@ export default function ModalUploadFile({ onUpload, onHide }) {
         <UploadFile
           multiple
           className="max-h-[500px] min-h-[350px]"
-          placeholder="PNG, JPG, WEBP, GIF (Ukuran Maksimal 1Mb)"
+          placeholder="PNG, JPG, WEBP, GIF, SVG, ICO (Ukuran Maksimal 1Mb)"
           maxFileSizeMb={1}
           accept={Object.keys(MIME_TYPE_IMAGE)}
 

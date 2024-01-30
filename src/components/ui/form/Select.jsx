@@ -106,7 +106,7 @@ const Selection = ({
             }
           )}
         >
-          {!value ? (readOnly && "-") || placeholder || "" : value}
+          {!value ? (readOnly && "-") || placeholder || "Pilih" : value}
         </div>
 
         {onReset && value && !readOnly && (

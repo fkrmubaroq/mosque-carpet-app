@@ -24,7 +24,7 @@ async function put(req, res) {
     const data = await prismaClient.setting.update({
       data: validateRequest,
       where: {
-        id
+        id,
       }
     });
     res.status(STATUS_MESSAGE_ENUM.Ok).json({ data })

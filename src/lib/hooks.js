@@ -1,4 +1,8 @@
+import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
+import { getSetting } from "./api/setting";
+import { getUserLogin } from "./api/users";
+import { adminUsersQuery, settingQuery } from "./queryKeys";
 import { debounce, getCookie, setCookie } from "./utils";
 
 export function useOnClickOutside(ref, handler) {
@@ -95,4 +99,28 @@ export function useKeypress(keyCodes) {
     }
   }, []);
   return active;
+}
+
+export function useSetting() {
+  const { data } = useQuery({
+    staleTime: Infinity,
+    queryKey: settingQuery.admin,
+    queryFn: async () => {
+      const response = await getSetting();
+      return response.data?.data || {};
+    }
+  });
+  return { data };
+}
+
+export function useUserData() {
+  const { data } = useQuery({
+    staleTime: Infinity,
+    queryKey: adminUsersQuery.userData,
+    queryFn: async () => {
+      const response = await getUserLogin();
+      return response.data?.data || {};
+    }
+  });
+  return { data };
 }

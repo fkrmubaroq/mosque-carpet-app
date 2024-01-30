@@ -22,6 +22,12 @@ export const adminArticleQuery = {
   getAll: (page,keyword) => ["admin", "article",page, keyword],
   getDetail: (id) => ["admin", "article", id]
 }
+
+export const adminUsersQuery = {
+  getAll: (page, keyword) => ["admin", "users", page, keyword],
+  userData: ["user","data"]
+}
+
 export const landingPageQuery = {
   getCategories: ["lp", "category"],
   getArticles: ["lp", "articles"],
@@ -34,4 +40,8 @@ export const productsQuery = {
   getProducts: ["products-category"],
   detailProduct: (slug) => ["products-detail", slug],
   similarCategory: (slug) => ["similar-category", slug]
+}
+
+export const settingQuery = {
+  admin: ["admin-setting"]
 }

@@ -1,15 +1,17 @@
+import Meta from "@/components/Meta";
 import SectionFooter from "@/components/features/sections/SectionFooter";
 import { Header } from "@/components/layout/Header";
 import ButtonBack from "@/components/ui/button/ButtonBack";
 import ButtonWhatsapp from "@/components/ui/button/ButtonWa";
 import { Card, CardContent } from "@/components/ui/card";
+import Ribbon from "@/components/ui/card/ribbon";
 import { Line, Shimmer } from "@/components/ui/shimmer";
 import { getProductByCategory } from "@/lib/api/product";
 import { CONTAINER_LP, MARGIN_EACH_SECTION } from "@/lib/constant";
 import { useMobile } from "@/lib/hooks";
 import { prismaClient } from "@/lib/prisma";
 import { productsQuery } from "@/lib/queryKeys";
-import { formatNumberToPrice, mediaPath, slugString } from "@/lib/utils";
+import { formatNumberToPrice, slugString } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import cn from "classnames";
 import Image from "next/image";
@@ -62,6 +64,7 @@ export default function ProductCategory({ sections, setting }) {
   const content = getContentSection("section_hero")?.content;
 
   return <main className="min-h-screen">
+    <Meta customTitle={`Koleksi ${categoryName}`} />
     <div className="h-[250px] w-full mb-12 lg:mb-20 lg:h-[350px]">
       <Header
         mobile={mobile}
@@ -100,16 +103,16 @@ export default function ProductCategory({ sections, setting }) {
     </div>
     <div className={cn(CONTAINER_LP, "px-4")}>
       {isLoading ? <ShimmerSection total={8} /> :
-        <SectionOurProduct data={data} isLoading={isLoading} showPrice={setting?.show_price} />
+        <SectionOurProduct data={data} isLoading={isLoading} setting={setting} showPrice={setting?.show_price} />
       }
     </div>
     <SectionFooter section={getContentSection("section_footer")} />
-    <ButtonWhatsapp phone="" />
+    <ButtonWhatsapp phone={setting?.no_wa} />
 
   </main>
 }
 
-function SectionOurProduct({ data, showPrice }) {
+function SectionOurProduct({ data, showPrice, setting }) {
   const router = useRouter();
   const categoryName = router.query?.category;
   const onClick = (data) => {
@@ -126,21 +129,34 @@ function SectionOurProduct({ data, showPrice }) {
     />
     <div className="flex gap-x-5 gap-y-5 flex-wrap mt-5">
       {
-        data?.map((item, key) => <PreviewData key={key} data={item} onClick={onClick} showPrice={showPrice} />)
+        data?.map((item, key) => <PreviewData key={key} data={item} onClick={onClick} setting={setting} showPrice={showPrice} />)
       }
     </div>
   </section>
 }
 
-function PreviewData({ data, onClick, showPrice }) {
+function PreviewData({ data, onClick, showPrice, setting }) {
+  const image = JSON.parse(data?.image || "[]");
+  const variantRibbon = setting?.ribbon?.split(".")?.[1] || "primary";
+  const discountPrice = data.price - ((data.discount / 100) * data.price);
   return <div
     onClick={() => onClick(data)}
-    className=" lg:max-w-[330px] group mb-2 flex cursor-pointer flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary">
-    <Image src={mediaPath("products", data.image)} width="400" height="300" alt="" className="w-full object-cover" />
+    className=" lg:max-w-[330px] group mb-2 flex cursor-pointer flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary relative">
+    {data?.discount && <Ribbon text={<span className="font-semibold">DISKON {data.discount}%</span>} variant={variantRibbon} />}
+    {image?.[0] && <Image src={image[0]} width="400" height="300" alt="" className="w-full object-cover" />}
     <div className="pb-5 pl-5 pt-4 flex gap-y-1 flex-col font-poppins tracking-wider text-slate-700 group-hover:bg-primary group-hover:text-white">
-      <span className="text-slate-900 group-hover:text-white text-lg">{data.name}</span>
+      <span className="text-slate-900 group-hover:text-white text-lg font-semibold">{data.name}</span>
       {data?.description && <span className="text-sm text-gray-400 line-clamp-2">{data?.description || ""}</span>}
-      {data?.price && showPrice === "Y" && <div className="text-primary text-xl font-semibold mt-2 group-hover:text-white">Rp {formatNumberToPrice(data?.price)}</div>}
+      {data?.price && showPrice === "Y" &&
+        <>
+        <div className={cn(" mt-2 group-hover:text-white", {
+          "line-through text-gray-400 ": data.discount,
+          "text-primary text-xl font-semibold ": !data.discount
+          })}>Rp {formatNumberToPrice(data?.price)}
+        </div>
+        {data.discount && <div className="text-primary text-xl font-semibold group-hover:text-white">Rp {formatNumberToPrice(discountPrice)}</div>}
+        </>
+      }
     </div>
   </div>
 }

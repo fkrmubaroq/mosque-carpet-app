@@ -12,6 +12,9 @@ export const MIME_TYPE_IMAGE = {
   "image/png": "png",
   "image/tiff": "tiff",
   "image/webp": "webp",
+  "image/svg+xml": "svg",
+  "image/x-icon": "ico",
+  "image/vnd.microsoft.icon": "ico",
 };
 
 export const acceptImage = [
@@ -89,3 +92,7 @@ export const INIT_SECTIONS = [
 
 export const CONTAINER_LP = "padding-container xl:w-[1280px]";
 export const MARGIN_EACH_SECTION = "lg:mb-[100px] mb-16";
+
+export const RIBBON_LIST = {
+  basic: ["primary", "secondary", "gray", "blue", "red"]
+};

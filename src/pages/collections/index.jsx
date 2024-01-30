@@ -1,3 +1,4 @@
+import Meta from "@/components/Meta";
 import SectionFooter from "@/components/features/sections/SectionFooter";
 import { Header } from "@/components/layout/Header";
 import ButtonWhatsapp from "@/components/ui/button/ButtonWa";
@@ -22,14 +23,17 @@ export async function getServerSideProps() {
       active: "Y"
     }
   })
+  const prismaSetting = await prismaClient.setting.findFirst();
+
   return {
     props: {
-      sections: prismaSections || []
+      sections: prismaSections || [],
+      setting: prismaSetting || {} 
     }
   }
 }
 
-export default function Collections({ sections }) {
+export default function Collections({ sections, setting }) {
   const [mobileMd, setMobileMdWidth] = useState(false);
   const [mobileSm, setMobileSm] = useState(false);
   const mobile = {
@@ -68,6 +72,7 @@ export default function Collections({ sections }) {
   const content = getContentSection("section_hero")?.content;
 
   return <main className="min-h-screen">
+    <Meta customTitle="Koleksi"/>
     <div className="h-[250px] w-full mb-12 lg:mb-20 lg:h-[350px]">
       <Header
         mobile={mobile}
@@ -108,7 +113,7 @@ export default function Collections({ sections }) {
      <SectionOurProduct />
     </div>
     <SectionFooter section={getContentSection("section_footer")} />
-    <ButtonWhatsapp phone="" />
+    <ButtonWhatsapp phone={setting?.no_wa} />
 
   </main>
 }

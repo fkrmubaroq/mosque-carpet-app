@@ -46,7 +46,9 @@ model Setting {
   show_price   Active   @default(Y)
   logo         String?   @db.VarChar(255)
   logo_title   String?   @db.VarChar(100)
+  favicon      String?   @db.VarChar(255)
   ribbon       String?   @db.VarChar(20)
+  popup        Json?
   @@map("setting")  
 }
 

@@ -7,51 +7,87 @@ import { adminFileManagerQuery } from "@/lib/queryKeys";
 import { getCumulativePathSegments } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import React, { useMemo, useState } from "react";
+import React, { memo, useMemo, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
+import { IoImagesOutline } from "react-icons/io5";
+import Banner from "../../banner";
 import { Button } from "../../button";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "../../modal";
 import ShimmerMediaManager from "../../shimmer/ShimmerMediaManager";
 
 const initModal = Object.freeze({ show: false });
-export default function SrcFileManager({ values, onSave, onRemoveFile }) {
-
+export default function SrcFileManager({ accept, values, placeholder, onSave, onRemoveFile, single }) {
+  const [preview, setPreview] = useState("");
   const [modal, setModal] = useState(initModal);
-  const onClick = () => { setModal({ show:true })}
-  const getValues = useMemo(() => {
-    return values.map(item => {
-      const splitItem = item.split("/");
-      const fileName = splitItem?.[splitItem?.length - 1] || "";
-      return fileName;
-    })
-  }, [values]);
-  
+  const onClick = () => { setModal({ show: true }) }
+
   return <>
+    {preview && <Banner src={preview} onClose={() => setPreview("")}/>}
     {modal.show &&
       <ModalBrowse
+        accept={accept}
+        single={single}
         show={modal.show}
         onHide={() => setModal(initModal)}
-        onSave={onSave} values={values}
+        onSave={onSave}
+        values={values}
     />
     }
-    <div className="flex">
-      <div className="text-gray-500 focus:text-gray-400 gap-1 items-center text-xs flex flex-wrap w-full rounded-md border bg-white px-3 py-1 italic shadow-sm ">
-        {getValues?.map((item, key) => <div className="bg-gray-200 pl-2 pr-2 py-0.5 flex justify-between items-center gap-x-1.5 rounded-full" key={key}>
-          <div className="flex items-center gap-x-1.5">
-            <Image src={values[key]} width={20} height={20} alt="" className="rounded-full" />
-            <span className="text-xs line-clamp-1 break-all">{item}</span>
-          </div>
-          <div className="p-1 cursor-pointer hover:bg-gray-300 rounded-full" onClick={() => onRemoveFile(key)}>
-            <AiOutlineClose color="gray" size={10}/>
-          </div>
-        </div>)}
+    <div className="flex w-full">
+      <div className="text-gray-500  focus:text-gray-400 gap-1 items-center text-xs flex flex-wrap w-full rounded-l-md border-r-none border bg-white px-3 py-1  shadow-sm ">
+        {!values?.length && placeholder && <span className="text-gray-400">{placeholder}</span>}
+        {values?.length > 0 && <SelectedValues single={single} data={values} onRemoveFile={onRemoveFile} setPreview={setPreview} />}
       </div>
-      <Button type="button" className="!rounded-l-none !text-xs" onClick={onClick}>Browse</Button>
+      <Button type="button" variant="secondary" className="!rounded-l-none !text-xs flex items-center justify-center gap-x-1.5" onClick={onClick}>
+        <IoImagesOutline size={16} />
+        <span>Browse Media</span>
+      </Button>
     </div>
   </>
 }
 
-function ModalBrowse({ show, onHide, onSave, values }) {
+function SelectedValues({ single, index, data, onRemoveFile, setPreview }) {
+  if (single) {
+    return <MemoValue index={0} setPreview={setPreview} onRemoveFile={onRemoveFile} src={data} single />
+  }
+  return data.map((src, key) =>
+    <MemoValue
+      key={key}
+      index={index}
+      setPreview={setPreview}
+      onRemoveFile={onRemoveFile}
+      src={src}
+    />
+  )
+}
+const MemoValue = memo(Value);
+function Value({ setPreview, onRemoveFile, src, index }) {
+  const fileName = useMemo(() => {
+    console.log("src", src);
+    const splitItem = src?.split("/");
+    const result = splitItem?.[splitItem?.length - 1] || "";
+    return result;
+  }, []);
+
+  console.log("fileName", src, fileName);
+
+  return <div
+    onClick={() => setPreview(src)}
+    className="cursor-pointer hover:bg-gray-300 bg-gray-200 italic pl-2 pr-2 py-0.5 flex justify-between items-center gap-x-1.5 rounded-full" >
+    <div className="flex items-center gap-x-1.5">
+      <Image src={src} width={20} height={20} alt="" className="rounded-full" />
+      <span className="text-xs line-clamp-1 break-all">{fileName}</span>
+    </div>
+    <div className="p-1 cursor-pointer hover:bg-gray-200 rounded-full" onClick={(e) => {
+      e.stopPropagation();
+      onRemoveFile(index)
+    }}
+    >
+      <AiOutlineClose color="gray" size={10} />
+    </div>
+  </div>
+}
+function ModalBrowse({ show, onHide, onSave, values, single, accept }) {
   const altActive = useKeypress(["Meta", "Alt"]);
   const [selectedFiles, setSelectedFiles] = useState(values || []);
   const [currentPath, setCurrentPath] = useState("/");
@@ -72,7 +108,7 @@ function ModalBrowse({ show, onHide, onSave, values }) {
   };
 
   const onSelectFile = (src) => {
-    if (!altActive) {
+    if (!altActive || single) {
       setSelectedFiles([src]);
       return;
     }
@@ -80,7 +116,6 @@ function ModalBrowse({ show, onHide, onSave, values }) {
       const selected = selectedFiles.includes(src);
       if (!selected) return [...state, src];
       const index = selectedFiles.indexOf(src);
-      console.log("index", index);
       if (index === -1) return state;
       const clone = [...selectedFiles];
       clone.splice(index, 1);
@@ -89,7 +124,7 @@ function ModalBrowse({ show, onHide, onSave, values }) {
   }
  
   return <Modal show={show} onHide={onHide} verticallyCentered size="w-[850px]">
-    <ModalHeader variant="secondary" onHide={onHide}>Media Manager</ModalHeader>
+    <ModalHeader variant="secondary" onHide={onHide}>Media Manager {accept && <>File disarankan {accept?.map((item, key) => <span key={key} className="text-gray-400">{item}</span>)}</>}</ModalHeader>
     <ModalBody className="min-h-[400px] overflow-auto">
       <div className="flex justify-between">
         <div className="mb-5 flex gap-x-2 text-sm text-gray-400">
@@ -98,11 +133,14 @@ function ModalBrowse({ show, onHide, onSave, values }) {
             key={key}
             segment={segment}
             appendArrow={key !== arr.length - 1}
-            onSelect={setCurrentPath}
+              onSelect={(segment) => {
+                single && setSelectedFiles([]);
+                setCurrentPath(segment)
+              }}
             />
           ))}
         </div>
-       {selectedFiles?.length > 0 && <div className="h-7 text-sm flex justify-center items-center text-white rounded-full px-2 bg-secondary">{selectedFiles.length} Selected File</div>}
+       {(selectedFiles?.length > 0 && !single) && <div className="h-7 text-sm flex justify-center items-center text-white rounded-full px-2 bg-secondary">{selectedFiles.length} Selected File</div>}
       </div>
       <div className="grid grid-cols-3 gap-6">
         {isLoading ? <ShimmerMediaManager total={9} /> :
@@ -118,6 +156,7 @@ function ModalBrowse({ show, onHide, onSave, values }) {
               )}
               {item.type === "FILE" &&
                 <File
+                  accept={accept}
                   onSelect={onSelectFile}
                   hideActionButton
                   data={item}     
@@ -138,7 +177,7 @@ function ModalBrowse({ show, onHide, onSave, values }) {
         disabled={selectedFiles.length <= 0 || !selectedFiles}
         size="lg" variant="secondary"
         onClick={() => {
-          onSave(selectedFiles)
+          onSave(single ? selectedFiles?.[0] : selectedFiles)
           onHide();
         }}>Simpan</Button>
     </ModalFooter>

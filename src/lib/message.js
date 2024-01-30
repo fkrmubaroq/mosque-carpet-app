@@ -46,7 +46,17 @@ const TOAST_MESSAGE = {
   "error-delete-article": "Artikel gagal dihapus",
 
   // login
-  "error-wrong-password": "Username atau password salah"
+  "error-wrong-password": "Username atau password salah",
+
+  // user
+  "success-delete-user": "User telah dihapus",
+  "success-insert-user": "User telah ditambahkan",
+  "success-update-user": "User telah diubah",
+  "error-delete-user": "User gagal dihapus",
+  "error-insert-user": "User gagal ditambahkan",
+  "error-update-user": "User gagal diubah",
+  "error-user-is-already-exists": "username telah digunakan",
+  "error-logout": "gagal logout"
 }
 
 const CONFIRMATION_MESSAGE = {
@@ -117,7 +127,24 @@ const ERROR_MESSAGE = {
   SectionIsNull: {
     code: 1200,
     message: "Section tidak boleh kosong"
-  }
+  },
+
+
+  // feature users 1300 - 1399
+  UserIsAlreadyExists: {
+    code: 1300,
+    message: "Username telah digunakan"
+  },
+  UserNotFound: {
+    code: 1301,
+    message: "Username tidak ditemukan"
+  },
+
+  Unauthorized: {
+    code: 403,
+    message: "Unauthorized"
+  },
+
 }
 
 export { CONFIRMATION_MESSAGE, ERROR_MESSAGE, TOAST_MESSAGE };

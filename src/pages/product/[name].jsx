@@ -65,7 +65,7 @@ export default function ProductByName({ sections, setting }) {
       <SectionDetailProduct mobile={mobile} setting={setting} />
     </div>
     <SectionFooter section={getContentSection("section_footer")} />
-    <ButtonWhatsapp phone="" />
+    <ButtonWhatsapp phone={setting?.no_wa} />
 
   </main>
 

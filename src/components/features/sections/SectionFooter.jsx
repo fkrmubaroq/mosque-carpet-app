@@ -67,8 +67,6 @@ function FooterMemo({ setting, edit, section, onUpdateContent }) {
     })
   }
 
-  console.log("sections ", section);
-
   return (
     <footer className="relative flex gap-x-4 bg-black pt-20 pb-28 md:px-5" id="section_footer">
       <div className={cn("flex lg:flex-row flex-col lg:gap-y-0 gap-y-8 justify-between w-full", CONTAINER_LP)}>
@@ -224,7 +222,10 @@ function FooterContentItem({ index, name, data, icon, text, edit, onUpdateConten
           onUpdateContent={onUpdateContent}
         />
       </div>:
-      <div className="flex w-full" onClick={() => data[name]?.link && window.open(data[name].link)}>{text}</div>
+      <div className="flex w-full" onClick={() => {
+        data[index]?.link && window.open(data[index].link)
+        data[name]?.link && window.open(data[name].link)
+      }}>{text}</div>
     }
   </div>
 }
