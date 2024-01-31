@@ -14,7 +14,7 @@ const insertUserValidation = Joi.object({
 
 const updateUserValidation = Joi.object({
   password: Joi.string().max(100).optional(),
-  role: Joi.string().max(15).required(),
+  role: Joi.string().max(15).optional(),
   name: Joi.string().max(100).required()
 })
 export {

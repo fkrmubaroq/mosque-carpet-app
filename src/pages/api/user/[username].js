@@ -48,7 +48,6 @@ async function updateUser(req, res) {
 
     if (validateRequest?.password) {
       const password = await hashPassword(validateRequest.password);
-      console.log("password xx", password);
       validateRequest.password =  password;
     }
     await prismaClient.user.update({
