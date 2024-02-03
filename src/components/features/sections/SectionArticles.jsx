@@ -103,8 +103,8 @@ function CardNewItem({ data, edit }) {
         />
       </div>
       <div className="flex flex-col gap-y-2 px-4 pb-8">
-        <Link href={`${edit ? "#" : `/${slugString(data?.title)}`}`}>
-          <a className="mt-2 cursor-pointer line-clamp-2 text-xl font-medium hover:underline tracking-wider text-gray-700 group-hover:text-white">{data.title}</a>
+        <Link className="mt-2 cursor-pointer line-clamp-2 text-xl font-medium hover:underline tracking-wider text-gray-700 group-hover:text-white" href={`${edit ? "#" : `/${slugString(data?.title)}`}`}>
+          {data.title}
         </Link>
         <span className="text-sm tracking-wide text-gray-400 group-hover:text-white">
           {dayjs(new Date(data.created_at)).format("MMMM DD, YYYY HH:mm WIB")}

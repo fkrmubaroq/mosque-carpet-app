@@ -107,7 +107,7 @@ function SectionDetailProduct({ mobile, setting }) {
   }
 
   const image = JSON.parse(data?.image || "[]");
-  const productSimilar = products?.filter(item => item.id !== data.id);
+  const productSimilar = products?.filter(item => item.id !== data?.id);
   return <section>
     <Meta customTitle={data?.name} />
     <ButtonBack

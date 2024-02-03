@@ -51,13 +51,6 @@ async function get(req, res) {
     }
 
     const data = await prismaClient.article.findMany({
-      include: {
-        viewers: {
-          select: {
-            total: true,
-          }
-        }
-      },
       ...filters,
       skip,
       take: +(query?.limit) || OFFSET,
@@ -71,9 +64,8 @@ async function get(req, res) {
     });
     const totalPage = Math.ceil(paginationInfo / OFFSET)
 
-    const parsedData = data.map(({ viewers, ...item }) => ({ ...item, total_viewers: viewers?.total || null }));
     res.status(STATUS_MESSAGE_ENUM.Ok).json({
-      data: parsedData,
+      data,
       paging: {
         page,
         total_page: totalPage,

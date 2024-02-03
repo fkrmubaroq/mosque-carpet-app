@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import ContainerInput from "@/components/ui/container/ContainerInput";
-import { Input } from "@/components/ui/form/input";
+import SrcFileManager from "@/components/ui/form/input/SrcFileManager";
 import { Modal, ModalBody, ModalHeader } from "@/components/ui/modal";
 import { Label } from "@radix-ui/react-label";
 import { useState } from "react";
@@ -13,13 +13,13 @@ export default function ModalToolboxImage({ name, value, onHide, show, onUpdateC
     <ModalBody>
       <ContainerInput>
         <Label>Link Gambar</Label>
-        <Input
-          value={currentValue}
-          placeholder="Masukkan link gambar"
-          onChange={(e) => setCurrentValue(e.target.value)}
+        <SrcFileManager
+          single
+          onSave={setCurrentValue}
+          values={currentValue}
+          onRemoveFile={() => setCurrentValue("")}
         />
       </ContainerInput>
-      <span className="text-gray-500 text-xs">Upload Gambar anda <span className="text-primary font-semibold cursor-pointer hover:underline" onClick={() => window.open("/admin/file-manager")}>disini</span></span>
       <Button
         className="w-full mt-3"
         onClick={() => {

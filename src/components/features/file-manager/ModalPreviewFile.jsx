@@ -1,5 +1,5 @@
 import { DIR_ACCESS_FILE } from "@/lib/constant";
-import Image from "next/future/image";
+import Image from "next/image";
 
 export default function ModalPreviewFile({ data, onHide }) {
   const src = `${DIR_ACCESS_FILE}${data.path}${data.name}`;

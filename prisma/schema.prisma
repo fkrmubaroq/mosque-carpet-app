@@ -60,19 +60,22 @@ model Article {
   content    String     @db.LongText
   created_at DateTime   @default(now())
   updated_at DateTime   @default(now())
-  viewers    ViewerArticle? @relation(fields: [viewers_id], references: [id])
-  viewers_id Int?       @db.UnsignedInt @unique
   writer     String?
-
-  @@index([viewers_id], name: "viewers_FK")
+  visitor    VisitorPage?
   @@map("article")
 }
 
-model ViewerArticle {
-  id       Int          @id @default(autoincrement()) @db.UnsignedInt
-  total    Int          @default(0)
-  article  Article?
-  @@map("viewers_article")
+enum Visitor {
+  ARTICLE
+  LP
+}
+model VisitorPage {
+  id          Int          @id @default(autoincrement()) @db.UnsignedInt                           
+  total       Int          @default(0)
+  type        Visitor      @default(LP)
+  article     Article?      @relation(fields: [article_id], references: [id])
+  article_id  Int?          @unique @db.UnsignedInt   
+  @@map("visitor_page")
 }
 model PackageBundle {
   id           Int       @id @default(autoincrement()) @db.UnsignedInt

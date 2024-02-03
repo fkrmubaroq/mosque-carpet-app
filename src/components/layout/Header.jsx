@@ -24,7 +24,7 @@ export function Header({ noTransparent, hiddenMenu, content, edit, mobile, menus
         "mt-4": !noTransparent,
         "!mx-0": hiddenMenu
       })}>
-        <div className={cn("flex items-center justify-center gap-x-3 cursor-pointer")} onClick={() => Router.push("/")}>
+        <div className={cn("flex items-center justify-center gap-x-3 cursor-pointer")} onClick={() => !edit && Router.push("/")}>
           <div className={cn("flex ", {
             "group section-mode-edit": edit
           })}>

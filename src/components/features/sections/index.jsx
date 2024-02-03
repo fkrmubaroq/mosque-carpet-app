@@ -7,6 +7,7 @@ import SectionArticles from "./SectionArticles";
 import SectionFooter from "./SectionFooter";
 import SectionMapAddress from "./SectionMapAddress";
 import SectionOurProduct from "./SectionOurProducts";
+import SectionProjects from "./SectionProjects";
 
 
 const Sections = {
@@ -19,7 +20,7 @@ const Sections = {
   section_articles: SectionArticles,
   section_categories: SectionOurProduct,
   section_map_address: SectionMapAddress,
-  // section_projects: SectionProjects
+  section_projects: SectionProjects
 }
 export default function SectionContainer({ onUpdateContent, sectionName, section }) {
   const SectionContainer = Sections[sectionName];

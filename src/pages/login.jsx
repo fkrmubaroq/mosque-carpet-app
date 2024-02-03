@@ -1,3 +1,4 @@
+import Meta from "@/components/Meta";
 import { SpinnerIcon } from "@/components/ui/Spinner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -39,7 +40,9 @@ export default function Login() {
     setValidate(false);
   }
 
-  return <div className="min-h-screen lg:px-0 px-5 flex justify-center items-center bg-gray-50">
+  return <>
+    <Meta title="Login "/>
+    <div className="min-h-screen lg:px-0 px-5 flex justify-center items-center bg-gray-50">
     <div className="lg:block hidden"> 
       <Image src="/img/login.png" width={350} height={250}/>
     </div>
@@ -68,4 +71,5 @@ export default function Login() {
       </CardContent>
     </Card>
   </div>
+  </>
 }

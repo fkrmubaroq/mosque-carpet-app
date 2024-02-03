@@ -73,7 +73,6 @@ export default function Settings({ setting }) {
     setFormSetting(form => ({ ...form, ribbon:`basic.${selectedVariant}`}))
   }
 
-  console.log("fofof", formSetting);
   return (<>
     {popup?.show && <Banner
       src={popup.srcImg}
@@ -127,7 +126,6 @@ export default function Settings({ setting }) {
                         single
                         placeholder="Media Manager"
                         onSave={(src) => {
-                          console.log("ssss", src);
                           setFormSetting(form => ({ ...form, logo: src }))
                         }}
                         values={formSetting?.logo}
@@ -149,7 +147,6 @@ export default function Settings({ setting }) {
                         single
                         placeholder="Media Manager"
                         onSave={(src) => {
-                          console.log("srcxs", src);
                           setFormSetting(form => ({ ...form, favicon: src }))
                         }}
                         values={formSetting?.favicon}

@@ -12,13 +12,17 @@ import SectionFooter from "@/components/features/sections/SectionFooter";
 import SectionHero from "@/components/features/sections/SectionHero";
 import SectionMapAddress from "@/components/features/sections/SectionMapAddress";
 import SectionOurProduct from "@/components/features/sections/SectionOurProducts";
+import SectionProjects from "@/components/features/sections/SectionProjects";
 import SectionVisionMision from "@/components/features/sections/SectionVisionMision";
 import SectionWhyChooseUs from "@/components/features/sections/SectionWhyChooseUs";
 import Banner from "@/components/ui/banner";
 import ButtonWa from "@/components/ui/button/ButtonWa";
+import { getInformationIp, visitorPage } from "@/lib/api/visitor";
 import { CONTAINER_LP } from "@/lib/constant";
 import { prismaClient } from "@/lib/prisma";
+import { landingPageQuery } from "@/lib/queryKeys";
 import { debounce, getCookieName, setCookie } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
 
 
 export async function getServerSideProps(context) {
@@ -53,6 +57,21 @@ export default function Home({ sections, setting, showPopupCampaign }) {
     mobileMd,
     mobileSm,
   };
+
+  const { data: ip } = useQuery({
+    queryKey: landingPageQuery.informationIp,
+    queryFn: async () => {
+      const response = await getInformationIp();
+      const data = await response.json();
+      return data?.ip || null
+    },
+  });
+
+  const { data: visitor } = useQuery({
+    enabled: !!ip,
+    queryKey: landingPageQuery.visitorPage,
+    queryFn: visitorPage,
+  });
 
   const getContentSection = (sectionName) => {
     const section = sections.find(section => section.section_name === sectionName);
@@ -93,7 +112,10 @@ export default function Home({ sections, setting, showPopupCampaign }) {
       }} />}
       <SectionHero mobile={mobile} section={getContentSection("section_hero")} />
       <div className={cn(CONTAINER_LP, "px-4")}>
-        <SectionAboutUs section={getContentSection("section_about_us")} />
+          <SectionAboutUs section={getContentSection("section_about_us")} />
+      </div>
+        <SectionProjects section={getContentSection("section_projects")} />
+      <div className={cn(CONTAINER_LP, "px-4")}>
         <SectionVisionMision section={getContentSection("section_vision_mision")} />
         <SectionWhyChooseUs section={getContentSection("section_why_choose_us")} />
         <SectionContactUs setting={setting} mobile={mobile} section={getContentSection("section_contact_us")} />

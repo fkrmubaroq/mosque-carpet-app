@@ -7,8 +7,8 @@ const defaultFavicon = [
 ]
 export default function Meta({ children, customTitle, description, title, faviconMedium }) {
   const { data: setting } = useSetting();
-  console.log("setting: ", setting);
-  const titleTab = setting?.logo_title ? setting.logo_title : "Al-Hijra";
+  const titleTab = setting?.logo_title ? setting.logo_title : "";
+  if (!setting) return <></>;
   return (
     <Head>
       <meta charSet="UTF-8" />

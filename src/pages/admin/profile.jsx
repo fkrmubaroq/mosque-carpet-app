@@ -6,9 +6,10 @@ import Ribbon from "@/components/ui/card/ribbon";
 import ContainerInput from "@/components/ui/container/ContainerInput";
 import Form from "@/components/ui/form";
 import { Input } from "@/components/ui/form/input";
-import { updateUser } from "@/lib/api/users";
+import { logout, updateUser } from "@/lib/api/users";
 import { useDialogStore } from "@/lib/hookStore";
 import { useUserData } from "@/lib/hooks";
+import { eraseCookie } from "@/lib/utils";
 import { Label } from "@radix-ui/react-label";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
@@ -21,12 +22,23 @@ export default function Profile() {
   const [validated, setValidated] = useState();
   const showToast = useDialogStore(state => state.showToast);
 
+  const { mutate: logoutApp } = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      eraseCookie("adm");
+      window.location.href = "/login"
+    },
+    onError: () => showToast("error-logout")
+  })
+
   const { mutate: mutateUpdateUser, isLoading } = useMutation({
     mutationFn: ({ username, ...payload }) => {
-      console.log("username", username, payload);
       return updateUser(username, payload);
     },
-    onSuccess: () => showToast("success-update-user"),
+    onSuccess: () => {
+      showToast("success-update-user")
+      logoutApp();
+    },
     onError: () => showToast("error-update-user"),
   });
 
@@ -81,7 +93,7 @@ export default function Profile() {
         </div>
 
           <div className="flex justify-end mt-5 pr-8">
-            <Button size="lg" className="w-[150px]">
+            <Button disabled={isLoading} size="lg" className="w-[150px]">
               {isLoading ? <SpinnerIcon width="w-4" height="h-4" /> : "Simpan"}
             </Button>
           </div>

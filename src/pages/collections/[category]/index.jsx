@@ -142,7 +142,7 @@ function PreviewData({ data, onClick, showPrice, setting }) {
   return <div
     onClick={() => onClick(data)}
     className=" lg:max-w-[330px] group mb-2 flex cursor-pointer flex-col shadow transition-all duration-500 ease-in-out hover:scale-105 hover:bg-primary relative">
-    {data?.discount && <Ribbon text={<span className="font-semibold">DISKON {data.discount}%</span>} variant={variantRibbon} />}
+    {data?.discount > 0 && <Ribbon text={<span className="font-semibold">DISKON {data.discount}%</span>} variant={variantRibbon} />}
     {image?.[0] && <Image src={image[0]} width="400" height="300" alt="" className="w-full object-cover" />}
     <div className="pb-5 pl-5 pt-4 flex gap-y-1 flex-col font-poppins tracking-wider text-slate-700 group-hover:bg-primary group-hover:text-white">
       <span className="text-slate-900 group-hover:text-white text-lg font-semibold">{data.name}</span>
@@ -154,7 +154,7 @@ function PreviewData({ data, onClick, showPrice, setting }) {
           "text-primary text-xl font-semibold ": !data.discount
           })}>Rp {formatNumberToPrice(data?.price)}
         </div>
-        {data.discount && <div className="text-primary text-xl font-semibold group-hover:text-white">Rp {formatNumberToPrice(discountPrice)}</div>}
+        {data.discount > 0 && <div className="text-primary text-xl font-semibold group-hover:text-white">Rp {formatNumberToPrice(discountPrice)}</div>}
         </>
       }
     </div>

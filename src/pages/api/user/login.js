@@ -33,7 +33,6 @@ async function get(req, res) {
     });
     res.status(STATUS_MESSAGE_ENUM.Ok).json({ data });
   } catch (e) {
-    console.log("eee",e)
     responseErrorMessage(e, res);
   }
 }

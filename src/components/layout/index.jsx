@@ -60,7 +60,7 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
           menu: "Users",
           path: "/admin/users",
           hide: isStaff
-        }
+        },
       ],
     },
     {

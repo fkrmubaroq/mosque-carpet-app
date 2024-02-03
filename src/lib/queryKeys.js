@@ -31,7 +31,9 @@ export const adminUsersQuery = {
 export const landingPageQuery = {
   getCategories: ["lp", "category"],
   getArticles: ["lp", "articles"],
-  getAllArticles: ["all", "articles"]
+  getAllArticles: ["all", "articles"],
+  informationIp: ["ip-address"],
+  visitorPage: ["visitor-page"]
 }
 export const collectionsQuery = {
   getCategories: ["collections"]

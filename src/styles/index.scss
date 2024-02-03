@@ -144,3 +144,20 @@ body {
     height: unset !important;
   }
 }
+[data-first-word]{
+  @apply relative;
+}
+[data-first-word]::before{
+  content: attr(data-first-word);
+  @apply text-primary absolute top-0 left-0;
+}
+
+.swiper-pagination{
+  @apply -mt-3;
+  .swiper-pagination-bullet{
+    @apply bg-white w-3 h-3;
+    &.swiper-pagination-bullet-active{
+      @apply bg-white;
+    }
+  }
+}

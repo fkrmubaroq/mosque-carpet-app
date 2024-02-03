@@ -63,13 +63,10 @@ function SelectedValues({ single, index, data, onRemoveFile, setPreview }) {
 const MemoValue = memo(Value);
 function Value({ setPreview, onRemoveFile, src, index }) {
   const fileName = useMemo(() => {
-    console.log("src", src);
     const splitItem = src?.split("/");
     const result = splitItem?.[splitItem?.length - 1] || "";
     return result;
   }, []);
-
-  console.log("fileName", src, fileName);
 
   return <div
     onClick={() => setPreview(src)}

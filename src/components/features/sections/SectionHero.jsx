@@ -79,7 +79,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
   })
 
   return (
-    <section className="h-[600px] w-full lg:mb-20 lg:h-[700px]" id="section_hero">
+    <section className="h-[600px] w-full mb-24 lg:h-[700px]" id="section_hero">
       <Header
         edit={edit}
         mobile={mobile}
@@ -90,7 +90,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
       />
       <div
         className={cn(
-          "absolute h-[600px] group w-full bg-black bg-center object-cover lg:h-[700px]",
+          "absolute group w-full bg-black bg-center object-cover lg:h-[700px]",
         )}
         style={{
           backgroundImage: `url('${content?.banner}')`,

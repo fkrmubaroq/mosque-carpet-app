@@ -110,7 +110,7 @@ export default function Index() {
 
     mutateInsertUser(payload);
   }
-  console.log("ss", data)
+  
   return (
     <>
       {

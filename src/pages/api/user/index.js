@@ -98,7 +98,6 @@ async function get(req, res) {
       }
     })
   } catch (e) {
-    console.log("e", e);
     responseErrorMessage(e, res);
   }
 
