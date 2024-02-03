@@ -42,6 +42,8 @@ export async function getServerSideProps() {
   }
 }
 export default function ProductByName({ sections, setting }) {
+  console.log("sections", sections);
+  console.log("setting", setting);
   const mobile = useMobile();
   const getContentSection = (sectionName) => {
     const section = sections.find(section => section.section_name === sectionName);

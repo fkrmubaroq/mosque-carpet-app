@@ -26,7 +26,7 @@ import { TbClick } from "react-icons/tb";
 
 export async function getServerSideProps() {
   let response = await prismaClient.setting.findFirst();
-
+  
   return {
     props: {
       setting: response || {}

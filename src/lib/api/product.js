@@ -7,23 +7,23 @@ export function insertProduct(payload) {
 }
 
 export function updateProduct(payload) {
-  return putMethod("product", payload);
+  return putMethod("db/product", payload);
 }
 
 export function getAllProduct(params) {
-  return getMethod("product", { params });
+  return getMethod("db/product", { params });
 }
 export function getProductByCategory(categoryName) {
-  return getMethod(`product/category/${categoryName}`);
+  return getMethod(`db/product/category/${categoryName}`);
 }
 export function getProductByName(name) {
-  return getMethod(`product/name/${name}`);
+  return getMethod(`db/product/name/${name}`);
 }
 
 export function deleteProduct(productId) {
-  return deleteMethod(`product/${productId}`);
+  return deleteMethod(`db/product/${productId}`);
 }
 
 export function updateToggleStatus(productId) {
-  return patchMethod(`product/${productId}/update-status`);
+  return patchMethod(`db/product/${productId}/update-status`);
 }

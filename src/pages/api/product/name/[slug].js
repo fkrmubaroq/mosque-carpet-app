@@ -1,4 +1,6 @@
-import { responseNotFound } from '@/errors/response-error';
+import { ResponseError, responseNotFound } from '@/errors/response-error';
+import { STATUS_MESSAGE_ENUM } from '@/lib/enum';
+import { ERROR_MESSAGE } from '@/lib/message';
 import { prismaClient } from '@/lib/prisma';
 
 export default function handler(req, res) {
@@ -14,7 +16,9 @@ async function get(req, res) {
     const { slug } = req.query;
     const removeSlugProductName = slug.split("-")
     const id = removeSlugProductName[removeSlugProductName?.length - 1];
-
+    if (removeSlugProductName?.length <= 1) {
+      throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.SlugIsNull);
+    }
     const response = await prismaClient.product.findMany({
       where: {
         id: +id

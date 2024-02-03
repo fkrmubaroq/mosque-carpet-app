@@ -101,7 +101,7 @@ export default function Home({ sections, setting, showPopupCampaign }) {
   }, [mobile]);
 
   
-  const popup = useMemo(() => JSON.parse(setting?.popup || "{}"), []);
+  const popup = useMemo(() => setting?.popup?.url ? setting.popup : JSON.parse(setting?.popup || "{}"), []);
   return (
     <>
     <Meta title="Pusat Karpet Masjid " description="Ibadah Semakin nyaman"/>

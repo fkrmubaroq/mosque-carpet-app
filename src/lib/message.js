@@ -81,6 +81,10 @@ const ERROR_MESSAGE = {
     code: 1001,
     message: "Id tidak ditemukan"
   },
+  SlugIsNull: {
+    code: 1002,
+    message: "Slug tidak ditemukan"
+  },
   // feature file manager 1100 - 1199
   FolderAlreadyExists: {
     code: 1100,

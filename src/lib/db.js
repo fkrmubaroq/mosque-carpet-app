@@ -33,3 +33,25 @@ export async function insert({ table, data }) {
   const values = `'${Object.values(data)?.join("' , '")}'`;
   return db.query(`INSERT INTO ${table} (${columns}) VALUES (${values}) `);
 }
+
+export async function count(query, values) {
+  try {
+    const results = await db.query(query, values);
+    await db.end();
+    return results?.length || 0;
+  } catch (error) {
+    return { error };
+  }
+}
+
+export async function deleteRow({ table, where }){
+  try {
+    const dataWhere = objectDataToQueryBind({ data: where, allValues: "?", separator: "AND" });
+    const whereBind = Object.values(where); 
+    const results = await db.query(`DELETE FROM ${table} WHERE ${dataWhere}`, whereBind);
+    await db.end();
+    return results?.length || 0;
+  } catch (error) {
+    return { error };
+  }
+}
