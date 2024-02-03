@@ -2,7 +2,7 @@ import { responseErrorMessage, responseNotFound } from '@/errors/response-error'
 import query, { update } from '@/lib/db';
 import { STATUS_MESSAGE_ENUM } from "@/lib/enum";
 import { prismaClient } from "@/lib/prisma";
-import { insertSettingValidation } from "@/validation/setting-validation";
+import { updateSettingValidation } from "@/validation/setting-validation";
 import { validation } from "@/validation/validation";
 
 export default function handler(req, res) {
@@ -21,7 +21,7 @@ export default function handler(req, res) {
 
 async function post(req, res) {
   try {
-    const { id, ...validateRequest } = validation(insertSettingValidation, req.body);
+    const { id, ...validateRequest } = validation(updateSettingValidation, req.body);
     const results = await query("UPDATE setting SET "); 
     const data = await prismaClient.setting.update({
       data: validateRequest,

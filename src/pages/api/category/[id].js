@@ -1,5 +1,6 @@
 import { ResponseError, responseErrorMessage } from "@/errors/response-error";
-import { ERROR_MESSAGE, STATUS_MESSAGE_ENUM } from "@/lib/enum";
+import { STATUS_MESSAGE_ENUM } from "@/lib/enum";
+import { ERROR_MESSAGE } from "@/lib/message";
 import { prismaClient } from "@/lib/prisma";
 
 export default function handler(req, res) {
