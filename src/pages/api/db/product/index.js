@@ -1,13 +1,10 @@
 import { responseErrorMessage, responseNotFound } from '@/errors/response-error';
-import { DIR_FILE_PRODUCTS, OFFSET } from '@/lib/constant';
+import { OFFSET } from '@/lib/constant';
+import { insert, update } from '@/lib/db';
 import { STATUS_MESSAGE_ENUM } from '@/lib/enum';
 import { prismaClient } from '@/lib/prisma';
-import { createFile, incomingRequest, unlinkFile } from '@/lib/utils';
 import { insertProductValidation, updateProductValidation } from '@/validation/product-validation';
 import { validation } from '@/validation/validation';
-import fs from "fs";
-import multiparty from "multiparty";
-import { v4 as uuid } from "uuid";
 
 export default function handler(req, res) {
   if (req.method === "POST") {
@@ -28,40 +25,8 @@ export default function handler(req, res) {
 
 async function put(req, res) {
   try {  
-    const multipartyForm = new multiparty.Form();
-    const { files, ...body } = await incomingRequest(multipartyForm, req);
-    const request = { ...body };
-    if (Object.keys(files).length) {
-      request.image = files.image
-    }
-    const { id, ...validateRequest } = validation(updateProductValidation, request);
-    const updateData = { ...validateRequest };
-    if (Object.keys(files).length) {
-      const fileName = `${uuid().toString()}_${files?.image?.originalFilename}`;
-      updateData.image = fileName;
-      const prevImage = await prismaClient.product.findFirst({
-        where: {
-          id
-        },
-      });  
-
-
-      // when prev image is available, then unlink file and 
-      if (prevImage) {
-        const destinationFileUnlink = `${DIR_FILE_PRODUCTS}/${prevImage.image}`;
-        await unlinkFile(destinationFileUnlink);
-      }
-      const destinationCreateFile = `${DIR_FILE_PRODUCTS}/${fileName}`;
-      await createFile(files.image.path, destinationCreateFile);
-      
-    }
-
-    await prismaClient.product.update({
-      data: updateData,
-      where: {
-        id  
-      },
-    });    
+    const { id, ...validateRequest } = validation(updateProductValidation, req.body);
+    await update({ table:"product", data:validateRequest, where: { id } })
     res.status(STATUS_MESSAGE_ENUM.Ok).json({
       data: "OK"
     })
@@ -72,69 +37,54 @@ async function put(req, res) {
 
 async function post(req, res) {
   try {
-    const multipartyForm = new multiparty.Form();
-    const { files, ...body } = await incomingRequest(multipartyForm, req);
-    const request = { ...body };
-    if (Object.keys(files).length) {
-      request.image = files.image
-    }
     
-    const validateRequest = validation(insertProductValidation, request);
-    const insertData = { ...validateRequest };
-    const fileName = `${uuid().toString()}_${files?.image?.originalFilename}`;
-    if (Object.keys(files).length) {
-      insertData.image = fileName;
-    }
-    const insertProduct = await prismaClient.product.create({
-      data: insertData
-    });
-
-    if (Object.keys(files).length) {
-      const contentData = await fs.promises.readFile(files.image.path);
-      const destination = `${DIR_FILE_PRODUCTS}/${fileName}`;
-      await fs.promises.writeFile(destination, contentData);
-    }
-
+    const validateRequest = validation(insertProductValidation, req.body);
+    await insert({ table: "product", data: validateRequest });
     res.status(STATUS_MESSAGE_ENUM.Ok).json({
-      data: insertProduct
+      data: "ok"
     })
   } catch (e) {
     responseErrorMessage(e, res);
   }
-
 } 
 
 async function get(req, res) {
   try {
     const query = req.query;
-    let filters = {};
+    let filters = {
+      sql: "",
+      values: []
+    };
     const page = query?.page ? +query.page : 1;
     const skip = (page - 1) * OFFSET;
-    if (query?.name) {
-      filters = {
-        where: {
-          name: {
-            contains: query.name
-          }
-        }
-      }
-    }
     
-    const response = await prismaClient.product.findMany({
-      ...filters,
-      include: {
-        category: {
-          select: {
-            category_name: true
-          }
-        }
-      },
-      orderBy: {
-        id:"desc"
-      },
-      skip,
-      take: OFFSET
-    });
+    if (query?.name) {
+      filters.sql = `WHERE product.name = ? `;
+      filters.values.push(query.name);
+    }
+
+    
+    const paginationSql = `OFFSET ${skip} LIMIT ${OFFSET}`;
+    const response = await query(`SELECT product.*, category.category_name FROM product 
+      LEFT JOIN category ON category.id = product.id ${filters.sql} ORDER BY product.id DESC ${paginationSql}`, filters.values);
+    
+    // const response = await prismaClient.product.findMany({
+    //   ...filters,
+    //   include: {
+    //     category: {
+    //       select: {
+    //         category_name: true
+    //       }
+    //     }
+    //   },
+    //   orderBy: {
+    //     id:"desc"
+    //   },
+    //   skip,
+    //   take: OFFSET
+    // });
+
+    
 
     const paginationInfo = await prismaClient.product.count({
       ...filters
@@ -161,10 +111,5 @@ async function get(req, res) {
     res.status(400).json({
       message: e.message
     })
-  }
-}
-export const config = {
-  api: {
-    bodyParser: false
   }
 }

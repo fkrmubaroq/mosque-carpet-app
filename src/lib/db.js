@@ -10,7 +10,7 @@ const db = mysql({
   }
 });
 
-export async function query(query, values) {
+export default async function query(query, values) {
   try {
     const results = await db.query(query, values);
     await db.end();
@@ -20,11 +20,16 @@ export async function query(query, values) {
   }
 }
 
-export async function update({ table, data, where }) {
+export function update({ table, data, where }) {
   const dataBind = Object.values(data);
   const whereBind = Object.values(where); 
   const dataUpdate = objectDataToQueryBind({ data, allValues: "?", separator: "," });
   const dataWhere = objectDataToQueryBind({ data: where, allValues: "?", separator: "AND" });
-  const query = await db.query(`UPDATE ${table} SET ${dataUpdate}  WHERE ${dataWhere}`, [...dataBind, ...whereBind]);
-  return query;
+  return db.query(`UPDATE ${table} SET ${dataUpdate}  WHERE ${dataWhere}`, [...dataBind, ...whereBind]);
+}
+
+export async function insert({ table, data }) {
+  const columns = Object.keys(data)?.join(",");
+  const values = `'${Object.values(data)?.join("' , '")}'`;
+  return db.query(`INSERT INTO ${table} (${columns}) VALUES (${values}) `);
 }

@@ -1,14 +1,14 @@
 import { responseErrorMessage, responseNotFound } from '@/errors/response-error';
 import query, { update } from '@/lib/db';
 import { STATUS_MESSAGE_ENUM } from "@/lib/enum";
-import { prismaClient } from "@/lib/prisma";
 import { updateSettingValidation } from "@/validation/setting-validation";
 import { validation } from "@/validation/validation";
+import { QueryTypes } from 'sequelize';
 
 export default function handler(req, res) {
   switch (req.method) {
-    case "POST":
-      post(req, res);
+    case "PUT":
+      put(req, res);
       break;
     case "GET":
       get(req, res);
@@ -19,16 +19,10 @@ export default function handler(req, res) {
   }
 }
 
-async function post(req, res) {
+async function put(req, res) {
   try {
     const { id, ...validateRequest } = validation(updateSettingValidation, req.body);
-    const results = await query("UPDATE setting SET "); 
-    const data = await prismaClient.setting.update({
-      data: validateRequest,
-      where: {
-        id
-      }
-    });
+    const data = await update({ table: "setting", data: validateRequest, where: { id } });
     res.status(STATUS_MESSAGE_ENUM.Ok).json({ data })
   } catch (e) {
     responseErrorMessage(e, res);
@@ -37,20 +31,10 @@ async function post(req, res) {
 
 async function get(req, res) {
   try {
-    const data = {
-      username: "saenahowx",
-    }
-    const where = {
-      username: "saenahow",
-    }
-    await update({
-      table: "user",
-      data,
-      where
-    });
-    // const data = await prismaClient.setting.findFirst();
-    res.status(STATUS_MESSAGE_ENUM.Ok).json({ data:"" })
+    await query("SELECT * FROM setting LIMIT 1",{ type: QueryTypes.SELECT });
+    res.status(STATUS_MESSAGE_ENUM.Ok).json({ message:"ok" })
   } catch (e) {
     responseErrorMessage(e, res);
   }
 }
+

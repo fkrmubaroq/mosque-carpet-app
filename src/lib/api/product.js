@@ -3,7 +3,7 @@ import { deleteMethod, getMethod, patchMethod, postMethod, putMethod } from ".";
 
  
 export function insertProduct(payload) {
-  return postMethod("product",payload);
+  return postMethod("db/product",payload);
 }
 
 export function updateProduct(payload) {
