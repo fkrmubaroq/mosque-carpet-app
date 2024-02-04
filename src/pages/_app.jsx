@@ -1,7 +1,6 @@
 import GoogleTagManager from "@/components/scripts/GoogleTagManager";
 import { Confirmation } from "@/components/ui/modal/Confirmation";
 import { Toast } from "@/components/ui/toast";
-import initHoneyBadger from "@/lib/honeybadger";
 import { useDialogStore } from "@/lib/hookStore";
 import { CONFIRMATION_MESSAGE, TOAST_MESSAGE } from "@/lib/message";
 import "@/styles/index.scss";
@@ -18,7 +17,6 @@ const queryClient = new QueryClient({
   },
 });
 
-initHoneyBadger();
 export default function App({ Component, pageProps }) {
   const router = useRouter();
   const isAdminPage = router.pathname?.startsWith("/admin");

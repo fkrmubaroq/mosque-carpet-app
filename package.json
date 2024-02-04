@@ -5,14 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "env-cmd -f .env next build ",
+    "build:dev": "env-cmd -f .env.dev next build ",
     "build:production": "env-cmd -f .env.production next build ",
     "start:production": "NODE_ENV=production env-cmd -f .env.production node server.js",
+    "start:dev": "NODE_ENV=development env-cmd -f .env.dev node server.js",
     "start": "NODE_ENV=production node server.js",
     "test": "echo error"
   },
   "dependencies": {
-    "@honeybadger-io/js": "^6.8.3",
-    "@honeybadger-io/webpack": "^6.1.1",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-select": "^2.0.0",
