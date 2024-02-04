@@ -316,3 +316,9 @@ export function printString(str, count, separator = "?") {
   }
   return tmp;
 }
+
+export function getPathName(url) {
+  if (!url) return "";
+  const customUrl = new URL(url);
+  return customUrl.pathname;
+}

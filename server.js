@@ -3,8 +3,8 @@ const { parse } = require('url')
 const next = require('next')
 
 const dev = process.env.NODE_ENV !== 'production'
-const hostname = 'localhost'
-const port = process.env.PORT || 3000
+const hostname = process.env.HOST_NAME;
+const port = process.env.PORT || 80
 
 const app = next({ dev, hostname, port })
 const handle = app.getRequestHandler()

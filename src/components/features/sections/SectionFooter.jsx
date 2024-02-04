@@ -233,9 +233,9 @@ function FooterContentItem({ index, name, data, icon, text, edit, onUpdateConten
 function FooterSocialMedia({ data, edit, onUpdateContent, onAddItem }) {
   return (
     <div className="flex flex-col gap-y-3 text-white">
-      <FooterTitleItem title="Social Media" />
+      <FooterTitleItem title="Kunjungi Kami" />
       <div className="flex flex-col gap-y-2">
-        {data.map((socialMedia, key) =>
+        {data?.map((socialMedia, key) =>
           <FooterContentItem 
             key={key}
             icon={socialMedia?.image || ""}
@@ -253,7 +253,7 @@ function FooterSocialMedia({ data, edit, onUpdateContent, onAddItem }) {
           onClick={() => onAddItem("social_media")}
           className="flex bg-primary rounded-md hover:bg-primary-hover gap-x-1 cursor-pointer mt-2 p-2 justify-center items-center">
           <FiPlus color="white" size={17} />
-          <span className="text-sm">Tambah Social Media</span>
+          <span className="text-sm">Tambah Baru</span>
         </div>
       }
     </div>
