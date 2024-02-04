@@ -27,7 +27,7 @@ export default async function handler(req, res) {
     }
     
     const findById = await fileManager.findIdAndPath(id,payload.path);
-
+    
     // if folder not found
     if (!findById?.length) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.BadGateway, ERROR_MESSAGE.FolderIsNotFound);
@@ -38,9 +38,10 @@ export default async function handler(req, res) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.FailedToUpdateFolderName);
     }
 
+    const resultFind = findById[0];
     const updatePath = await bulkUpdatePathStartWith({
       payload,
-      row: findById
+      row: resultFind
     });
     if (!updatePath) {
       res.status(STATUS_MESSAGE_ENUM.Ok).json({
@@ -51,8 +52,8 @@ export default async function handler(req, res) {
 
     await bulkUpdate(updatePath);
 
-    const oldPath = `${DIR_FILE_UPLOAD}${findById.path}${findById.name}`;
-    const newPath = `${DIR_FILE_UPLOAD}${findById.path}${payload.name}`;
+    const oldPath = `${DIR_FILE_UPLOAD}${resultFind.path}${resultFind.name}`;
+    const newPath = `${DIR_FILE_UPLOAD}${resultFind.path}${payload.name}`;
     renameFolder(oldPath, newPath);
 
     res.status(STATUS_MESSAGE_ENUM.Ok).json({
@@ -67,9 +68,7 @@ async function bulkUpdatePathStartWith({
   payload,
   row,
 }) {
-  
   const findPathContainsOldFolder = await fileManager.findPathContains(`${row.path}${row.name}/`); 
-
   if (!findPathContainsOldFolder?.length) return;
 
     const level = row.level;

@@ -1,14 +1,15 @@
-import { responseErrorMessage, responseNotFound } from "@/errors/response-error";
+import { ResponseError, responseErrorMessage, responseNotFound } from "@/errors/response-error";
 import { DIR_FILE_THUMBNAIL } from "@/lib/constant";
 import { STATUS_MESSAGE_ENUM } from "@/lib/enum";
-import { prismaClient } from "@/lib/prisma";
+import { ERROR_MESSAGE } from "@/lib/message";
 import { createFile, incomingRequest, slugString, unlinkFile } from "@/lib/utils";
+import Article from "@/models/article";
 import { updateArticleValidation } from "@/validation/article-validation";
 import { validation } from "@/validation/validation";
 import multiparty from "multiparty";
 import { v4 as uuid } from "uuid";
 
-
+const article = new Article();
 export default function handler(req, res) {
   switch (req.method) {
     case "GET":
@@ -30,21 +31,19 @@ async function deleteArticle(req, res) {
   try {
     const { id } = req.query;
 
-    const prevThumbnail = await prismaClient.article.findFirst({
-      where: {
-        id: +id
-      },
-    });  
-    if (prevThumbnail?.thumbnail) {
-      const destinationFileUnlink = `${DIR_FILE_THUMBNAIL}/${prevThumbnail.thumbnail}`;
+    const prevThumbnail = await article.findId(id);
+    if (!prevThumbnail?.length) {
+      throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.ArticleIsNotFound);
+    }
+
+    const resultPrev = prevThumbnail[0];
+
+    if (resultPrev?.thumbnail) {
+      const destinationFileUnlink = `${DIR_FILE_THUMBNAIL}/${resultPrev.thumbnail}`;
       await unlinkFile(destinationFileUnlink);
     }
 
-    await prismaClient.article.delete({
-      where: {
-        id: +id
-      }
-    });
+    await article.deleteData({ id });
 
     res.status(200).json({ message: "ok" });
   } catch (e) {
@@ -56,11 +55,10 @@ async function getArticleById(req, res) {
   try {
     const { id } = req.query;
 
-    const data = await prismaClient.article.findFirst({
-      where: {
-        id: +id
-      }
-    });
+    const data = await article.findId(id);
+    if (!data?.length) {
+      throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.ArticleIsNotFound);
+    }
 
     res.status(200).json({ data })
   } catch (e) {
@@ -78,33 +76,27 @@ async function updateArticle(req, res) {
     if (Object.keys(files).length) {
       const fileName = `${uuid().toString()}_${files?.thumbnail?.originalFilename}`;
       updateData.thumbnail = fileName;
-      const prevImage = await prismaClient.article.findFirst({
-        where: {
-          id: +id
-        },
-      });
+      const prevImage = await article.findId(id);
 
-
+      const resultPrev = prevImage?.[0];
       // when prev image is available, then unlink file and 
-      if (prevImage) {
-        const destinationFileUnlink = `${DIR_FILE_THUMBNAIL}/${prevImage.thumbnail}`;
+      if (prevImage?.length) {
+        const destinationFileUnlink = `${DIR_FILE_THUMBNAIL}/${resultPrev.thumbnail}`;
         await unlinkFile(destinationFileUnlink);
       }
       const destinationCreateFile = `${DIR_FILE_THUMBNAIL}/${fileName}`;
       await createFile(files.thumbnail.path, destinationCreateFile);
-
     }
 
     const slug = slugString(updateData.title);
 
     updateData.slug = slug;
-    const data = await prismaClient.article.update({
-      data: updateData,
-      where: {
-        id: +id
-      }
-    });
-    res.status(STATUS_MESSAGE_ENUM.Ok).json({ data })
+    const data = await article.updateData({ data: updateData, where: { id } });
+    if (!data?.changedRows) {
+      throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.DataIsNotUpdated);
+    }
+
+    res.status(STATUS_MESSAGE_ENUM.Ok).json({ data: "ok" });
   } catch (e) {
     responseErrorMessage(e, res)    
   }

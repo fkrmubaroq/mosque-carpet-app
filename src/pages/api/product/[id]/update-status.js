@@ -1,9 +1,10 @@
 import { ResponseError, responseErrorMessage, responseNotFound } from "@/errors/response-error";
 import { STATUS_MESSAGE_ENUM } from "@/lib/enum";
 import { ERROR_MESSAGE } from "@/lib/message";
-import { prismaClient } from "@/lib/prisma";
+import Product from '@/models/product';
 import { updateStatusValidation } from "@/validation/product-validation";
 import { validation } from "@/validation/validation";
+const product = new Product();
 
 export default async function handler(req, res) {
   try {  
@@ -14,25 +15,20 @@ export default async function handler(req, res) {
     }
     const { id } = req.query;
     const productId = validation(updateStatusValidation, id);
-    const findProduct = await prismaClient.product.findUnique({ where: { id: productId }, select: { id: true, active:true } });
-    if (!findProduct) {
+    const findProduct = await product.findId(productId);
+    console.log("pro", productId, findProduct);
+    if (!findProduct.length) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.BadGateway, ERROR_MESSAGE.ProductIdIsNull);
     }
 
-    const data = await prismaClient.product.update({
-      data: {
-        active: findProduct.active === "Y" ? "N" : "Y"
-      },
-      where: {
-        id: productId
-      },
-      select: {
-        id: true,
-        active: true
-      }
+    const dataUpdate = { active: findProduct[0].active === "Y" ? "N" : "Y" };
+    await product.updateData({
+      data: dataUpdate,
+      where: { id: productId }
     })
+
     res.status(STATUS_MESSAGE_ENUM.Ok).json({
-      data
+      data: "ok"
     })
   } catch (e) {
     responseErrorMessage(e, res);

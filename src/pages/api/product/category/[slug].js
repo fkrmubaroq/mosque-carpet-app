@@ -1,5 +1,8 @@
 import { responseNotFound } from '@/errors/response-error';
-import { prismaClient } from '@/lib/prisma';
+import Category from '@/models/category';
+import Product from '@/models/product';
+const category = new Category();
+const product = new Product();
 
 export default function handler(req, res) {
   if (req.method === "GET") {
@@ -12,46 +15,17 @@ export default function handler(req, res) {
 async function get(req, res) {
   try {
     const { slug } = req.query;
-    const removeCategoryNameSlug = slug.split("-").join(" ");
- 
-    const findCategoryBySlug = await prismaClient.category.findFirst({
-      where: {
-        category_name: {
-          startsWith: removeCategoryNameSlug
-        }
-      }
-    });
-    if (!findCategoryBySlug) {
+
+    const findCategoryBySlug = await category.findCategoryBySlug(slug);
+    if (!findCategoryBySlug.length) {
       res.status(200).json({
         data: []
       });
       return;
     }
 
-    const response = await prismaClient.product.findMany({
-      where: {
-        category_id: findCategoryBySlug.id,
-        active: "Y"
-      },
-      include: {
-        category: {
-          select: {
-            category_name: true
-          }
-        }
-      },
-      orderBy: {
-        id: "desc"
-      },
-    });
-
-    const data = response.map(({
-      category,
-      ...rest
-    }) => ({
-      ...rest,
-      category_name: category?.category_name
-    }));
+    const categoryId = findCategoryBySlug[0].id;
+    const data = await product.getProductByCategoryId(categoryId);
     res.status(200).json({
       data,
     })

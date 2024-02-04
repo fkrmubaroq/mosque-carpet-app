@@ -21,18 +21,19 @@ export default async function handler(req, res) {
     if (!checkId?.length) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.FailedToDeleteFolder);
     }
-
-    const deleteFolder = await fileManager.deleteData({ id });
+    await fileManager.deleteData({ id });
+    const resultFind = checkId[0]; 
     
-    const findByPath = await fileManager.findPathContains(`${deleteFolder.path}${deleteFolder.name}/`);
+    const findByPath = await fileManager.findPathContains(`${resultFind.path}${resultFind.name}/`);
 
-    const folderName = deleteFolder.name;
-    const path = deleteFolder.path;
+    const folderName = resultFind.name;
+    const path = resultFind.path;
     const src = `${DIR_FILE_UPLOAD}${path}${folderName}`
 
     deleteFolderAsync(src, { recursive: true , force: true });
     
     const listIds = findByPath.map(item => item.id);
+    console.log("xxx ",findByPath, listIds.join(', '));
     await query(`DELETE FROM file_manager WHERE file_manager.id IN (${listIds.join(', ')})`)
 
     res.status(STATUS_MESSAGE_ENUM.Ok).json({

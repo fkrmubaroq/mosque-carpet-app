@@ -1,6 +1,7 @@
 import { responseErrorMessage, responseNotFound } from "@/errors/response-error";
-import { prismaClient } from "@/lib/prisma";
+import Article from "@/models/article";
 
+const article = new Article();
 export default function handler(req, res) {
   if (req.method !== "GET") {
     responseNotFound(res);
@@ -13,14 +14,8 @@ export default function handler(req, res) {
 async function getArticleBySlug(req, res) {
   try {
     const { slug } = req.query;
-    const data = await prismaClient.article.findFirst({
-      where: {
-        slug: {
-          contains: slug
-        }
-      }
-    });
-    res.status(200).json({ data });
+    const data = await article.articleContainSlug(slug);
+    res.status(200).json({ data: data?.[0] || {} });
   } catch (e) {
     responseErrorMessage(e, res);
   }

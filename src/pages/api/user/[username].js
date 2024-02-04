@@ -2,9 +2,11 @@ import { ResponseError, responseErrorMessage, responseNotFound } from "@/errors/
 import { hashPassword } from "@/lib/api/utils";
 import { STATUS_MESSAGE_ENUM } from "@/lib/enum";
 import { ERROR_MESSAGE } from "@/lib/message";
+import User from "@/models/user";
 import { updateUserValidation } from "@/validation/user-validation";
 import { validation } from "@/validation/validation";
 
+const user = new User();
 export default function handler(req, res) {
   switch (req.method) {
     case "DELETE":
@@ -21,11 +23,7 @@ async function deleteUser(req, res) {
   try {
     const { username } = req.query;
 
-    await prismaClient.user.delete({
-      where: {
-        username: username
-      },
-    });
+    await user.deleteData({ username });
 
     res.status(200).json({ message: "ok" });
   } catch (e) {
@@ -37,11 +35,8 @@ async function updateUser(req, res) {
   try {
     const { username } = req.query;
     const validateRequest = validation(updateUserValidation, req.body);
-    const foundUser = await prismaClient.user.count({
-      where: {
-        username: validateRequest.username
-      }
-    });
+    const foundUser = await user.usernameIsExists(validateRequest.username);
+    console.log("found", foundUser, username  );
     if (!foundUser) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.UserNotFound)
     }
@@ -50,13 +45,12 @@ async function updateUser(req, res) {
       const password = await hashPassword(validateRequest.password);
       validateRequest.password =  password;
     }
-    await prismaClient.user.update({
-      data: validateRequest,
-      where: {
-        username: username
-      },
-    });
-
+    
+    const update = await user.updateData({ data: validateRequest, where: { username } });
+    if (!update?.changedRows) {
+      throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.DataIsNotUpdated);
+    }
+    
     res.status(200).json({ message: "ok", data: validateRequest });
   } catch (e) {
     responseErrorMessage(e, res)

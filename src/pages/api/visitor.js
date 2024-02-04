@@ -1,5 +1,4 @@
 import { responseNotFound } from "@/errors/response-error";
-import { prismaClient } from "@/lib/prisma";
 
 export default function handler(req, res) {
   if (req.method !== "GET") {
@@ -16,18 +15,12 @@ function trackVisitor(req, res) {
   if (isArticle) {
     return trackVisitorArticle(req, res, slug);
   }
-  res.status(200).json({ data: "hehe" }); 
+  res.status(200).json({ data: "hehe" });
 }
 
 function trackVisitorArticle(req, res, slug) {
+
   
-  const prismaVisitor = prismaClient.article.findFirst({
-    where: {
-      slug: {
-        contains: slug
-      }
-    }
-  });
-  res.status(200).json({ data: prismaVisitor });
+  res.status(200).json({ data: "ARTICLE" });
 
 }

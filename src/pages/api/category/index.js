@@ -1,14 +1,18 @@
-import { responseErrorMessage } from '@/errors/response-error';
-import { DIR_FILE_CATEGORY, OFFSET } from '@/lib/constant';
+import { ResponseError, responseErrorMessage } from '@/errors/response-error';
+import { DIR_FILE_CATEGORY } from '@/lib/constant';
 import { STATUS_MESSAGE_ENUM } from '@/lib/enum';
-import { prismaClient } from '@/lib/prisma';
+import { ERROR_MESSAGE } from '@/lib/message';
 import { createFile, incomingRequest, unlinkFile } from '@/lib/utils';
+import Category from '@/models/category';
+import Product from '@/models/product';
 import { insertCategoryValidation, updateCategoryValidation } from '@/validation/category-validation';
 import { validation } from '@/validation/validation';
 import fs from "fs";
 import multiparty from "multiparty";
 import { v4 as uuid } from "uuid";
- 
+
+const category = new Category();
+const product = new Product();
 export default function handler(req, res) {
   switch (req.method) {
     case "GET":
@@ -30,43 +34,8 @@ export default function handler(req, res) {
 async function get(req, res) {
   try { 
     const query = req.query;
-    let filters = {};
-    const page = query?.page ? +query.page : 1;
-    const skip = (page - 1) * OFFSET;
-
-    if (query?.name) {
-      filters = {
-        where: {
-          category_name: {
-            contains: query.name
-          }
-        }
-      }
-    }
-
-    const data = await prismaClient.category.findMany({
-      ...filters,
-      orderBy: {
-        id: "desc"
-      },
-      skip,
-      take: +(query?.limit) || OFFSET
-    });
-
-    const paginationInfo = await prismaClient.category.count({
-      ...filters
-    });
-
-    const totalPage = Math.ceil(paginationInfo / OFFSET)
-
-    res.status(200).json({
-      data,
-      paging: {
-        page,
-        total_page: totalPage,
-        total_items: paginationInfo
-      }
-    })
+    const data = await category.getCategoryWithPagination(query);
+    res.status(200).json(data);
   } catch (e) {
     responseErrorMessage(e, res);
   }
@@ -86,9 +55,7 @@ async function post(req, res) {
     if (Object.keys(files).length) {
       insertData.image = fileName;
     }
-    const data = await prismaClient.category.create({
-      data: insertData
-    });
+    const data = await category.insertData(insertData);
 
     if (Object.keys(files).length) {
       const contentData = await fs.promises.readFile(files.image.path);
@@ -113,12 +80,7 @@ async function put(req, res) {
     if (Object.keys(files).length) {
       const fileName = `${uuid().toString()}_${files?.image?.originalFilename}`;
       updateData.image = fileName;
-      const prevImage = await prismaClient.category.findFirst({
-        where: {
-          id
-        },
-      });
-
+      const prevImage = await category.get({ id });
 
       // when prev image is available, then unlink file and 
       if (prevImage) {
@@ -130,13 +92,11 @@ async function put(req, res) {
 
     }
 
-    const data = await prismaClient.category.update({
-      data: updateData,
-      where: {
-        id:+id
-      }
-    });
-    res.status(STATUS_MESSAGE_ENUM.Ok).json({ data })
+    const data = await category.updateData({ data: updateData, where: { id } });
+    if (!data?.changedRows) {
+      throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.DataIsNotUpdated);
+    }
+    res.status(STATUS_MESSAGE_ENUM.Ok).json({ data:"ok" })
   } catch (e) {
     responseErrorMessage(e, res);
   }

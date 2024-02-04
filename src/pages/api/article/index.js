@@ -1,15 +1,15 @@
 import { responseErrorMessage, responseNotFound } from "@/errors/response-error";
-import { DIR_FILE_THUMBNAIL, OFFSET } from "@/lib/constant";
+import { DIR_FILE_THUMBNAIL } from "@/lib/constant";
 import { STATUS_MESSAGE_ENUM } from "@/lib/enum";
-import { prismaClient } from "@/lib/prisma";
 import { incomingRequest, slugString } from "@/lib/utils";
+import Article from "@/models/article";
 import { insertArticleValidation } from "@/validation/article-validation";
 import { validation } from '@/validation/validation';
 import fs from "fs";
 import multiparty from "multiparty";
 import { v4 as uuid } from "uuid";
 
-
+const article = new Article();
 export default function handler(req, res) {
   switch (req.method) {
     case "GET":
@@ -27,51 +27,8 @@ export default function handler(req, res) {
 async function get(req, res) {
   try {
     const query = req.query;
-    const q = query?.q;
-    const page = query?.page ? +query.page : 1;
-    const skip = (page - 1) * OFFSET;
-    let filters = {};
-    if (q) {
-      filters = {
-        where: {
-          OR: [
-            {
-              title: {
-                contains: q,
-              }
-            },
-            {
-              writer: {
-                contains: q
-              }
-            }
-          ]
-        }
-      }
-    }
-
-    const data = await prismaClient.article.findMany({
-      ...filters,
-      skip,
-      take: +(query?.limit) || OFFSET,
-      orderBy: {
-        id:"desc"
-      }
-    });
-
-    const paginationInfo = await prismaClient.article.count({
-      ...filters
-    });
-    const totalPage = Math.ceil(paginationInfo / OFFSET)
-
-    res.status(STATUS_MESSAGE_ENUM.Ok).json({
-      data,
-      paging: {
-        page,
-        total_page: totalPage,
-        total_items: paginationInfo
-      }
-    })
+    const data = await article.getArticleWithPagination(query)
+    res.status(STATUS_MESSAGE_ENUM.Ok).json(data);
   } catch (e) {
     responseErrorMessage(e, res);
   }
@@ -96,9 +53,9 @@ async function post(req, res) {
 
     const slug = slugString(insertData.title);
     insertData.slug = slug;
-    const data = await prismaClient.article.create({
-      data: insertData
-    });
+    console.log("xx", insertData);
+    const data = await article.insertData(insertData);
+    console.log("dd", data);
 
     if (Object.keys(files).length) {
       const contentData = await fs.promises.readFile(files.thumbnail.path);

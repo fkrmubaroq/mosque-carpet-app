@@ -1,8 +1,9 @@
 import { ResponseError, responseErrorMessage } from "@/errors/response-error";
 import { STATUS_MESSAGE_ENUM } from "@/lib/enum";
 import { ERROR_MESSAGE } from "@/lib/message";
-import { prismaClient } from "@/lib/prisma";
+import Category from "@/models/category";
 
+const category = new Category();
 export default function handler(req, res) {
   deleteRow(req, res);
 }
@@ -14,11 +15,7 @@ async function deleteRow(req, res) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.ProductIdIsNull);
     }
 
-    await prismaClient.category.delete({
-      where: {
-        id: +id
-      }
-    });
+    await category.deleteData({ id });
 
     res.status(200).json({
       message: "ok",

@@ -5,13 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "env-cmd -f .env next build ",
+    "build:production": "env-cmd -f .env.production next build ",
+    "start:production": "NODE_ENV=production node server.js",
     "start": "NODE_ENV=production node server.js",
-    "start:cpanel-dev": "NODE_ENV=staging node server.js",
-    "start:cpanel-prod": "NODE_ENV=production node server.js",
     "test": "echo error"
   },
   "dependencies": {
-    "@prisma/client": "^2.30.3",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-select": "^2.0.0",
@@ -62,7 +61,6 @@
     "postcss": "^8.4.21",
     "prettier": "^2.8.7",
     "prettier-plugin-tailwindcss": "^0.2.7",
-    "prisma": "^2.30.3",
     "sass": "^1.60.0",
     "tailwindcss": "^3.2.7"
   },
