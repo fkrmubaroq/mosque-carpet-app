@@ -15,7 +15,7 @@ export default function ModalImage({ gallery, src, alt, onHide }) {
       <Image src={activeImage} layout="fill" alt={alt || ""} className="rounded-xl" objectFit="contain" />
       <div className="flex gap-x-3 fixed bottom-5 overflow-auto">
         {gallery?.map((image, key) =>
-          <div className={cn("shrink-0 cursor-pointer", { "opacity-50": activeImage !== image })} onClick={() => setActiveImage(image)}>
+          <div key={key} className={cn("shrink-0 cursor-pointer", { "opacity-50": activeImage !== image })} onClick={() => setActiveImage(image)}>
             <Image key={key} src={image} width={200} height={100} alt={alt || ""} className="rounded-xl" objectFit="cover" />
           </div>
         )}

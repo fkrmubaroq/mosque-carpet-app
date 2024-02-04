@@ -10,6 +10,7 @@ import { Confirmation } from "@/components/ui/modal/Confirmation";
 import ShimmerCard from "@/components/ui/shimmer/ShimmerCard";
 import Pagination from "@/components/ui/table/PaginationTable";
 import { deleteUser, getUsers, insertUser, updateUser } from "@/lib/api/users";
+import { USER_TYPE_ENUM } from "@/lib/enum";
 import { useDialogStore } from "@/lib/hookStore";
 import { ERROR_MESSAGE } from "@/lib/message";
 import { adminUsersQuery } from "@/lib/queryKeys";
@@ -84,7 +85,6 @@ export default function Index() {
       const params = {
         q: keyword,
         page,
-        role: "STAFF"
       };
       const response = await getUsers(params);
       return response.data || []
@@ -178,14 +178,20 @@ function CardItem({ data, onDelete, onEdit }) {
         <AiOutlineUser size={70} color="gray" />
       </div>
       <table className="border-spacing-0">
-        <Info title="Nama" text={data.name}/>
-        <Info title="Username" text={data.username}/>
-        <Info title="Role" text={<span className="text-xs  rounded-md bg-gray-100 py-1 px-2 first-letter:uppercase font-bold">{data.role}</span>} />
+        <tbody>
+          <Info title="Nama" text={data.name}/>
+          <Info title="Username" text={data.username}/>
+          <Info title="Role" text={<span className="text-xs  rounded-md bg-gray-100 py-1 px-2 first-letter:uppercase font-bold">{data.role}</span>} />
+        </tbody>
       </table>
     </CardContent>
     <CardFooter className="!pb-0 gap-x-3 justify-center">
-      <ButtonEdit variant="secondary" onClick={() => onEdit(data) }/>
-      <ButtonDelete variant="danger" onClick={() => onDelete(data)}/>
+      {data?.role !== USER_TYPE_ENUM.SuperAdmin && 
+        <>
+        <ButtonEdit variant="secondary" onClick={() => onEdit(data) }/>
+        <ButtonDelete variant="danger" onClick={() => onDelete(data)}/>
+        </>
+      }
     </CardFooter>
 
   </Card>
@@ -193,8 +199,8 @@ function CardItem({ data, onDelete, onEdit }) {
 
 function Info({ title, text}) {
   return <tr>
-    <td className="font-semibold">{title}</td>
+    <td className="font-semibold ">{title}</td>
     <td className="px-2">:</td>
-    <td className="text-gray-600">{text}</td>
+    <td title={text} className="text-gray-600 break-all line-clamp-1">{text}</td>
   </tr>
 }

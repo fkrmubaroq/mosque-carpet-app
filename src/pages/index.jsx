@@ -19,22 +19,18 @@ import Banner from "@/components/ui/banner";
 import ButtonWa from "@/components/ui/button/ButtonWa";
 import { getInformationIp, visitorPage } from "@/lib/api/visitor";
 import { CONTAINER_LP } from "@/lib/constant";
-import { prismaClient } from "@/lib/prisma";
 import { landingPageQuery } from "@/lib/queryKeys";
 import { debounce, getCookieName, setCookie } from "@/lib/utils";
+import Section from "@/models/section";
+import { Setting } from "@/models/setting";
 import { useQuery } from "@tanstack/react-query";
 
-
 export async function getServerSideProps(context) {
-  const prismaSections = await prismaClient.sections.findMany({
-    orderBy: {
-      position: "asc"
-    },
-    where: {
-      active: "Y"
-    }
-  });
-  const prismaSetting = await prismaClient.setting.findFirst();
+  const section = new Section();
+  const setting = new Setting();
+  const resultSection = await section.getAll();
+
+  const resultSetting = await setting.get();
   const popupCookie = JSON.parse(context.req.cookies?.[getCookieName("popup")] || "null");
   let showPopupCampaign = true;
   if (popupCookie?.status && popupCookie?.date) {
@@ -43,9 +39,9 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      sections: prismaSections || [],
-      setting: prismaSetting || {},
-      showPopupCampaign
+      sections: resultSection.length ? JSON.parse(JSON.stringify(resultSection)) : [],
+      setting: JSON.parse(JSON.stringify(resultSetting?.[0] || '{}')),
+      showPopupCampaign:false
     }
   }
 }
@@ -101,6 +97,7 @@ export default function Home({ sections, setting, showPopupCampaign }) {
   }, [mobile]);
 
   
+  console.log("sections", sections);
   const popup = useMemo(() => setting?.popup?.url ? setting.popup : JSON.parse(setting?.popup || "{}"), []);
   return (
     <>

@@ -7,6 +7,8 @@ import ModalImage from "@/components/ui/modal/ModalImage";
 import { CONTAINER_LP } from "@/lib/constant";
 import { useMobile } from "@/lib/hooks";
 import { slugString } from "@/lib/utils";
+import Section from "@/models/section";
+import { Setting } from "@/models/setting";
 import cn from "classnames";
 import parser from "html-react-parser";
 import Image from "next/image";
@@ -20,25 +22,24 @@ const getSection = (sections, sectionName) => {
 
 export async function getServerSideProps({ params }) {
   const slug = params?.slug;
-  const prismaSections = await prismaClient.sections.findMany({
-    orderBy: {
-      position: "asc"
-    },
-    where: {
-      active: "Y"
-    }
-  });
-  const prismaSetting = await prismaClient.setting.findFirst();
+  const section = new Section();
+  const setting = new Setting();
 
-  const sectionProject = getSection(prismaSections, "section_projects");
+  const resultSections = await section.getAll();
+  const parsedSection = JSON.parse(JSON.stringify(resultSections));
+
+  const resultSetting = await setting.get();
+  const parsedSetting = JSON.parse(JSON.stringify(resultSetting));
+
+  const sectionProject = getSection(parsedSection, "section_projects");
   const contentProject = JSON.parse(sectionProject?.content || "{}");
   const project = contentProject.projects.find(project => slugString(project.title).includes(slug));
 
   return {
     props: {
       project,
-      sections: prismaSections || [],
-      setting: prismaSetting || {}
+      sections: parsedSection || [],
+      setting: parsedSetting || {}
     }
   }  
 }

@@ -11,7 +11,7 @@ import ToggleSwitch from "@/components/ui/switch/toggle";
 import { updateSetting } from "@/lib/api/setting";
 import { RIBBON_LIST } from "@/lib/constant";
 import { useDialogStore } from "@/lib/hookStore";
-import { prismaClient } from "@/lib/prisma";
+import { Setting } from "@/models/setting";
 import { Label } from "@radix-ui/react-label";
 import { useMutation } from "@tanstack/react-query";
 import cn from "classnames";
@@ -25,11 +25,13 @@ import { MdOutlineCampaign } from "react-icons/md";
 import { TbClick } from "react-icons/tb";
 
 export async function getServerSideProps() {
-  let response = await prismaClient.setting.findFirst();
-  
+  const setting = new Setting();
+  const resultSetting = await setting.get();
+  const parsedSetting = JSON.parse(JSON.stringify(resultSetting));
+
   return {
     props: {
-      setting: response || {}
+      setting: parsedSetting || {}
     }
   }
 }

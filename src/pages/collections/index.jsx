@@ -4,9 +4,10 @@ import { Header } from "@/components/layout/Header";
 import ButtonWhatsapp from "@/components/ui/button/ButtonWa";
 import { getCategory } from "@/lib/api/category";
 import { CONTAINER_LP, MARGIN_EACH_SECTION } from "@/lib/constant";
-import { prismaClient } from "@/lib/prisma";
 import { collectionsQuery } from "@/lib/queryKeys";
 import { debounce, mediaPath, slugString } from "@/lib/utils";
+import Section from "@/models/section";
+import { Setting } from "@/models/setting";
 import { useQuery } from "@tanstack/react-query";
 import cn from "classnames";
 import Image from "next/image";
@@ -15,20 +16,19 @@ import { useEffect, useState } from "react";
 
 export async function getServerSideProps() {
 
-  const prismaSections = await prismaClient.sections.findMany({
-    orderBy: {
-      position: "asc"
-    },
-    where: {
-      active: "Y"
-    }
-  })
-  const prismaSetting = await prismaClient.setting.findFirst();
+  const section = new Section();
+  const setting = new Setting();
+
+  const resultSections = await section.getAll();
+  const parsedSection = JSON.parse(JSON.stringify(resultSections));
+
+  const resultSetting = await setting.get();
+  const parsedSetting = JSON.parse(JSON.stringify(resultSetting));
 
   return {
     props: {
-      sections: prismaSections || [],
-      setting: prismaSetting || {} 
+      sections: parsedSection || [],
+      setting: parsedSetting || {} 
     }
   }
 }

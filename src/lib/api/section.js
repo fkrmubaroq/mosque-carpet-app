@@ -1,4 +1,4 @@
-import { putMethod } from ".";
+import { getMethod, putMethod } from ".";
 
 export function updateSections(payload, config) {
   return putMethod("sections", payload, {
@@ -6,4 +6,8 @@ export function updateSections(payload, config) {
       'Content-Type': 'application/json'
     }
   });
+}
+
+export function getAllSection(params) {
+  return getMethod("sections",{ params })
 }

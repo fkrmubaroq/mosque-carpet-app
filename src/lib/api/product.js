@@ -3,27 +3,27 @@ import { deleteMethod, getMethod, patchMethod, postMethod, putMethod } from ".";
 
  
 export function insertProduct(payload) {
-  return postMethod("db/product",payload);
+  return postMethod("product",payload);
 }
 
 export function updateProduct(payload) {
-  return putMethod("db/product", payload);
+  return putMethod("product", payload);
 }
 
 export function getAllProduct(params) {
-  return getMethod("db/product", { params });
+  return getMethod("product", { params });
 }
 export function getProductByCategory(categoryName) {
-  return getMethod(`db/product/category/${categoryName}`);
+  return getMethod(`product/category/${categoryName}`);
 }
 export function getProductByName(name) {
-  return getMethod(`db/product/name/${name}`);
+  return getMethod(`product/name/${name}`);
 }
 
 export function deleteProduct(productId) {
-  return deleteMethod(`db/product/${productId}`);
+  return deleteMethod(`product/${productId}`);
 }
 
 export function updateToggleStatus(productId) {
-  return patchMethod(`db/product/${productId}/update-status`);
+  return patchMethod(`product/${productId}/update-status`);
 }

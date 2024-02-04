@@ -25,7 +25,6 @@ export default function handler(req, res) {
 async function put(req, res) {
   try {  
     const { id, ...validateRequest } = validation(updateProductValidation, req.body);
-    console.log("vava", id, validateRequest)
     await product.updateData({
       data: validateRequest,
       where: { id }

@@ -2,10 +2,10 @@ import Meta from "@/components/Meta";
 import style from "@/components/features/article.module.scss";
 import SectionFooter from "@/components/features/sections/SectionFooter";
 import HeaderArticle from "@/components/layout/HeaderArticle";
-import { getArticleBySlug } from "@/lib/api/articles";
 import { CONTAINER_LP, placeholderImage } from "@/lib/constant";
-import { prismaClient } from "@/lib/prisma";
 import { mediaPath, strippedStrings } from "@/lib/utils";
+import Article from "@/models/article";
+import Section from "@/models/section";
 import cn from "classnames";
 import dayjs from "dayjs";
 import parser from "html-react-parser";
@@ -15,23 +15,20 @@ import { IoMdTime } from "react-icons/io";
 
 export async function getServerSideProps(context) {
   const { slug } = context.params;
-  const response = await getArticleBySlug(slug);
-  const prismaSections = await prismaClient.sections.findMany({
-    orderBy: {
-      position: "asc"
-    },
-    where: {
-      active: "Y"
-    }
-  });
+  const section = new Section();
+  const article = new Article();
+  const resultArticle = await article.articleContainSlug(slug);
+  const resultSections = await section.getAll();
+  const parsedArticle = JSON.parse(JSON.stringify(resultArticle));
+  const parsedSection = JSON.parse(JSON.stringify(resultSections));
   return {
     props: {
-      article: response.data.data || null,
-      sections: prismaSections || []
+      article: parsedArticle?.[0] || null,
+      sections: parsedSection || []
     }
   }
 }
-export default function Article({ article, sections }) {
+export default function Articles({ article, sections }) {
   const getContentSection = (sectionName) => {
     const section = sections.find(section => section.section_name === sectionName);
     const content = JSON.parse(section?.content || "{}");

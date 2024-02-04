@@ -9,7 +9,7 @@ export default class Article{
   }
 
   articleContainSlug(slug) {
-    return query(`SELECT article.* FROM ${table} WHERE article.slug LIKE ?`,[`%${slug}%`])
+    return query(`SELECT article.* FROM ${table} WHERE article.slug = ?`,[slug])
   }
 
   async getArticleWithPagination(queryParams) {

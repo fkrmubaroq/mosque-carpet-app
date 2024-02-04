@@ -9,30 +9,29 @@ import { Line, Shimmer } from "@/components/ui/shimmer";
 import { getProductByCategory } from "@/lib/api/product";
 import { CONTAINER_LP, MARGIN_EACH_SECTION } from "@/lib/constant";
 import { useMobile } from "@/lib/hooks";
-import { prismaClient } from "@/lib/prisma";
 import { productsQuery } from "@/lib/queryKeys";
 import { formatNumberToPrice, slugString } from "@/lib/utils";
+import Section from "@/models/section";
+import { Setting } from "@/models/setting";
 import { useQuery } from "@tanstack/react-query";
 import cn from "classnames";
 import Image from "next/image";
 import Router, { useRouter } from "next/router";
 
 export async function getServerSideProps() {
+  const section = new Section();
+  const setting = new Setting();
 
-  const prismaSections = await prismaClient.sections.findMany({
-    orderBy: {
-      position: "asc"
-    },
-    where: {
-      active: "Y"
-    }
-  });
-  const prismaSetting = await prismaClient.setting.findFirst();
+  const resultSections = await section.getAll();
+  const parsedSection = JSON.parse(JSON.stringify(resultSections));
+
+  const resultSetting = await setting.get();
+  const parsedSetting = JSON.parse(JSON.stringify(resultSetting));
 
   return {
     props: {
-      sections: prismaSections || [],
-      setting: prismaSetting || {}
+      sections: parsedSection || [],
+      setting: parsedSetting || {}
     }
   }
 }

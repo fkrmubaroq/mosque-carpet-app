@@ -2,7 +2,7 @@ import { updateSections } from "@/lib/api/section";
 import { logout } from "@/lib/api/users";
 import { USER_TYPE_ENUM } from "@/lib/enum";
 import { useDialogStore, useEditSection } from "@/lib/hookStore";
-import { useCookie, useOnClickOutside, useSetting, useUserData } from "@/lib/hooks";
+import { useOnClickOutside, useSetting, useUserData } from "@/lib/hooks";
 import { eraseCookie } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import cn from "classnames";
@@ -93,7 +93,7 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
   ], [isStaff]);
 
   const { data: setting } = useSetting();
-  const [cookie] = useCookie("adm");
+  const { data: userLogin } = useUserData();
   const [expand, setExpand] = useState(true);
   const [dropdown, setDropdown] = useState(false);
   const [showToast, showConfirmation, hideConfirmation] = useDialogStore(state => [state.showToast, state.showConfirmation, state.hideConfirmation]);
@@ -221,10 +221,10 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
             />
             <div className="flex flex-col gap-y-1 border-r pr-3 min-w-[100px] max-w-[300px]">
               <span className="text-sm font-semibold text-gray-500 ">
-                {cookie?.name || "-"}
+                  {userLogin?.name || "-"}
               </span>
               <span className="text-xs text-gray-600 ">
-                Admin
+                  {userLogin?.role || "-"}
               </span>
             </div>
             <div className=" h-full ">

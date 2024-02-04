@@ -4,28 +4,26 @@ import { Layout } from "@/components/layout";
 import PingAnimation from "@/components/ui/Ping";
 import { INIT_SECTIONS } from "@/lib/constant";
 import { useEditSection } from "@/lib/hookStore";
-import { prismaClient } from "@/lib/prisma";
+import Section from "@/models/section";
 import cn from "classnames";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 export async function getServerSideProps() {
-  const prismaSections = await prismaClient.sections.findMany({
-    orderBy: {
-      position: "asc"
-    },
-    where: {
-      active: "Y"
-    }
-  });
+  const section = new Section();
+
+  const resultSections = await section.getAll();
+  const parsedSection = JSON.parse(JSON.stringify(resultSections));
+
+  
   return {
     props: {
-      sections: prismaSections || []
+      sections: parsedSection || []
     }
   }
 }
 
-export default function Section({ sections }) {
+export default function Sections({ sections }) {
   const [
     setSectionsLp,
     sectionsLp,

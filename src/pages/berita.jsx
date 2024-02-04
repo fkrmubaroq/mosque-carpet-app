@@ -4,9 +4,9 @@ import HeaderArticle from "@/components/layout/HeaderArticle";
 import { Card, CardContent } from "@/components/ui/card";
 import { getArticle } from "@/lib/api/articles";
 import { CONTAINER_LP } from "@/lib/constant";
-import { prismaClient } from "@/lib/prisma";
 import { landingPageQuery } from "@/lib/queryKeys";
 import { getArticleTime, getWord, mediaPath, slugString, strippedStrings } from "@/lib/utils";
+import Section from "@/models/section";
 import { useQuery } from "@tanstack/react-query";
 import cn from "classnames";
 import dayjs from "dayjs";
@@ -22,17 +22,12 @@ dayjs.locale("id");
 dayjs.extend(relativeTimePlugin);
 
 export async function getServerSideProps() {
-  const prismaSections = await prismaClient.sections.findMany({
-    orderBy: {
-      position: "asc"
-    },
-    where: {
-      active: "Y"
-    }
-  });
+  const section = new Section();
+
+  const resultSection = await section.getAll();
   return {
     props: {
-      sections: prismaSections || []
+      sections: resultSection || []
     }
   }
 }

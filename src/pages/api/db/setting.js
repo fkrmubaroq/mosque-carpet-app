@@ -32,8 +32,8 @@ async function put(req, res) {
 async function get(req, res) {
   try {
     const setting = new Setting();
-    await setting.get();
-    res.status(STATUS_MESSAGE_ENUM.Ok).json({ message:"ok" })
+    const data = await setting.get();
+    res.status(STATUS_MESSAGE_ENUM.Ok).json({ data: data?.[0] || {} })
   } catch (e) {
     responseErrorMessage(e, res);
   }

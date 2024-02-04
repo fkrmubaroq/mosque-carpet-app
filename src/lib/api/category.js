@@ -3,23 +3,23 @@ import { objectIntoFormData } from "../utils";
 
  
 export function getCategory(params) {
-  return getMethod("db/category",{ params });
+  return getMethod("category",{ params });
 }
 
 export function insertCategory(payload) {
   const formPayload = objectIntoFormData(payload);
-  return postMethod("db/category", formPayload);
+  return postMethod("category", formPayload);
 }
 
 export function updateCategory(payload) {
   const formPayload = objectIntoFormData(payload);
-  return putMethod("db/category", formPayload);
+  return putMethod("category", formPayload);
 }
 
 export function deleteCategory(id) {
-  return deleteMethod(`db/category/${id}`);
+  return deleteMethod(`category/${id}`);
 }
 
 export function getCategoryBySlug(slug) {
-  return getMethod(`db/category/slug/${slug}`);
+  return getMethod(`category/slug/${slug}`);
 }
