@@ -32,10 +32,11 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      data: response.data.data || {}
+      data: response.data.data?.[0] || {}
   } };
 }
 export default function Edit({ data }) {
+  console.log("x", data);
   const router = useRouter();
   const id = router.query?.id;
   const [article, setArticle] = useState(data);

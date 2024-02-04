@@ -24,7 +24,7 @@ export default class Product{
       product.*, category.category_name 
         FROM product  
         LEFT JOIN category ON category.id = product.category_id
-          WHERE product.id = ? ORDER BY product.id DESC`, [id]
+          WHERE product.id = ? ORDER BY product.id DESC LIMIT 1`, [id]
     );
   }
 

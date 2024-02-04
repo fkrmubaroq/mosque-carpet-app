@@ -98,7 +98,7 @@ export default function Articles() {
       </Confirmation>
     <Layout title="Artikel">
       <div className="flex justify-between mb-5">
-        <SearchInput placeholder="Cari Artikel" className="w-[300px]" onChange={e => debounceSearch(e.target.value)}/>
+        <SearchInput placeholder="Cari Artikel" className="!w-[300px]" onChange={e => debounceSearch(e.target.value)}/>
         <Button className="flex gap-x-2 !h-11 w-[180px]" onClick={() => Router.push("/admin/articles/create")}>
           <IoCreateOutline size={20} />
           <span>Buat Artikel</span>

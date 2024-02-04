@@ -16,7 +16,7 @@ async function get(req, res) {
     const data = await product.getProductNameBySlug(slug);
 
     res.status(200).json({
-      data
+      data: data?.[0] || {}
     })
   } catch (e) {
     res.status(400).json({

@@ -85,6 +85,7 @@ const ERROR_MESSAGE = {
     code: 1002,
     message: "Slug tidak ditemukan"
   },
+
   // feature file manager 1100 - 1199
   FolderAlreadyExists: {
     code: 1100,
@@ -144,6 +145,16 @@ const ERROR_MESSAGE = {
     message: "Username tidak ditemukan"
   },
 
+  // feature article 1400 - 1499
+  ArticleIsNotFound: {
+    code: 1400,
+    message: "Artikel tidak ditemukan"
+  },
+
+  DataIsNotUpdated: {
+    code: 700,
+    message: "Data gagal diubah"
+  },
   Unauthorized: {
     code: 403,
     message: "Unauthorized"

@@ -308,3 +308,11 @@ export function getCookieServer(req, key) {
   const data = cookies?.split(';')?.find(cookie => cookie.trim().startsWith(`${key}=`));
   return data?.replace(`${key}=`, '')?.trim();
 }
+
+export function printString(str, count, separator = "?") {
+  let tmp = "";
+  for (let x = 1; x <= count; x++){
+    tmp += `${str} ${x === count ? '' : separator} ` 
+  }
+  return tmp;
+}

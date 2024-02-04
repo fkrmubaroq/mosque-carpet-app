@@ -93,8 +93,8 @@ function MainArticle({ data }) {
         }}
       ></div>
       <div className="absolute flex flex-col text-white bottom-8 min-[440px]:left-8 left-3 sm:right-24 min-[880px]:hidden  ">
-        <Link className="min-[440px]:text-xl text-base min-[380px]:text-lg font-semibold line-clamp-2 sm:text-2xl" title={data.title} href={`/${slugString(data.title)}`}>
-          {data.title}
+        <Link  title={data.title} href={`/${slugString(data.title)}`}>
+          <a className="min-[440px]:text-xl text-base min-[380px]:text-lg font-semibold line-clamp-2 sm:text-2xl">{data.title}</a>
         </Link>
       </div>
     </div>
@@ -110,7 +110,7 @@ function MainArticle({ data }) {
         <div className="flex flex-col gap-y-4 font-soserif xl:pr-10">
           <div className="flex flex-col justify-between">
             <div className="text-gray-400 line-clamp-[7] md:text-lg lg:text-xl font-normal mb-5 min-h-[200px] text-justify">{strippedStrings(data.content)}</div>
-            <Link legacyBehavior href={`/${slugString(data.title)}`}>
+            <Link href={`/${slugString(data.title)}`}>
               <a className="text-lg gap-x-2  font-soserif hover:bg-primary-hover bg-primary text-white p-3 w-[200px] flex justify-center items-center rounded-full">
                 <span>Selengkapnya</span>
                 <FaArrowRightLong />
@@ -141,8 +141,8 @@ function NewsItems({ data }) {
                 <span className="text-xs text-gray-500 line-clamp-1" title={item.writer}>{getWord(item.writer, 2) || ""}</span>
               </div>
             </div>
-            <Link className="font-bold font-jasans text-slate-700 cursor-pointer hover:underline mb-2 line-clamp-2" href={slugString(item.title)}>
-              {item.title}
+            <Link href={slugString(item.title)}>
+              <a className="font-bold font-jasans text-slate-700 cursor-pointer hover:underline mb-2 line-clamp-2">{item.title}</a>
             </Link>
             <div className="text-gray-400 line-clamp-4 text-sm font-soserif">{strippedStrings(item.content)}</div>
           </CardContent>

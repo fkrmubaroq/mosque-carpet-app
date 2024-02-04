@@ -1,5 +1,5 @@
 import mysql from "serverless-mysql";
-import { objectDataToQueryBind } from "./utils";
+import { objectDataToQueryBind, printString } from "./utils";
 const db = mysql({
   config: {
     host: process.env.MYSQL_HOST,
@@ -9,6 +9,8 @@ const db = mysql({
     password: process.env.MYSQL_PASSWORD
   }
 });
+
+const connection = db.getClient();
 
 export default async function query(query, values) {
   try {
@@ -30,8 +32,9 @@ export function update({ table, data, where }) {
 
 export async function insert({ table, data }) {
   const columns = Object.keys(data)?.join(",");
-  const values = `'${Object.values(data)?.join("' , '")}'`;
-  return db.query(`INSERT INTO ${table} (${columns}) VALUES (${values}) `);
+  const values = Object.values(data);
+  // console.log("query:", `INSERT INTO ${table} (${columns}) VALUES (${printString("?", values.length, ",")})`)
+  return db.query(`INSERT INTO ${table} (${columns}) VALUES (${printString("?",values.length,",")}) `,values);
 }
 
 export async function count(query, values) {

@@ -164,8 +164,8 @@ function PreviewData({ data, onClick, showPrice, setting }) {
 function ShimmerSection({ total }) {
   return <div className="flex gap-x-5 gap-y-5 flex-wrap">
     {Array(total).fill(1).map((item, key) =>
-    <Shimmer>
-      <Card key={key} className="lg:w-[330px]">
+    <Shimmer key={key}>
+      <Card className="lg:w-[330px]">
           <Line width="w-full" height="h-[247px]" />
           <CardContent className="flex flex-col mt-5 gap-y-5">
             <Line width="w-[150px]" />

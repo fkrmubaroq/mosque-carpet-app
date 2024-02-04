@@ -1,6 +1,7 @@
-import { responseErrorMessage } from '@/errors/response-error';
+import { ResponseError, responseErrorMessage } from '@/errors/response-error';
 import { DIR_FILE_CATEGORY } from '@/lib/constant';
 import { STATUS_MESSAGE_ENUM } from '@/lib/enum';
+import { ERROR_MESSAGE } from '@/lib/message';
 import { createFile, incomingRequest, unlinkFile } from '@/lib/utils';
 import Category from '@/models/category';
 import Product from '@/models/product';
@@ -92,7 +93,10 @@ async function put(req, res) {
     }
 
     const data = await category.updateData({ data: updateData, where: { id } });
-    res.status(STATUS_MESSAGE_ENUM.Ok).json({ data })
+    if (!data?.changedRows) {
+      throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.DataIsNotUpdated);
+    }
+    res.status(STATUS_MESSAGE_ENUM.Ok).json({ data:"ok" })
   } catch (e) {
     responseErrorMessage(e, res);
   }

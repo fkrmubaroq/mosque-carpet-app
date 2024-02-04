@@ -42,8 +42,6 @@ export async function getServerSideProps() {
   }
 }
 export default function ProductByName({ sections, setting }) {
-  console.log("sections", sections);
-  console.log("setting", setting);
   const mobile = useMobile();
   const getContentSection = (sectionName) => {
     const section = sections.find(section => section.section_name === sectionName);
@@ -85,7 +83,7 @@ function SectionDetailProduct({ mobile, setting }) {
     queryKey: productsQuery.detailProduct(slug),
     queryFn: async () => {
       const response = await getProductByName(slug);
-      return response.data?.data || []
+      return response.data?.data || {}
     }
   });
 
@@ -134,7 +132,7 @@ function SectionDetailProduct({ mobile, setting }) {
           modules={[Navigation]}
           className="swipper-category"
         >
-          {productSimilar.filter(item => item.id !== data.id)?.map((item, key) => (
+          {data?.id && productSimilar.filter(item => item.id !== data.id)?.map((item, key) => (
             <SwiperSlide
               key={key}
             >
