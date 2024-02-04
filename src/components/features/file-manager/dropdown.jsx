@@ -32,7 +32,7 @@ export function DropdownActionFolder({
   onDeleteFolder,
 }) {
   return (
-    <nav className="absolute right-0 top-10 flex w-56 flex-col gap-y-2 rounded-md bg-white py-2 shadow">
+    <nav className="absolute right-0 top-10 flex w-56 flex-col gap-y-2 rounded-md bg-white py-2 shadow z-50">
       <DropdownItem
         text="Buka"
         icon={<FaRegFolderOpen size={18} />}

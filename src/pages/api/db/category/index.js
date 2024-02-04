@@ -34,7 +34,6 @@ async function get(req, res) {
   try { 
     const query = req.query;
     const data = await category.getCategoryWithPagination(query);
-
     res.status(200).json(data);
   } catch (e) {
     responseErrorMessage(e, res);

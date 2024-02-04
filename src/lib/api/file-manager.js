@@ -1,11 +1,11 @@
 import { deleteMethod, getMethod, postMethod, putMethod } from ".";
 
 export function getFileItems(params) {
-  return getMethod("file-manager", { params });
+  return getMethod("db/file-manager", { params });
 }
 
 export function createFolder(payload) {
-  return postMethod("file-manager/create-folder", payload);
+  return postMethod("db/file-manager/create-folder", payload);
 }
 
 function appendPayload(payload) {
@@ -21,24 +21,24 @@ function appendPayload(payload) {
 
 export function uploadFiles(payload){
   const data = appendPayload(payload);
-  return postMethod("file-manager/upload-file", data);
+  return postMethod("db/file-manager/upload-file", data);
 }
 
 export function updateFolderName(id, payload){
-  return putMethod(`file-manager/${id}/update-folder-name`, payload);
+  return putMethod(`db/file-manager/${id}/update-folder-name`, payload);
 }
 export function updateFileName(id, payload){
-  return putMethod(`file-manager/${id}/update-file-name`, payload);
+  return putMethod(`db/file-manager/${id}/update-file-name`, payload);
 }
 
 export function deleteFolder(id){
-  return deleteMethod(`file-manager/folder/${id}`);
+  return deleteMethod(`db/file-manager/folder/${id}`);
 }
 
 export function deleteFile(id) {
-  return deleteMethod(`file-manager/file/${id}`);
+  return deleteMethod(`db/file-manager/file/${id}`);
 }
 
 export function downloadFile(src) {
-  return getMethod(`file-manager/download/${src}`);
+  return getMethod(`db/file-manager/download/${src}`);
 }

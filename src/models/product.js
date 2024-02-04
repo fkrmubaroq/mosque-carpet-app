@@ -7,6 +7,7 @@ export default class Product{
   findId(id) {
     return query(`SELECT product.* FROM product WHERE product.id = ? LIMIT 1 `, [id]);
   }
+  
   getProductByCategoryId(id) {
     return query(`SELECT 
       product.*, category.category_name 

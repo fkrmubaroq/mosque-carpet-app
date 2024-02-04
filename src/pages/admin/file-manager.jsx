@@ -1,13 +1,13 @@
 import File from "@/components/features/file-manager/File";
 import Folder from "@/components/features/file-manager/Folder";
 import ModalFormFolder from "@/components/features/file-manager/ModalForm";
-import ModalPreviewFile from "@/components/features/file-manager/ModalPreviewFile";
 import ModalUploadFile from "@/components/features/file-manager/ModalUpload";
 import PathFile from "@/components/features/file-manager/PathFile";
 import {
   DropdownFileManager
 } from "@/components/features/file-manager/dropdown";
 import { Layout } from "@/components/layout";
+import Banner from "@/components/ui/banner";
 import { Button } from "@/components/ui/button";
 import ShimmerMediaManager from "@/components/ui/shimmer/ShimmerMediaManager";
 import { createFolder, deleteFile, deleteFolder, getFileItems, updateFileName, updateFolderName, uploadFiles } from "@/lib/api/file-manager";
@@ -74,7 +74,7 @@ export default function FileManager() {
   });
 
   const { mutate: mutateUpdateFolder } = useMutation({
-    mutationFn: (payload) => updateFolderName(payload.id, { name: payload.name }),
+    mutationFn: (payload) => updateFolderName(payload.id, { name: payload.name, path: currentPath }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: adminFileManagerQuery.getFIleItems(currentPath),
@@ -90,7 +90,7 @@ export default function FileManager() {
   });
 
   const { mutate: mutateUpdateFile } = useMutation({
-    mutationFn: (payload) => updateFileName(payload.id, { name: payload.name }),
+    mutationFn: (payload) => updateFileName(payload.id, { name: payload.name, path: currentPath }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: adminFileManagerQuery.getFIleItems(currentPath),
@@ -252,7 +252,7 @@ export default function FileManager() {
       } 
 
       {
-        modal.type === "preview-file" && modal?.data && <ModalPreviewFile onHide={() => setModal(initModal)} data={modal.data} />
+        modal.type === "preview-file" && modal?.data && <Banner onClose={() => setModal(initModal)} src={`${DIR_ACCESS_FILE}${modal.data?.path}${modal.data?.name}`} />
       }
       <Layout
         classNameTitle="w-full"
