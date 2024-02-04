@@ -1,8 +1,8 @@
 import { ResponseError, responseErrorMessage, responseNotFound } from "@/errors/response-error";
+import { unlinkFile } from "@/lib/api/utils";
 import { DIR_FILE_UPLOAD } from "@/lib/constant";
 import { STATUS_MESSAGE_ENUM } from "@/lib/enum";
 import { ERROR_MESSAGE } from "@/lib/message";
-import { unlinkFile } from "@/lib/utils";
 import FileManager from "@/models/file";
 
 const fileManager = new FileManager();

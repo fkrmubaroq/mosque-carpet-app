@@ -1,8 +1,9 @@
 import { ResponseError, responseErrorMessage, responseNotFound } from "@/errors/response-error";
+import { createFile, unlinkFile } from "@/lib/api/utils";
 import { DIR_FILE_THUMBNAIL } from "@/lib/constant";
 import { STATUS_MESSAGE_ENUM } from "@/lib/enum";
 import { ERROR_MESSAGE } from "@/lib/message";
-import { createFile, incomingRequest, slugString, unlinkFile } from "@/lib/utils";
+import { incomingRequest, slugString } from "@/lib/utils";
 import Article from "@/models/article";
 import { updateArticleValidation } from "@/validation/article-validation";
 import { validation } from "@/validation/validation";

@@ -1,6 +1,5 @@
 
 import dayjs from "dayjs";
-import fs from "fs";
 import { DIR_ACCESS_FILE } from "./constant";
 
 export function debounce(func, timeout = 300) {
@@ -122,37 +121,6 @@ export async function incomingRequest(form, req){
       resolve({ ...bodyText, files: bodyFile });
     });
   });
-
-}
-
-export async function fileIsExists(src) {
-  return new Promise((resolve, reject) => {
-    fs.access(src, async (err) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve(true);
-    })
-  })
-}
-
-export async function unlinkFile(src) {
-  return new Promise((resolve) => {
-    fs.access(src, async (err) => {
-      if (err) {
-        resolve(false);
-        return;
-      }
-      await fs.promises.unlink(src);
-      resolve(true);
-    });
-  });
-}
-
-export async function createFile(src, destination) {
-  const contentData = await fs.promises.readFile(src);
-  await fs.promises.writeFile(destination, contentData);
 }
 
 export function objectIntoFormData(payload) {

@@ -1,8 +1,9 @@
 import { ResponseError, responseErrorMessage } from '@/errors/response-error';
+import { createFile, unlinkFile } from '@/lib/api/utils';
 import { DIR_FILE_CATEGORY } from '@/lib/constant';
 import { STATUS_MESSAGE_ENUM } from '@/lib/enum';
 import { ERROR_MESSAGE } from '@/lib/message';
-import { createFile, incomingRequest, unlinkFile } from '@/lib/utils';
+import { incomingRequest } from '@/lib/utils';
 import Category from '@/models/category';
 import Product from '@/models/product';
 import { insertCategoryValidation, updateCategoryValidation } from '@/validation/category-validation';
