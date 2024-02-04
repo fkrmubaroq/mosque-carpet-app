@@ -1,9 +1,8 @@
-import bcrypt from "bcrypt";
 import { serialize } from "cookie";
+import passwordHash from "password-hash";
 import { EXPIRED_DAYS } from "../constant";
-
 export function hashPassword(string) {
-  return bcrypt.hash(string, 10);
+  return passwordHash.generate(string);
 }
 
 export function setHeaderCookie(token, res, expired=EXPIRED_DAYS) {

@@ -50,7 +50,7 @@ export default function Login() {
       <CardHeader>
         <div className="text-2xl text-center font-medium">Login</div>
       </CardHeader>
-      <CardContent >
+        <CardContent>
         <Form className="flex flex-col gap-y-4 pt-3" ref={formRef} validated={validated} onSubmit={onSubmit}>
         <ContainerInput>
             <Label className="font-medium text-sm text-gray-700">Username</Label>

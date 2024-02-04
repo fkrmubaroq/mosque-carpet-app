@@ -17,6 +17,7 @@ import SectionVisionMision from "@/components/features/sections/SectionVisionMis
 import SectionWhyChooseUs from "@/components/features/sections/SectionWhyChooseUs";
 import Banner from "@/components/ui/banner";
 import ButtonWa from "@/components/ui/button/ButtonWa";
+import { hashPassword } from "@/lib/api/utils";
 import { getInformationIp, visitorPage } from "@/lib/api/visitor";
 import { CONTAINER_LP } from "@/lib/constant";
 import { landingPageQuery } from "@/lib/queryKeys";
@@ -24,6 +25,7 @@ import { debounce, getCookieName, setCookie } from "@/lib/utils";
 import Section from "@/models/section";
 import { Setting } from "@/models/setting";
 import { useQuery } from "@tanstack/react-query";
+import passwordHash from "password-hash";
 
 export async function getServerSideProps(context) {
   const section = new Section();
@@ -37,6 +39,9 @@ export async function getServerSideProps(context) {
     showPopupCampaign = false;
   }
 
+  const hash = hashPassword("123");
+  console.log("PW :", hash);
+  console.log("verify:", passwordHash.verify("123", hash));
   return {
     props: {
       sections: resultSection.length ? JSON.parse(JSON.stringify(resultSection)) : [],

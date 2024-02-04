@@ -6,7 +6,7 @@ import { ERROR_MESSAGE } from '@/lib/message'
 import User from '@/models/user'
 import { loginUserValidation } from '@/validation/user-validation'
 import { validation } from '@/validation/validation'
-import bcrypt from "bcrypt"
+import passwordHash from "password-hash"
 
 const user = new User();
 export default async function handler(req, res) {
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     }
 
     const resultFind = findUsername[0];
-    const isPasswordValid = await bcrypt.compare(validateRequest.password, resultFind.password);
+    const isPasswordValid = passwordHash.verify(validateRequest.password, resultFind.password);
 
     if (!isPasswordValid) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.Unauthorized, ERROR_MESSAGE.UsernameOrPasswordWrong);
