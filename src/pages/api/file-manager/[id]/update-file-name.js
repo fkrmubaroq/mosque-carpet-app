@@ -34,7 +34,6 @@ export default async function handler(req, res) {
 
     const findById = await fileManager.findIdAndPath(id, payload.path);
 
-    console.log("findById", id, payload);
     // if folder not found
     if (!findById?.length) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.BadGateway, ERROR_MESSAGE.FileIsNotFound);

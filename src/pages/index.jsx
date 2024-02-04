@@ -96,9 +96,7 @@ export default function Home({ sections, setting, showPopupCampaign }) {
     return () => window.removeEventListener("resize", debounceCheckScreenWidth);
   }, [mobile]);
 
-  
-  console.log("sections", sections);
-  const popup = useMemo(() => setting?.popup?.url ? setting.popup : JSON.parse(setting?.popup || "{}"), []);
+    const popup = useMemo(() => setting?.popup?.url ? setting.popup : JSON.parse(setting?.popup || "{}"), []);
   return (
     <>
     <Meta title="Pusat Karpet Masjid " description="Ibadah Semakin nyaman"/>

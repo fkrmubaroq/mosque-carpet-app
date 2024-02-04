@@ -39,7 +39,6 @@ export default class User{
       }
 
       const decode = decodeJwt(token);
-      console.log("ss", decode);
       const user = await this.findByUsername(decode?.user);
       if (!user?.length) {
         throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.Unauthorized);

@@ -33,7 +33,6 @@ export default async function handler(req, res) {
     deleteFolderAsync(src, { recursive: true , force: true });
     
     const listIds = findByPath.map(item => item.id);
-    console.log("xxx ",findByPath, listIds.join(', '));
     await query(`DELETE FROM file_manager WHERE file_manager.id IN (${listIds.join(', ')})`)
 
     res.status(STATUS_MESSAGE_ENUM.Ok).json({

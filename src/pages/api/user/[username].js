@@ -36,7 +36,6 @@ async function updateUser(req, res) {
     const { username } = req.query;
     const validateRequest = validation(updateUserValidation, req.body);
     const foundUser = await user.usernameIsExists(validateRequest.username);
-    console.log("found", foundUser, username  );
     if (!foundUser) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.UserNotFound)
     }

@@ -36,7 +36,6 @@ export async function getServerSideProps(context) {
   } };
 }
 export default function Edit({ data }) {
-  console.log("x", data);
   const router = useRouter();
   const id = router.query?.id;
   const [article, setArticle] = useState(data);

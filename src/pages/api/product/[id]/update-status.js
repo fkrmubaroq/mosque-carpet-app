@@ -16,7 +16,6 @@ export default async function handler(req, res) {
     const { id } = req.query;
     const productId = validation(updateStatusValidation, id);
     const findProduct = await product.findId(productId);
-    console.log("pro", productId, findProduct);
     if (!findProduct.length) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.BadGateway, ERROR_MESSAGE.ProductIdIsNull);
     }

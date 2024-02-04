@@ -33,7 +33,6 @@ export function update({ table, data, where }) {
 export async function insert({ table, data }) {
   const columns = Object.keys(data)?.join(",");
   const values = Object.values(data);
-  // console.log("query:", `INSERT INTO ${table} (${columns}) VALUES (${printString("?", values.length, ",")})`)
   return db.query(`INSERT INTO ${table} (${columns}) VALUES (${printString("?",values.length,",")}) `,values);
 }
 
