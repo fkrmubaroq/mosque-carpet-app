@@ -20,19 +20,21 @@ export default async function handler(req, res) {
     if (!findUsername?.length) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.Unauthorized, ERROR_MESSAGE.UsernameOrPasswordWrong);
     }
-    const isPasswordValid = await bcrypt.compare(validateRequest.password, findUsername[0].password);
+
+    const resultFind = findUsername[0];
+    const isPasswordValid = await bcrypt.compare(validateRequest.password, resultFind.password);
 
     if (!isPasswordValid) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.Unauthorized, ERROR_MESSAGE.UsernameOrPasswordWrong);
     }
 
-    const token = await encodeJwt({ user: user.username });
+    const token = await encodeJwt({ user: resultFind.username });
 
     setHeaderCookie(token, res);
     res.status(200).json({
       data: {
-        username: user.username,
-        name: user.name
+        username: resultFind.username,
+        name: resultFind.name
       }
     });
 

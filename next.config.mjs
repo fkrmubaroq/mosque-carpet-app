@@ -1,4 +1,4 @@
-const { ENVIRONMENT } = process.env;
+const { ENVIRONMENT, HOST_NAME } = process.env;
 const config = {
   env: {
     ENVIRONMENT,
@@ -6,7 +6,7 @@ const config = {
   swcMinify: true,
   reactStrictMode: true,
   images: {
-    domains: ["localhost"]
+    domains: [HOST_NAME]
   },
 }
 
