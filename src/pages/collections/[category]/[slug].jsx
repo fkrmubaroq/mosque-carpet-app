@@ -186,6 +186,7 @@ function ProductImage({ image }) {
 }
 
 function ProductInfo({ data, setting }) {
+  console.log("xx", setting);
   return (
     <div className="flex flex-col justify-between w-full">
 

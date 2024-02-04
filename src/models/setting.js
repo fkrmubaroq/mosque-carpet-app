@@ -2,8 +2,9 @@ import query, { update } from "@/lib/db";
 
 export class Setting{
 
-  get() {
-    return query("SELECT * FROM setting LIMIT 1");
+  async get() {
+    const result = await query("SELECT * FROM setting LIMIT 1");
+    return result?.[0] || null;
   }
 
   updateData(data, where) {

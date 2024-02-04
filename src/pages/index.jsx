@@ -40,7 +40,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       sections: resultSection.length ? JSON.parse(JSON.stringify(resultSection)) : [],
-      setting: JSON.parse(JSON.stringify(resultSetting?.[0] || '{}')),
+      setting: JSON.parse(JSON.stringify(resultSetting || '{}')),
       showPopupCampaign:false
     }
   }
