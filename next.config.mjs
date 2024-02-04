@@ -1,6 +1,5 @@
 const { ENVIRONMENT } = process.env;
-
-module.exports = {
+const config = {
   env: {
     ENVIRONMENT,
   },
@@ -10,3 +9,5 @@ module.exports = {
     domains: ["localhost"]
   },
 }
+
+export default config;
