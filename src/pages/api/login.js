@@ -17,11 +17,10 @@ export default async function handler(req, res) {
     const validateRequest = validation(loginUserValidation, req.body);
     const username = validateRequest.username;
     const findUsername = await user.findByUsername(username);
-
     if (!findUsername?.length) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.Unauthorized, ERROR_MESSAGE.UsernameOrPasswordWrong);
     }
-    const isPasswordValid = await bcrypt.compare(validateRequest.password, user.password);
+    const isPasswordValid = await bcrypt.compare(validateRequest.password, findUsername[0].password);
 
     if (!isPasswordValid) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.Unauthorized, ERROR_MESSAGE.UsernameOrPasswordWrong);

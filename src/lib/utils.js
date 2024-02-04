@@ -159,8 +159,7 @@ export function slugString(string) {
 function getDomain() {
   const env = process.env.ENVIRONMENT;
   if (env === "local") return "localhost";
-  if (env === "staging") return `dev.bursakarpetmasjid.com`;
-  if (env === "production") return "bursakarpetmasjid.com";
+  if (env === "production") return "alhijrakarpet.com";
 }
 
 export function getCookieName(name) {
