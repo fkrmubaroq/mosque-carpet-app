@@ -7,7 +7,7 @@ import ButtonWhatsapp from "@/components/ui/button/ButtonWa";
 import Ribbon from "@/components/ui/card/ribbon";
 import { getProductByCategory, getProductByName } from "@/lib/api/product";
 import { CONTAINER_LP } from "@/lib/constant";
-import { useMobile } from "@/lib/hooks";
+import { useApi, useButtonlick, useMobile } from "@/lib/hooks";
 import { productsQuery } from "@/lib/queryKeys";
 import { formatNumberToPrice, slugString } from "@/lib/utils";
 import Section from "@/models/section";
@@ -186,7 +186,8 @@ function ProductImage({ image }) {
 }
 
 function ProductInfo({ data, setting }) {
-  console.log("xx", setting);
+  const ipAddress = useApi();
+  const { trackButtonClick } = useButtonlick();
   return (
     <div className="flex flex-col justify-between w-full">
 
@@ -208,7 +209,15 @@ function ProductInfo({ data, setting }) {
         }
       </div>
       <div className="lg:mt-0 mt-4 mb-10">
-        <Button className="w-full !p-6 !rounded-none flex gap-x-2 uppercase" onClick={() => window.open(`https://wa.me/${setting.no_wa}`)}>
+        <Button
+          className="w-full !p-6 !rounded-none flex gap-x-2 uppercase"
+          onClick={() => {
+            if (setting?.no_wa && ipAddress) {
+              trackButtonClick(ipAddress); 
+              window.open(`https://wa.me/${setting.no_wa}`)
+            }
+          }}
+        >
           <FaWhatsapp size={20} />
           <span>Pesan melalui Whatsapp</span>
         </Button>

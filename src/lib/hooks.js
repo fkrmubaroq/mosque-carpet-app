@@ -1,8 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { getSetting } from "./api/setting";
 import { getUserLogin } from "./api/users";
-import { adminUsersQuery, settingQuery } from "./queryKeys";
+import { getInformationIp, visitorClick, visitorPage } from "./api/visitor";
+import { adminUsersQuery, landingPageQuery, settingQuery } from "./queryKeys";
 import { debounce, getCookie, setCookie } from "./utils";
 
 export function useOnClickOutside(ref, handler) {
@@ -123,4 +124,56 @@ export function useUserData() {
     }
   });
   return { data };
+}
+
+export function useTrackPage(type) {
+  const { data: ipAddress } = useQuery({
+    queryKey: landingPageQuery.informationIp,
+    queryFn: async () => {
+      const response = await getInformationIp();
+      const json = await response.json();
+      return json?.ip || null;
+    }
+  });
+
+  const { mutate:trackPage } = useMutation({
+    mutationKey: landingPageQuery.visitorPage,
+    mutationFn: async () => {
+      const slug = window.location.pathname.replace("/","");
+
+      const response = await visitorPage({ type, slug }, ipAddress);
+      return response;
+    }
+  });
+
+  useEffect(() => {
+    if (!ipAddress) return;
+    trackPage();
+  }, [ipAddress]);
+}
+
+export function useApi() {
+  const { data: ipAddress } = useQuery({
+    queryKey: landingPageQuery.informationIp,
+    queryFn: async () => {
+      const response = await getInformationIp();
+      const json = await response.json();
+      return json?.ip || null;
+    }
+  });
+
+  return ipAddress;
+}
+
+export function useButtonlick() {
+
+  const { mutate: trackButtonClick } = useMutation({
+    mutationKey: landingPageQuery.buttonclick,
+    mutationFn: async (ipAddress) => {
+      const response = await visitorClick(ipAddress);
+      return response;
+    }
+  });   
+
+  return { trackButtonClick };
 }

@@ -157,7 +157,7 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
     <>
     <Meta title={title} />
     <div className={cn(style["layout"], { [style["expanded"]]: expand })}>
-      <div className={cn(style["header"], {
+      <div className={cn("bg-gray-50",style["header"], {
         "fixed bg-white z-[99999] right-0 shadow-sm": isSectionPage || isSettingPage || isCreateArticlePage || isUpdateArticlePage,
         "left-[270px]": (isSettingPage || isSectionPage || isCreateArticlePage || isUpdateArticlePage) && expand,
         "left-[75px]": (isSettingPage || isSectionPage || isCreateArticlePage || isUpdateArticlePage) && !expand,
@@ -289,7 +289,7 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
           ))}
         </div>
       </div>
-      <div className={style["content"]}>{children}</div>
+      <div className={cn(style["content"], "bg-gray-50")}>{children}</div>
       </div>
     </>
   );

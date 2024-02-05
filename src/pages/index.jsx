@@ -17,15 +17,15 @@ import SectionVisionMision from "@/components/features/sections/SectionVisionMis
 import SectionWhyChooseUs from "@/components/features/sections/SectionWhyChooseUs";
 import Banner from "@/components/ui/banner";
 import ButtonWa from "@/components/ui/button/ButtonWa";
-import { hashPassword } from "@/lib/api/utils";
-import { getInformationIp, visitorPage } from "@/lib/api/visitor";
+import { getInformationIp } from "@/lib/api/visitor";
 import { CONTAINER_LP } from "@/lib/constant";
+import { TRACK_PAGE } from "@/lib/enum";
+import { useTrackPage } from "@/lib/hooks";
 import { landingPageQuery } from "@/lib/queryKeys";
 import { debounce, getCookieName, setCookie } from "@/lib/utils";
 import Section from "@/models/section";
 import { Setting } from "@/models/setting";
 import { useQuery } from "@tanstack/react-query";
-import passwordHash from "password-hash";
 
 export async function getServerSideProps(context) {
   const section = new Section();
@@ -39,18 +39,16 @@ export async function getServerSideProps(context) {
     showPopupCampaign = false;
   }
 
-  const hash = hashPassword("123");
-  console.log("PW :", hash);
-  console.log("verify:", passwordHash.verify("123", hash));
   return {
     props: {
       sections: resultSection.length ? JSON.parse(JSON.stringify(resultSection)) : [],
       setting: JSON.parse(JSON.stringify(resultSetting || '{}')),
-      showPopupCampaign:false
+      showPopupCampaign
     }
   }
 }
 export default function Home({ sections, setting, showPopupCampaign }) {  
+  useTrackPage(TRACK_PAGE.LandingPage);
   const [showPopup, setShowPopup] = useState(showPopupCampaign);
   const [mobileMd, setMobileMdWidth] = useState(false);
   const [mobileSm, setMobileSm] = useState(false);
@@ -66,12 +64,6 @@ export default function Home({ sections, setting, showPopupCampaign }) {
       const data = await response.json();
       return data?.ip || null
     },
-  });
-
-  const { data: visitor } = useQuery({
-    enabled: !!ip,
-    queryKey: landingPageQuery.visitorPage,
-    queryFn: visitorPage,
   });
 
   const getContentSection = (sectionName) => {

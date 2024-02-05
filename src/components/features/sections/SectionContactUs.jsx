@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { CONTAINER_LP, MARGIN_EACH_SECTION } from "@/lib/constant";
+import { useApi, useButtonlick } from "@/lib/hooks";
 import cn from "classnames";
 import { useState } from "react";
 import ContentEditable from "react-contenteditable";
@@ -12,9 +13,11 @@ const initModal = Object.freeze({
   show: false,
 })
 export default function SectionContactUs({ setting, mobile = false, edit, section, onUpdateContent }) {
+  const ipAddress = useApi();
+  const { trackButtonClick } = useButtonlick();
+
   const content = section?.content || {};
   const [modal, setModal] = useState(initModal);
-
   const onUpdate = (name, value) => {
     onUpdateContent({
       ...section,
@@ -88,30 +91,33 @@ export default function SectionContactUs({ setting, mobile = false, edit, sectio
                 {content?.text}
               </span>
             }
-            <div className="mt-4">
-              <Button
-                  className={cn("flex font-cinzel text-lg items-center justify-center gap-x-2 !rounded-none !p-6 text-white")}
-                onClick={() => {
-                  if (!edit && setting?.no_wa) { 
-                    window.open(`https://wa.me/${setting.no_wa}`);
-                    return;
-                  }
-                }}
-              >
-                  <AiOutlineWhatsApp size={mobile.mobileMd ? 18 : 20} />
-                  {edit ? <ContentEditable className="section-mode-edit" html={content?.button_primary} tagName="span" onChange={(e) => {
-                    const value = e.currentTarget.textContent;
-                    onUpdateContent({
-                      ...section,
-                      content: {
-                        ...section.content,
-                        button_primary: value
+              <div className="mt-4">
+                {ipAddress &&
+                  <Button
+                    className={cn("flex font-cinzel text-lg items-center justify-center gap-x-2 !rounded-none !p-6 text-white")}
+                    onClick={() => {
+                      if (!edit && setting?.no_wa && ipAddress) {
+                        trackButtonClick(ipAddress);
+                        window.open(`https://wa.me/${setting.no_wa}`);
+                        return;
                       }
-                    })
-                  }} /> :
-                    <span>{content?.button_primary || ""}</span>
-                  }
-              </Button>
+                    }}
+                  >
+                    <AiOutlineWhatsApp size={mobile.mobileMd ? 18 : 20} />
+                    {edit ? <ContentEditable className="section-mode-edit" html={content?.button_primary} tagName="span" onChange={(e) => {
+                      const value = e.currentTarget.textContent;
+                      onUpdateContent({
+                        ...section,
+                        content: {
+                          ...section.content,
+                          button_primary: value
+                        }
+                      })
+                    }} /> :
+                      <span>{content?.button_primary || ""}</span>
+                    }
+                  </Button>
+                }
             </div>
           </div>
         </div>

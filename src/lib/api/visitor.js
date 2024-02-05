@@ -1,9 +1,21 @@
-import { getMethod } from ".";
+import { postMethod } from ".";
 
 export function getInformationIp() {
   return fetch("https://api.ipify.org?format=json");
 }
 
-export function visitorPage() {
-  return getMethod("visitor");
+export function visitorPage(payload, ipAddress) {
+  return postMethod("visitor", payload, {
+    headers: {
+      'X-Ip-Address': ipAddress
+    }
+  });
+}
+
+export function visitorClick(ipAddress) {
+  return postMethod("visitor-click", {}, {
+    headers: {
+      'X-Ip-Address': ipAddress
+    }
+  });
 }

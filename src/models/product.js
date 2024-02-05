@@ -4,6 +4,16 @@ import query, { count, deleteRow, insert, update } from "@/lib/db";
 const table = "product";
 export default class Product{
 
+  async totalAllProduct() {
+    const results = await query(`SELECT product.id FROM ${table}`);
+    return results?.length || 0;
+  }
+
+  async totalProductActive() {
+    const results = await query(`SELECT product.id FROM ${table} WHERE active = 'Y' `);
+    return results?.length || 0;
+  }
+
   findId(id) {
     return query(`SELECT product.* FROM product WHERE product.id = ? LIMIT 1 `, [id]);
   }

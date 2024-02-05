@@ -3,6 +3,8 @@ import style from "@/components/features/article.module.scss";
 import SectionFooter from "@/components/features/sections/SectionFooter";
 import HeaderArticle from "@/components/layout/HeaderArticle";
 import { CONTAINER_LP, placeholderImage } from "@/lib/constant";
+import { TRACK_PAGE } from "@/lib/enum";
+import { useTrackPage } from "@/lib/hooks";
 import { mediaPath, strippedStrings } from "@/lib/utils";
 import Article from "@/models/article";
 import Section from "@/models/section";
@@ -17,6 +19,7 @@ export async function getServerSideProps(context) {
   const { slug } = context.params;
   const section = new Section();
   const article = new Article();
+
   const resultArticle = await article.articleContainSlug(slug);
   const resultSections = await section.getAll();
   const parsedArticle = JSON.parse(JSON.stringify(resultArticle));
@@ -29,6 +32,7 @@ export async function getServerSideProps(context) {
   }
 }
 export default function Articles({ article, sections }) {
+  useTrackPage(TRACK_PAGE.Article);
   const getContentSection = (sectionName) => {
     const section = sections.find(section => section.section_name === sectionName);
     const content = JSON.parse(section?.content || "{}");

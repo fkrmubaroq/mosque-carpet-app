@@ -33,7 +33,8 @@ export const landingPageQuery = {
   getArticles: ["lp", "articles"],
   getAllArticles: ["all", "articles"],
   informationIp: ["ip-address"],
-  visitorPage: ["visitor-page"]
+  visitorPage: ["visitor-page"],
+  buttonclick: ["button-click"]
 }
 export const collectionsQuery = {
   getCategories: ["collections"]

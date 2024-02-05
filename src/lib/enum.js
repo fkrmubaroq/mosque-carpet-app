@@ -12,3 +12,9 @@ export const USER_TYPE_ENUM = {
   Admin: "ADMIN",
   Staff: "STAFF"
 }
+
+
+export const TRACK_PAGE = {
+  Article: "ARTICLE",
+  LandingPage: "LP"
+}

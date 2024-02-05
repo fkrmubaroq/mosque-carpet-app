@@ -46,3 +46,16 @@ export async function createFile(src, destination) {
   const contentData = await fs.promises.readFile(src);
   await fs.promises.writeFile(destination, contentData);
 }
+
+export function getCurrentDate() {
+  const dateTime = new Date();
+
+  const date = dateTime.getDate();
+  const currentDate = date <= 9 ? `0${date}` : date;
+
+  const month = +(dateTime.getMonth()) + 1;
+  const currentMonth = month <= 9 ? `0${month}` : month;
+
+  const currentYear = dateTime.getFullYear();
+  return `${currentYear}-${currentMonth}-${currentDate}`;
+}
