@@ -20,7 +20,6 @@ function SectionAboutUsMemo({ section, edit, onUpdateContent }) {
     })
   }
 
-
   return (
     <section
       id="section_about_us"
@@ -29,7 +28,7 @@ function SectionAboutUsMemo({ section, edit, onUpdateContent }) {
         MARGIN_EACH_SECTION
       )}
     >
-      <div className="lg:pr-40">
+      <div className="lg:pr-20 xl:pr-40">
         <SectionTitle
           context={content?.heading || ""}
           title={content?.title || ""}
@@ -57,6 +56,7 @@ function SectionAboutUsMemo({ section, edit, onUpdateContent }) {
             width="450"
             height="300"
             alt=""
+            loading="lazy"
           />
         </div>
           

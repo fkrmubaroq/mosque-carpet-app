@@ -2,12 +2,14 @@ import { Layout } from "@/components/layout";
 import { Card, CardContent } from "@/components/ui/card";
 import Table, { Td, Th, Thead, Tr } from "@/components/ui/table";
 import { TRACK_PAGE } from "@/lib/enum";
-import { formatNumberToPrice } from "@/lib/utils";
+import { formatNumberToPrice, mediaPath } from "@/lib/utils";
 import ButtonClick from "@/models/button-click";
 import Product from "@/models/product";
 import Visitor from "@/models/visitor";
+import Image from "next/image";
 import { CiBoxes } from "react-icons/ci";
 import { IoNewspaperOutline } from "react-icons/io5";
+import { LiaUserEditSolid } from "react-icons/lia";
 import { LuMousePointerClick } from "react-icons/lu";
 import { TbUsersGroup } from "react-icons/tb";
 
@@ -21,6 +23,8 @@ export async function getServerSideProps() {
 
   const visitorLpToday = await visitor.getVisitorToday(TRACK_PAGE.LandingPage);
   const visitorArticleToday = await visitor.getVisitorToday(TRACK_PAGE.Article);
+
+  const detailVisitorArticle = await visitor.getVisitorByTitle();
 
   const totalAllProduct = await product.totalAllProduct();
   const totalProductActive = await product.totalProductActive();
@@ -46,7 +50,8 @@ export async function getServerSideProps() {
     buttonClick: {
       all: totalAllClick,
       today: totalClickToday
-    }
+    },
+    visitorArticleByTitle: JSON.parse(JSON.stringify(detailVisitorArticle || "[]"))
   }
 
   return {
@@ -101,11 +106,30 @@ export default function Dashboard({ summary }) {
           </Tr>
         </Thead>
         <tbody>
-          <Tr>
-            <Td>Lorem ipsum dolor sit amet.</Td>
-            <Td>Titiek wardifah</Td>
-            <Td>19</Td>
-          </Tr>
+          {summary.visitorArticleByTitle?.map((article, key) =>
+          <Tr key={key}>
+            <Td>
+                <div className="flex gap-x-2 items-center">
+                  <div className="shrink-0">
+                    <Image src={mediaPath("articles-thumbnail", article.thumbnail)} width={50} height={50} className="rounded-lg object-cover" />
+                  </div>
+                  <span>{article.title}</span>
+                </div>
+            </Td>
+            <Td>
+              <div className="flex gap-x-2 items-center">
+                <LiaUserEditSolid size={20} color="gray" />
+                <span className="text-gray-400">{article.writer}</span>
+              </div>
+            </Td>
+            <Td>
+              <div className="flex gap-x-2 items-center">
+                <TbUsersGroup size={20} color="gray" />
+                <span className="text-gray-400">{article.total_visitor} Pengunjung</span>
+              </div>
+            </Td>
+            </Tr>
+          )}
         </tbody>
         </Table>
     </div>

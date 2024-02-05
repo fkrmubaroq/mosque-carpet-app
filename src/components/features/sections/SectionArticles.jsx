@@ -15,31 +15,6 @@ import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-
-const newsItems = [
-  {
-    image: "/img/news/news-1.webp",
-    title: "A New Destination for kitchen & cabinet, Jakarta",
-    createdAt: "2023-10-11",
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-  },
-  {
-    image: "/img/news/news-2.webp",
-    title: "The Opening of MODULO",
-    createdAt: "2023-10-12",
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-  },
-  {
-    image: "/img/news/news-3.webp",
-    title: "Soft Launching Masjid Al-Jabar",
-    createdAt: "2023-10-12",
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-  },
-];
-
 export default function SectionArticles({ mobile, edit, section }) {
   const getSlidePerPreviewByScreen = () => {
     if (mobile?.mobileSm) return 1;

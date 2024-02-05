@@ -11,7 +11,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
+import ShimmerSectionOurProducts from "./Shimmer/SectionOurProducts";
 
 export default function SectionOurProduct({ edit, mobile }) {
   const getSlidePerPreviewByScreen = () => {
@@ -20,7 +20,7 @@ export default function SectionOurProduct({ edit, mobile }) {
     return 4;
   };
 
-  const { data: categories } = useQuery({
+  const { data: categories, isLoading } = useQuery({
     queryKey: landingPageQuery.getCategories,
     queryFn: async () => {
       const params = {};
@@ -30,6 +30,9 @@ export default function SectionOurProduct({ edit, mobile }) {
     }
   });
 
+  if (isLoading) {
+    return <ShimmerSectionOurProducts />
+  }
   return (
     <section className={MARGIN_EACH_SECTION} id="section_categories">
       <div className="flex justify-between items-center">
@@ -79,7 +82,7 @@ function PreviewData({ data, edit }) {
         className="object-cover"
         />
     </div>
-    <div className="pb-5 z-[] pt-4 text-center font-poppins tracking-wider text-slate-700 group-hover:bg-primary group-hover:text-white">
+    <div className="pb-5 pt-4 text-center font-poppins tracking-wider text-slate-700 group-hover:bg-primary group-hover:text-white">
       {data.category_name}
     </div>
   </div>

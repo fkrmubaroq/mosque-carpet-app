@@ -33,7 +33,7 @@ async function get(req, res) {
   try {
     const setting = new Setting();
     const data = await setting.get();
-    res.status(STATUS_MESSAGE_ENUM.Ok).json({ data: data?.[0] || {} })
+    res.status(STATUS_MESSAGE_ENUM.Ok).json({ data: data || {} })
   } catch (e) {
     responseErrorMessage(e, res);
   }

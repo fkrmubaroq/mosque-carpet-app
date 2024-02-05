@@ -5,7 +5,18 @@ import { TRACK_PAGE } from "@/lib/enum";
 const table = "visitor_page";
 export default class Visitor{
 
-    
+  async getVisitorByTitle() {
+    const results = await query(`SELECT 
+      (SELECT COUNT(visitor_page.id) FROM visitor_page
+          WHERE visitor_page.type = 'ARTICLE' AND visitor_page.article_id = article.id
+      ) AS total_visitor,
+      article.title,
+      article.writer,
+      article.thumbnail
+    FROM article ORDER BY total_visitor DESC LIMIT 10`);
+    return results || [];
+  }
+
   async getVisitorToday(type) {
     const sqlVisitor = `SELECT visitor_page.* FROM ${table}`;
     if (type === TRACK_PAGE.LandingPage) {

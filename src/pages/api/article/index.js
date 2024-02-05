@@ -53,9 +53,7 @@ async function post(req, res) {
 
     const slug = slugString(insertData.title);
     insertData.slug = slug;
-    console.log("xx", insertData);
     const data = await article.insertData(insertData);
-    console.log("dd", data);
 
     if (Object.keys(files).length) {
       const contentData = await fs.promises.readFile(files.thumbnail.path);

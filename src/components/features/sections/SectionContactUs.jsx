@@ -41,13 +41,14 @@ export default function SectionContactUs({ setting, mobile = false, edit, sectio
           }}
         />
       }
-      <section className={cn("h-[440px]", MARGIN_EACH_SECTION)} id="section_contact_us">
+      <section className={cn("h-[500px]", MARGIN_EACH_SECTION)} id="section_contact_us">
       <div
-        className="absolute left-0 h-[440px] w-full bg-bottom object-cover"
+        className="absolute left-0 h-[500px] w-full bg-bottom object-cover"
         style={{
           backgroundImage: `url('/img/img-contact-us.webp')`,
           backgroundRepeat: "no-repeat",
           backgroundSize: `100% ${mobile ? "100%" : ""}`,
+          objectFit: "cover"
         }}
       >
         <div

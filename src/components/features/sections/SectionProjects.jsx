@@ -12,6 +12,7 @@ import Router from "next/router";
 import React, { useState } from "react";
 import { GoGear } from "react-icons/go";
 import { IoIosArrowRoundForward } from "react-icons/io";
+import 'swiper/css';
 import 'swiper/css/pagination';
 import { EffectCoverflow, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -44,6 +45,10 @@ export default function SectionProjects({ edit, section, onUpdateContent }) {
         grabCursor={true}
         centeredSlides={true}
         slidesPerView={'auto'}
+        autoplay={{
+          delay: 2500,
+          disableOnInteraction: false,
+        }}
         coverflowEffect={{
           rotate: 50,
           stretch: 0,

@@ -1,31 +1,38 @@
-import cn from "classnames";
-import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
-
-// import required modules
 import Meta from "@/components/Meta";
 import SectionTitle from "@/components/features/sections/Fragment/SectionTitle";
-import SectionAboutUs from "@/components/features/sections/SectionAboutUs";
-import SectionArticles from "@/components/features/sections/SectionArticles";
-import SectionContactUs from "@/components/features/sections/SectionContactUs";
-import SectionFooter from "@/components/features/sections/SectionFooter";
 import SectionHero from "@/components/features/sections/SectionHero";
-import SectionMapAddress from "@/components/features/sections/SectionMapAddress";
-import SectionOurProduct from "@/components/features/sections/SectionOurProducts";
-import SectionProjects from "@/components/features/sections/SectionProjects";
-import SectionVisionMision from "@/components/features/sections/SectionVisionMision";
-import SectionWhyChooseUs from "@/components/features/sections/SectionWhyChooseUs";
+import ShimmerSectionAboutUs from "@/components/features/sections/Shimmer/SectionAboutUs";
+import ShimmerSectionContactUs from "@/components/features/sections/Shimmer/SectionContactUs";
+import ShimmerSectionFooter from "@/components/features/sections/Shimmer/SectionFooter";
+import ShimmerSectionOurProducts from "@/components/features/sections/Shimmer/SectionOurProducts";
+import ShimmerSectionProjects from "@/components/features/sections/Shimmer/SectionProjects";
+import ShimmerSectionVisionMision from "@/components/features/sections/Shimmer/SectionVisionMision";
+import ShimmerSectionWhyChooseUs from "@/components/features/sections/Shimmer/SectionWhyChooseUs";
+import ShimmerSectionArticle from "@/components/features/sections/Shimmer/ShimmerArticle";
+import ShimmerSectionMapAddress from "@/components/features/sections/Shimmer/ShimmerSectionMapAddress";
 import Banner from "@/components/ui/banner";
 import ButtonWa from "@/components/ui/button/ButtonWa";
-import { getInformationIp } from "@/lib/api/visitor";
 import { CONTAINER_LP } from "@/lib/constant";
 import { TRACK_PAGE } from "@/lib/enum";
 import { useTrackPage } from "@/lib/hooks";
-import { landingPageQuery } from "@/lib/queryKeys";
 import { debounce, getCookieName, setCookie } from "@/lib/utils";
 import Section from "@/models/section";
 import { Setting } from "@/models/setting";
-import { useQuery } from "@tanstack/react-query";
+import cn from "classnames";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
+import { default as Layload, default as LazyLoad } from "react-lazyload";
+
+const SectionAboutUs = dynamic(() => import("@/components/features/sections/SectionAboutUs"), { ssr: false, loading:() => <ShimmerSectionAboutUs /> });
+const SectionContactUs = dynamic(() => import("@/components/features/sections/SectionContactUs"), { ssr: false, loading: () => <ShimmerSectionContactUs /> });
+const SectionFooter = dynamic(() => import("@/components/features/sections/SectionFooter"), { ssr: false, loading: () => <ShimmerSectionFooter /> });
+const SectionOurProduct = dynamic(() => import("@/components/features/sections/SectionOurProducts"), { ssr: false, loading: () => <ShimmerSectionOurProducts /> });
+const SectionProjects = dynamic(() => import("@/components/features/sections/SectionProjects"), { loading: () => <ShimmerSectionProjects /> });
+const SectionVisionMision = dynamic(() => import("@/components/features/sections/SectionVisionMision"), { ssr: false, loading: () => <ShimmerSectionVisionMision /> });
+const SectionWhyChooseUs = dynamic(() => import("@/components/features/sections/SectionWhyChooseUs"), { ssr: false, loading: () => <ShimmerSectionWhyChooseUs /> });
+const SectionArticles = dynamic(() => import("@/components/features/sections/SectionArticles"), { ssr: false, loading: () => <ShimmerSectionArticle /> });
+const SectionMapAddress = dynamic(() => import("@/components/features/sections/SectionMapAddress"), { ssr: false, loading: () => <ShimmerSectionMapAddress /> });
 
 export async function getServerSideProps(context) {
   const section = new Section();
@@ -56,15 +63,6 @@ export default function Home({ sections, setting, showPopupCampaign }) {
     mobileMd,
     mobileSm,
   };
-
-  const { data: ip } = useQuery({
-    queryKey: landingPageQuery.informationIp,
-    queryFn: async () => {
-      const response = await getInformationIp();
-      const data = await response.json();
-      return data?.ip || null
-    },
-  });
 
   const getContentSection = (sectionName) => {
     const section = sections.find(section => section.section_name === sectionName);
@@ -103,20 +101,42 @@ export default function Home({ sections, setting, showPopupCampaign }) {
         setShowPopup(false)
       }} />}
       <SectionHero mobile={mobile} section={getContentSection("section_hero")} />
-      <div className={cn(CONTAINER_LP, "px-4")}>
-          <SectionAboutUs section={getContentSection("section_about_us")} />
-      </div>
+        <div className={cn(CONTAINER_LP, "px-4")}>
+          <Layload height={400} offset={100} once>
+            <SectionAboutUs section={getContentSection("section_about_us")} />
+          </Layload>
+        </div>
         <SectionProjects section={getContentSection("section_projects")} />
-      <div className={cn(CONTAINER_LP, "px-4")}>
-        <SectionVisionMision section={getContentSection("section_vision_mision")} />
-        <SectionWhyChooseUs section={getContentSection("section_why_choose_us")} />
-        <SectionContactUs setting={setting} mobile={mobile} section={getContentSection("section_contact_us")} />
-        <SectionArticles mobile={mobile} />
-        <SectionOurProduct mobile={mobile} />
-        <SectionMapAddress section={getContentSection("section_map_address")} mobile={mobile} />
-      </div>
-      <SectionFooter setting={setting} section={getContentSection("section_footer")} />
-      <ButtonWa phone={setting?.no_wa} />
+        <div className={cn(CONTAINER_LP, "px-4")}>
+          <Layload height={250} offset={100} once>
+            <SectionVisionMision section={getContentSection("section_vision_mision")} />
+          </Layload>
+        </div>
+
+        <div className={cn(CONTAINER_LP, "px-4")}>
+          <Layload height={250} offset={100} once>
+            <SectionWhyChooseUs section={getContentSection("section_why_choose_us")} />
+          </Layload>
+        </div>
+        <Layload height={500} offset={100} once>
+          <SectionContactUs setting={setting} mobile={mobile} section={getContentSection("section_contact_us")} />
+        </Layload>
+
+        <div className={cn(CONTAINER_LP, "px-4")}>
+          <LazyLoad height={550} offset={150}>
+            <SectionArticles mobile={mobile} />
+          </LazyLoad>
+
+          <LazyLoad height={300} offset={100}>
+            <SectionOurProduct mobile={mobile} />
+          </LazyLoad>
+
+          <LazyLoad height={600} offset={100}>
+            <SectionMapAddress section={getContentSection("section_map_address")} mobile={mobile} />
+          </LazyLoad>
+        </div>
+        <SectionFooter setting={setting} section={getContentSection("section_footer")} />
+        <ButtonWa phone={setting?.no_wa} />
       </main>
     </>
   );

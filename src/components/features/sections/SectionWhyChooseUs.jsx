@@ -63,7 +63,7 @@ function SectionWhyChooseUsMemo({ section, edit, onUpdateContent, sectionName })
                 />
               )}
             </div>
-            <div className="flex w-2/3 justify-center">
+            <div className="flex w-full lg:w-2/3 justify-center">
                 <Button className="flex items-center justify-center gap-x-2 !rounded-none !p-6" >
                 {edit ? <ContentEditable className="section-mode-edit" html={content?.button_primary} tagName="span" onChange={(e) => {
                   const value = e.currentTarget.textContent;
