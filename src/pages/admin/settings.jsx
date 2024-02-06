@@ -28,10 +28,11 @@ export async function getServerSideProps() {
   const setting = new Setting();
   const resultSetting = await setting.get();
   const parsedSetting = JSON.parse(JSON.stringify(resultSetting));
-
+  const popup = JSON.parse(parsedSetting.popup || "{}");
   return {
     props: {
-      setting: parsedSetting || {}
+      setting: parsedSetting || {},
+      popupSetting: popup
     }
   }
 }
@@ -42,8 +43,8 @@ const initPopup = Object.freeze({
   show: false
 });
 
-export default function Settings({ setting }) {
-  const [popup, setPopup] = useState(setting?.popup || initPopup);
+export default function Settings({ setting, popupSetting }) {
+  const [popup, setPopup] = useState(popupSetting || initPopup);
   const [formSetting, setFormSetting] = useState(setting);
   const showToast = useDialogStore(state => state.showToast);
 

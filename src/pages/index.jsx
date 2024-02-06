@@ -96,7 +96,7 @@ export default function Home({ sections, setting, showPopupCampaign }) {
     <>
     <Meta title="Pusat Karpet Masjid " description="Ibadah Semakin nyaman"/>
     <main className="min-h-screen">
-      {showPopup && <Banner src={popup?.srcImg} redirectTo={popup.url} onClose={() => {
+        {showPopup && popup?.srcImg && <Banner src={popup?.srcImg} redirectTo={popup.url} onClose={() => {
         setCookie("popup", JSON.stringify({ status: "active", date: new Date() }), 3);
         setShowPopup(false)
       }} />}

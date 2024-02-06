@@ -1,4 +1,3 @@
-import GoogleTagManager from "@/components/scripts/GoogleTagManager";
 import { Confirmation } from "@/components/ui/modal/Confirmation";
 import { Toast } from "@/components/ui/toast";
 import { useDialogStore } from "@/lib/hookStore";
@@ -6,7 +5,6 @@ import { CONFIRMATION_MESSAGE, TOAST_MESSAGE } from "@/lib/message";
 import "@/styles/index.scss";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useRouter } from "next/router";
 import { useShallow } from "zustand/react/shallow";
 
 const queryClient = new QueryClient({
@@ -18,14 +16,11 @@ const queryClient = new QueryClient({
 });
 
 export default function App({ Component, pageProps }) {
-  const router = useRouter();
-  const isAdminPage = router.pathname?.startsWith("/admin");
   return (
     <QueryClientProvider client={queryClient}>
       <Component {...pageProps} />
       <ReactQueryDevtools />
       <ToastMessage />      
-      {!isAdminPage && <GoogleTagManager id="google-tag-manager"/>}
     </QueryClientProvider>
   );
 }

@@ -28,7 +28,12 @@ async function get(req, res) {
     }
     const resultData = data[0];
 
-    res.status(STATUS_MESSAGE_ENUM.Ok).json({ data: resultData });
+    res.status(STATUS_MESSAGE_ENUM.Ok).json({
+      data: {
+        username: resultData.username,
+        role: resultData.role,
+        name: resultData.name
+    } });
   } catch (e) {
     responseErrorMessage(e, res);
   }

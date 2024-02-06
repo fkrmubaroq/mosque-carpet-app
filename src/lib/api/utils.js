@@ -1,6 +1,8 @@
 import { serialize } from "cookie";
+import fs from "fs";
 import passwordHash from "password-hash";
 import { EXPIRED_DAYS } from "../constant";
+
 export function hashPassword(string) {
   return passwordHash.generate(string);
 }

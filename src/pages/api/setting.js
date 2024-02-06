@@ -22,7 +22,7 @@ async function put(req, res) {
   try {
     const { id, ...validateRequest } = validation(updateSettingValidation, req.body);
     const setting = new Setting();
-    const data = await setting.update(validateRequest, { id });
+    const data = await setting.updateData(validateRequest, { id });
     res.status(STATUS_MESSAGE_ENUM.Ok).json({ data })
   } catch (e) {
     responseErrorMessage(e, res);

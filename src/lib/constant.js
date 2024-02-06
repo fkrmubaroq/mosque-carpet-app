@@ -96,3 +96,9 @@ export const MARGIN_EACH_SECTION = "lg:mb-[100px] mb-16";
 export const RIBBON_LIST = {
   basic: ["primary", "secondary", "gray", "blue", "red"]
 };
+
+export const LIST_ROLE = {
+  "SUPER_ADMIN": "Super Admin",
+  "ADMIN": "Admin",
+  "STAFF": "Staff",
+}

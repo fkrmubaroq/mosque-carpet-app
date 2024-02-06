@@ -1,5 +1,6 @@
 import { updateSections } from "@/lib/api/section";
 import { logout } from "@/lib/api/users";
+import { LIST_ROLE } from "@/lib/constant";
 import { USER_TYPE_ENUM } from "@/lib/enum";
 import { useDialogStore, useEditSection } from "@/lib/hookStore";
 import { useOnClickOutside, useSetting, useUserData } from "@/lib/hooks";
@@ -214,7 +215,7 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
           <div
             ref={dropdownRef}
             onClick={() => setDropdown(o => !o)}
-            className="cursor-pointer bg-white relative flex items-center gap-x-2 rounded-lg p-2  ">
+            className="cursor-pointer bg-gray-50 relative flex items-center gap-x-2 rounded-lg p-2  ">
             <MdOutlineAccountCircle
               size={33}
               className="opacity-50"
@@ -224,7 +225,7 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
                   {userLogin?.name || "-"}
               </span>
               <span className="text-xs text-gray-600 ">
-                  {userLogin?.role || "-"}
+                  {LIST_ROLE?.[userLogin?.role] || "-"}
               </span>
             </div>
             <div className=" h-full ">
@@ -257,7 +258,7 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
               <span className="overflow-hidden font-medium tracking-widest text-white">
                 {setting?.logo_title || ""}
               </span>
-              <span className="text-xs text-gray-200">Admin</span>
+              <span className="text-xs text-gray-200">{LIST_ROLE?.[userLogin?.role] || ""}</span>
             </div>
           )}
         </div>

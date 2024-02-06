@@ -59,7 +59,7 @@ export default function Folder({
         e.stopPropagation();
         onSelect(data.name);
       }}
-      className={cn("group relative flex cursor-pointer items-center justify-between gap-x-4 rounded-md bg-gray-50 py-3 pl-5 pr-3 shadow-sm transition-all duration-200",
+      className={cn("group relative flex cursor-pointer items-center justify-between gap-x-4 rounded-md bg-white py-3 pl-5 pr-3 shadow-sm transition-all duration-200",
         "hover:bg-primary hover:text-white  focus:text-white",
         {
           "hover:bg-primary focus:bg-primary": variant === "primary",

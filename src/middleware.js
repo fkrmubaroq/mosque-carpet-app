@@ -14,7 +14,7 @@ export async function middleware(req, res) {
     return NextResponse.next();
   }
 
-  const isMaintenance = false;
+  const isMaintenance = await checkIsMaintenance();
 
   if (isMaintenance) {
     return NextResponse.rewrite(new URL("/maintenance", req.url));
