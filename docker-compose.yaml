@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  mosque-carpet-client-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mosque-carpet-client-app
+    ports:
+      - "3000:3000"

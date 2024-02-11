@@ -16,8 +16,8 @@ export function convertObjToDataSelection(obj, swap = false) {
   return Object.keys(obj).map(key => ({ id: swap ? obj[key] : key, text: swap ? key : obj[key] }));
 }
 
-export function checkResolutionImage(file){
-  return new Promise((resolve, reject) => { 
+export function checkResolutionImage(file) {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = (e) => {
@@ -68,15 +68,15 @@ export function sleep(timeout) {
 }
 
 export function formatBytes(bytes, decimals = 2) {
-    if (!+bytes) return '0 Bytes'
+  if (!+bytes) return '0 Bytes'
 
-    const k = 1024
-    const dm = decimals < 0 ? 0 : decimals
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+  const k = 1024
+  const dm = decimals < 0 ? 0 : decimals
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
 
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
 
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
 
 export function copyToClipboard(text) {
@@ -85,14 +85,14 @@ export function copyToClipboard(text) {
   elInput.value = text;
 
   document.body.append(elInput);
-  const copyText = document.getElementById(elInput.id); 
+  const copyText = document.getElementById(elInput.id);
   copyText.select();
   copyText.setSelectionRange(0, 99999);
   navigator.clipboard.writeText(copyText.value);
   document.getElementById(elInput.id)?.remove();
   return copyText.value;
 
-} 
+}
 
 export const generateID = (length) => {
   let result = "";
@@ -104,7 +104,7 @@ export const generateID = (length) => {
   return result;
 };
 
-export async function incomingRequest(form, req){
+export async function incomingRequest(form, req) {
   return await new Promise((resolve, reject) => {
     form.parse(req, function (err, fields, files) {
       if (err) reject({ err });
@@ -159,7 +159,7 @@ export function slugString(string) {
 function getDomain() {
   const env = process.env.ENVIRONMENT;
   if (env === "local") return "localhost";
-  if (env === "production") return "alhijrakarpet.com";
+  if (env === "production") return process.env.HOST_NAME
 }
 
 export function getCookieName(name) {
@@ -192,6 +192,7 @@ export function setCookie(name, value, expireDays) {
     date.setTime(date.getTime() + expireDays * 24 * 60 * 60 * 1000);
     expires = `expires=${date.toUTCString()}`;
   }
+
   document.cookie = `${getCookieName(name)}=${value}; ${expires};path=/; domain=${getDomain()};`;
 }
 
@@ -210,7 +211,7 @@ export const getArticleTime = (date) => {
   return dayjs().to(dayjs(date));
 }
 
-export function getWord(writerName,totalWord, separator=" ") {
+export function getWord(writerName, totalWord, separator = " ") {
   const data = writerName.split(separator);
   return data.slice(0, totalWord).join(" ");
 }
@@ -226,8 +227,8 @@ export function selectedFileName(inputEl) {
   }
   const end = endRangeFileName(split);
   inputEl.focus();
-  inputEl.setSelectionRange(0,end)
-  
+  inputEl.setSelectionRange(0, end)
+
 }
 
 export function downloadFileUrl(url, fileName) {
@@ -247,7 +248,7 @@ export function objectDataToQueryBind({
   let query = "";
   Object.keys(data).forEach((key, i) => {
     if (i === Object.keys(data).length - 1) {
-      query += ` ${key}=${allValues ? allValues : `'${data[key]}'`}`;      
+      query += ` ${key}=${allValues ? allValues : `'${data[key]}'`}`;
       return;
     }
     query += `${key}=${allValues ? allValues : `'${data[key]}'`} ${separator || ","} `;
@@ -271,15 +272,15 @@ export const getCumulativePathSegments = (path) => {
 
 
 export function getCookieServer(req, key) {
-  const cookies = req?.headers?.cookie || req; 
+  const cookies = req?.headers?.cookie || req;
   const data = cookies?.split(';')?.find(cookie => cookie.trim().startsWith(`${key}=`));
   return data?.replace(`${key}=`, '')?.trim();
 }
 
 export function printString(str, count, separator = "?") {
   let tmp = "";
-  for (let x = 1; x <= count; x++){
-    tmp += `${str} ${x === count ? '' : separator} ` 
+  for (let x = 1; x <= count; x++) {
+    tmp += `${str} ${x === count ? '' : separator} `
   }
   return tmp;
 }
