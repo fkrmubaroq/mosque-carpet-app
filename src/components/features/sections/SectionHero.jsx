@@ -2,7 +2,9 @@ import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { CONTAINER_LP } from "@/lib/constant";
 import cn from "classnames";
+import parser from "html-react-parser";
 import ContentEditable from "react-contenteditable";
+import ContentEditableSection from "./ContentEditable";
 import ToolboxImage from "./Fragment/Toolbox/ToolboxImage";
 
 function HeroCard({
@@ -20,11 +22,11 @@ function HeroCard({
     >
       {
         edit ?
-          <ContentEditable
+          <ContentEditableSection
             tagName="h1"
-            className="mb-4 text-xl lg:text-3xl font-cinzel text-primary section-mode-edit outline-none"
+            className="mb-4 text-xl option lg:text-2xl font-cinzel text-primary section-mode-edit outline-none"
             html={title}
-            onChange={(e) => onUpdateContent("title", e.currentTarget.textContent)}
+            onChange={(value) => onUpdateContent("title", value)}
           />
           :
           <div className="mb-4 text-xl lg:text-3xl font-cinzel text-primary">{title}</div>
@@ -32,15 +34,15 @@ function HeroCard({
 
       {
         edit ?
-          <ContentEditable
+          <ContentEditableSection
             tagName="div"
-            className="font-poppins text-sm lg:text-md font-light tracking-wide section-mode-edit outline-none"
+            className="font-poppins text-sm lg:text-md line-clamp-3 font-light tracking-wide section-mode-edit outline-none"
             html={text}
-            onChange={(e) => onUpdateContent("text", e.currentTarget.textContent)}
+            onChange={(value) => onUpdateContent("text", value)}
           />
           :
-          <span className="font-poppins text-sm lg:text-md font-light tracking-wide">
-            {text}
+          <span className="font-poppins text-sm lg:text-md font-light tracking-wide line-clamp-3">
+            {parser(text)}
           </span>
       }
       {footer}
@@ -51,6 +53,7 @@ function HeroCard({
 
 export default function SectionHero({ edit, mobile = false, section, onUpdateContent }) {
   const content = section?.content || {};
+
   const onUpdateMenu = ({ index, value }) => {
     const dataMenu = structuredClone(content.menus);
     let data = {
@@ -117,18 +120,16 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
                 "linear-gradient(180deg, #000000 0%, #00000000 50%)",
             }}
           ></div>
-          {edit ? <ContentEditable
+          {edit ? <ContentEditableSection
             html={content?.tagline || ""}
             tagName="h1"
-
             className={cn(
               "lg:mb-24 lg:w-full lg:max-w-[750px] lg:px-0 lg:text-2xl",
               "text-xl font-light tracking-wider text-white",
-              "relative mx-auto mb-6 max-w-[450px] px-3 text-center font-poppins ",
+              "relative mx-auto mb-6 line-clamp-4 max-w-[450px] px-3 text-center font-poppins ",
               "section-mode-edit"
             )}
-            onChange={(e) => {
-              const value = e.currentTarget.textContent;
+            onChange={(value) => {
               onUpdateContent({
                 ...section,
                 content: {
@@ -136,7 +137,6 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
                   tagline: value
                 }
               })
-
             }}
           /> :
             <h1
@@ -145,7 +145,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
                 "text-xl font-light tracking-wider text-white",
                 "relative mx-auto mb-6 max-w-[450px] px-3 text-center font-poppins ",
               )}>
-              {content?.tagline || ""}
+              {parser(content?.tagline || "")}
             </h1>
           }
           <div className="relative mx-4 flex gap-x-5">
@@ -170,7 +170,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
                   {edit ? <ContentEditable
                     html={content?.button_primary}
                     tagName="div"
-                    className="!rounded-none !px-8 section-mode-edit !py-3 font-cinzel bg-primary"
+                    className="!rounded-none flex justify-center items-center !px-8 section-mode-edit font-cinzel max-w-[200px] !py-3 bg-primary"
                     onChange={(e) => {
                       const value = e.currentTarget.textContent
                       onUpdateContent({
@@ -189,7 +189,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
                   {edit ? <ContentEditable
                     html={content?.button_secondary}
                     tagName="div"
-                    className="!rounded-none !px-8 !py-3 border border-white section-mode-edit font-cinzel"
+                    className="!rounded-none !px-8 !py-3 border border-white max-w-[220px] section-mode-edit font-cinzel"
                     onChange={(e) => {
                       const value = e.currentTarget.textContent
                       onUpdateContent({

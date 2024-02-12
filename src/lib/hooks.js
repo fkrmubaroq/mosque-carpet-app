@@ -54,7 +54,7 @@ export function useMobile() {
 
   return { mobileMd, mobileSm };
 }
-export function useToggle(initialState = false){
+export function useToggle(initialState = false) {
   const [state, setState] = useState(initialState);
   const toggle = useCallback(() => setState(state => !state), []);
   return [state, toggle];
@@ -136,10 +136,10 @@ export function useTrackPage(type) {
     }
   });
 
-  const { mutate:trackPage } = useMutation({
+  const { mutate: trackPage } = useMutation({
     mutationKey: landingPageQuery.visitorPage,
     mutationFn: async () => {
-      const slug = window.location.pathname.replace("/","");
+      const slug = window.location.pathname.replace("/", "");
 
       const response = await visitorPage({ type, slug }, ipAddress);
       return response;
@@ -173,7 +173,7 @@ export function useButtonlick() {
       const response = await visitorClick(ipAddress);
       return response;
     }
-  });   
+  });
 
   return { trackButtonClick };
 }

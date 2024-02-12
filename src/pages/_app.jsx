@@ -20,7 +20,7 @@ export default function App({ Component, pageProps }) {
     <QueryClientProvider client={queryClient}>
       <Component {...pageProps} />
       <ReactQueryDevtools />
-      <ToastMessage />      
+      <ToastMessage />
     </QueryClientProvider>
   );
 }
@@ -47,8 +47,8 @@ function ToastMessage() {
       state.confirmMessage,
       state.confirmationIsLoading,
     ])
-    );
-  
+  );
+
   const getVariant = () => {
     if (!customVariantToast) {
       return toast?.startsWith("error-") ? "danger" : "default"

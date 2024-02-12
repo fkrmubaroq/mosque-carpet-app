@@ -104,5 +104,7 @@ export const LIST_ROLE = {
 }
 
 export const SANITIZE_TEXT = {
-  allowedTags: ['b', 'i', 'u', 'strong', 'br'],
+  allowedTags: ['b', 'i', 'u', 'strong', 'br', 'div'],
+  allowedAttributes: {},
+  selfClosing: ['br'],
 }

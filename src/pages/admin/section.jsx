@@ -15,13 +15,14 @@ export async function getServerSideProps() {
   const resultSections = await section.getAll();
   const parsedSection = JSON.parse(JSON.stringify(resultSections));
 
-  
+
   return {
     props: {
       sections: parsedSection || []
     }
   }
 }
+
 
 export default function Sections({ sections }) {
   const [
@@ -32,8 +33,9 @@ export default function Sections({ sections }) {
     state.setSectionsLp,
     state.sectionsLp,
     state.viewIdSection
-  ]));9
-const [isLoading, setIsLoading] = useState(true);
+  ]));
+
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const parsedSections = sections.map(section => {
       const parsedContent = JSON.parse(section.content || "{}");
@@ -59,13 +61,13 @@ const [isLoading, setIsLoading] = useState(true);
   return <Layout title="Sections">
     {isLoading && <LoaderOverlay />}
     <div className="flex flex-col gap-y-3 relative">
-    {sectionsLp?.map((section, key) => <div key={key} className="relative">
+      {sectionsLp?.map((section, key) => <div key={key} className="relative">
         <SectionId name={section.section_name} show={viewIdSection} />
         <SectionContainer
           onUpdateContent={(updatedSection) => onUpdateContent(updatedSection, key)}
           section={section}
           sectionName={section.section_name}
-      />
+        />
       </div>
       )}
     </div>
@@ -80,7 +82,7 @@ function SectionId({ name, show }) {
       "top-1/2": name === "section_articles" || name === "section_categories",
       "top-0": name !== "section_articles" && name !== "section_categories",
     }
-    )}>
+  )}>
     #{name}
   </div>
 }

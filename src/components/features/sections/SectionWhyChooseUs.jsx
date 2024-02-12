@@ -8,6 +8,7 @@ import {
 } from "react-icons/ai";
 import { FaRegLightbulb } from "react-icons/fa6";
 import { FiThumbsUp } from "react-icons/fi";
+import ContentEditableSection from "./ContentEditable";
 import SectionTitle from "./Fragment/SectionTitle";
 
 const icons = [
@@ -17,7 +18,7 @@ const icons = [
 function SectionWhyChooseUsMemo({ section, edit, onUpdateContent, sectionName }) {
   const content = section?.content || {};
 
-  const onUpdateItem = (index,value) => {
+  const onUpdateItem = (index, value) => {
     const text = structuredClone(section.content.text);
     text.splice(index, 1, value);
     onUpdateContent({
@@ -27,8 +28,8 @@ function SectionWhyChooseUsMemo({ section, edit, onUpdateContent, sectionName })
         text: text
       }
     })
-  } 
-  
+  }
+
   return (
     <>
       <div className="h-1 w-full border-t border-dashed"></div>
@@ -64,7 +65,7 @@ function SectionWhyChooseUsMemo({ section, edit, onUpdateContent, sectionName })
               )}
             </div>
             <div className="flex w-full lg:w-2/3 justify-center">
-                <Button className="flex items-center justify-center gap-x-2 !rounded-none !p-6" >
+              <Button className="flex items-center justify-center gap-x-2 !rounded-none !p-6" >
                 {edit ? <ContentEditable className="section-mode-edit" html={content?.button_primary} tagName="span" onChange={(e) => {
                   const value = e.currentTarget.textContent;
                   onUpdateContent({
@@ -75,10 +76,10 @@ function SectionWhyChooseUsMemo({ section, edit, onUpdateContent, sectionName })
                     }
                   })
                 }} /> :
-                    <span>{content?.button_primary || ""}</span>
-                  }
-                  <AiFillCaretRight />
-                </Button>
+                  <span>{content?.button_primary || ""}</span>
+                }
+                <AiFillCaretRight />
+              </Button>
             </div>
           </div>
         </div>
@@ -98,11 +99,11 @@ function ItemChooseUs({
     <div className={cn("flex items-center gap-x-7", className)}>
       <div className="shrink-0 max-w-[425px]">{icon}</div>
       {edit ?
-        <ContentEditable
+        <ContentEditableSection
           className="font-normal tracking-wide text-gray-700 section-mode-edit"
           tagName="span"
           html={description}
-          onChange={(e) => onUpdateContent(e.currentTarget.textContent)}
+          onChange={(value) => onUpdateContent(value)}
         /> :
         <span className="font-normal tracking-wide text-gray-700">
           {description}

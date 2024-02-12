@@ -7,6 +7,7 @@ import ContentEditable from "react-contenteditable";
 import {
   AiOutlineWhatsApp
 } from "react-icons/ai";
+import ContentEditableSection from "./ContentEditable";
 import ModalContactLink from "./Fragment/ModalContactLink";
 
 const initModal = Object.freeze({
@@ -28,7 +29,7 @@ export default function SectionContactUs({ setting, mobile = false, edit, sectio
     });
   }
   return (
-  <>
+    <>
       {
         edit && modal.show &&
         <ModalContactLink
@@ -42,56 +43,56 @@ export default function SectionContactUs({ setting, mobile = false, edit, sectio
         />
       }
       <section className={cn("h-[500px]", MARGIN_EACH_SECTION)} id="section_contact_us">
-      <div
-        className="absolute left-0 h-[500px] w-full bg-bottom object-cover"
-        style={{
-          backgroundImage: `url('/img/img-contact-us.webp')`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: `100% ${mobile ? "100%" : ""}`,
-          objectFit: "cover"
-        }}
-      >
         <div
-          className="absolute inset-0 z-0"
+          className="absolute left-0 h-[500px] w-full bg-bottom object-cover"
           style={{
-            backgroundImage: `linear-gradient(${mobile?.mobileMd ? "60deg" : "260deg"
-              }, #000000 0%, #00000000 100%)`,
+            backgroundImage: `url('/img/img-contact-us.webp')`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: `100% ${mobile ? "100%" : ""}`,
+            objectFit: "cover"
           }}
-        ></div>
-        <div
-          className={cn(
-            "relative z-10 flex h-full items-center justify-end",
-            CONTAINER_LP
-          )}
         >
-          <div className="px-4 lg:px-0">
-            {
-              edit ?
-              <ContentEditable
-                className="mb-4 font-cinzel text-2xl leading-normal text-white lg:max-w-[700px] lg:text-5xl section-mode-edit"
-                html={content?.title}
-                onChange={(e) => onUpdate("title", e.currentTarget.textContent)}
-              /> : 
-              content?.title &&
-              <div className="mb-4 font-cinzel text-2xl leading-normal text-white lg:max-w-[700px] lg:text-5xl">
-                {content.title}
-              </div>            
-            }
+          <div
+            className="absolute inset-0 z-0"
+            style={{
+              backgroundImage: `linear-gradient(${mobile?.mobileMd ? "60deg" : "260deg"
+                }, #000000 0%, #00000000 100%)`,
+            }}
+          ></div>
+          <div
+            className={cn(
+              "relative z-10 flex h-full items-center justify-end",
+              CONTAINER_LP
+            )}
+          >
+            <div className="px-4 lg:px-0">
+              {
+                edit ?
+                  <ContentEditableSection
+                    className="mb-4 font-cinzel text-2xl leading-normal text-white lg:max-w-[700px] lg:text-5xl section-mode-edit"
+                    html={content?.title}
+                    onChange={(value) => onUpdate("title", value)}
+                  /> :
+                  content?.title &&
+                  <div className="mb-4 font-cinzel text-2xl leading-normal text-white lg:max-w-[700px] lg:text-5xl">
+                    {content.title}
+                  </div>
+              }
 
-            {
-              edit ? 
-                <ContentEditable
-                tagName="span"
-                className="text-lg tracking-wider text-white section-mode-edit"
-                html={content?.text}
-                onChange={(e) => onUpdate("text", e.currentTarget.textContent)}
-              />
-              :
-              content?.text &&
-              <span className="text-lg tracking-wider text-white">
-                {content?.text}
-              </span>
-            }
+              {
+                edit ?
+                  <ContentEditableSection
+                    tagName="div"
+                    className="text-lg tracking-wider text-white section-mode-edit"
+                    html={content?.text}
+                    onChange={(value) => onUpdate("text", value)}
+                  />
+                  :
+                  content?.text &&
+                  <span className="text-lg tracking-wider text-white">
+                    {content?.text}
+                  </span>
+              }
               <div className="mt-4">
                 {ipAddress &&
                   <Button
@@ -119,10 +120,10 @@ export default function SectionContactUs({ setting, mobile = false, edit, sectio
                     }
                   </Button>
                 }
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </section>
     </>
   );

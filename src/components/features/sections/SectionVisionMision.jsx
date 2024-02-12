@@ -4,6 +4,7 @@ import { memo } from "react";
 import ContentEditable from "react-contenteditable";
 import { AiOutlineAim } from "react-icons/ai";
 import { FiTrendingUp } from "react-icons/fi";
+import ContentEditableSection from "./ContentEditable";
 
 function SectionVisionMisionMemo({ section, edit, onUpdateContent, sectionName }) {
   const content = section?.content || {};
@@ -61,24 +62,24 @@ function CardContent({ textGray, className, icon, title, description, edit, onUp
       {icon && icon}
       {
         edit ?
-        <ContentEditable
-          html={title}
-          className="text-2xl font-cinzel section-mode-edit"
-          onChange={(e) => onUpdateContent("title", e.currentTarget.textContent)}
-        />
-        : <span className="text-2xl font-cinzel">{title}</span>
+          <ContentEditable
+            html={title}
+            className="text-2xl font-cinzel section-mode-edit"
+            onChange={(e) => onUpdateContent("title", e.currentTarget.textContent)}
+          />
+          : <span className="text-2xl font-cinzel">{title}</span>
       }
 
       {
         edit ?
-        <ContentEditable
-          html={description}
-          className={cn("font-poppins tracking-wide opacity-90 leading-7  section-mode-edit", { "text-gray-600": textGray })}
-          onChange={(e) => onUpdateContent("text", e.currentTarget.textContent)}
-        /> :
+          <ContentEditableSection
+            html={description}
+            className={cn("font-poppins tracking-wide opacity-90 leading-7  section-mode-edit", { "text-gray-600": textGray })}
+            onChange={(value) => onUpdateContent("text", value)}
+          /> :
           <span className={cn("font-poppins tracking-wide opacity-90 leading-7", { "text-gray-600": textGray })}>
-          {description}
-        </span>
+            {description}
+          </span>
       }
     </div>
   );
