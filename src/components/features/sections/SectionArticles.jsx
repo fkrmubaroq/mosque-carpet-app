@@ -40,28 +40,28 @@ export default function SectionArticles({ mobile, edit, section }) {
           Artikel
         </div>
         <div className="mb-3 font-cinzel text-3xl font-medium">
-        <Button className="flex items-center justify-center gap-x-2 rounded-none !p-6" onClick={() => !edit && Router.push("/berita")}>
-          <span className="mt-0.5">VIEW MORE</span>
-          <AiFillCaretRight />
-        </Button>
+          <Button className="flex items-center justify-center gap-x-2 rounded-none !p-6" onClick={() => !edit && Router.push("/berita")}>
+            <span className="mt-0.5">VIEW MORE</span>
+            <AiFillCaretRight />
+          </Button>
         </div>
       </div>
 
       <div className="flex gap-x-8">
-          <Swiper
-            slidesPerView={getSlidePerPreviewByScreen()}
-            spaceBetween={20}
-            navigation={true}
-            loop
-            modules={[Navigation]}
-            className="swipper-category"
-          >
-            {articles?.map((item, key) => (
-              <SwiperSlide key={key}>
-                <CardNewItem data={item} edit={edit} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+        <Swiper
+          slidesPerView={getSlidePerPreviewByScreen()}
+          spaceBetween={20}
+          navigation={true}
+          loop
+          modules={[Navigation]}
+          className="swipper-category"
+        >
+          {articles?.map((item, key) => (
+            <SwiperSlide key={key}>
+              <CardNewItem data={item} edit={edit} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     </section>
   );
@@ -72,14 +72,15 @@ function CardNewItem({ data, edit }) {
     <div className="group shadow-md flex flex-col gap-y-3 transition-all duration-500 hover:scale-105 ease-in-out hover:bg-primary">
       <div className="shrink-0 relative h-[300px]">
         <Image
-          src={data?.thumbnail ? mediaPath("articles-thumbnail",data.thumbnail) : placeholderImage}
+          src={data?.thumbnail ? mediaPath("articles-thumbnail", data.thumbnail) : placeholderImage}
           layout="fill"
           className="object-cover"
+          alt="article thumbnail"
         />
       </div>
       <div className="flex flex-col gap-y-2 px-4 pb-8">
-        <Link href={`${edit ? "#" : `/${slugString(data?.title)}`}`}>
-          <a className="mt-2 cursor-pointer line-clamp-2 text-xl font-medium hover:underline tracking-wider text-gray-700 group-hover:text-white">{data.title}</a>
+        <Link className="mt-2 cursor-pointer line-clamp-2 text-xl font-medium hover:underline tracking-wider text-gray-700 group-hover:text-white" href={`${edit ? "#" : `/${slugString(data?.title)}`}`}>
+          {data.title}
         </Link>
         <span className="text-sm tracking-wide text-gray-400 group-hover:text-white">
           {dayjs(new Date(data.created_at)).format("MMMM DD, YYYY HH:mm WIB")}

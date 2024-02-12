@@ -20,28 +20,28 @@ function HeroCard({
     >
       {
         edit ?
-        <ContentEditable
-          tagName="h1"
+          <ContentEditable
+            tagName="h1"
             className="mb-4 text-xl lg:text-3xl font-cinzel text-primary section-mode-edit outline-none"
-          html={title}
-          onChange={(e) => onUpdateContent("title", e.currentTarget.textContent)}
-        />
+            html={title}
+            onChange={(e) => onUpdateContent("title", e.currentTarget.textContent)}
+          />
           :
-        <div className="mb-4 text-xl lg:text-3xl font-cinzel text-primary">{title}</div>
+          <div className="mb-4 text-xl lg:text-3xl font-cinzel text-primary">{title}</div>
       }
 
       {
-        edit ? 
+        edit ?
           <ContentEditable
             tagName="div"
             className="font-poppins text-sm lg:text-md font-light tracking-wide section-mode-edit outline-none"
             html={text}
-            onChange={(e) => onUpdateContent("text",e.currentTarget.textContent)}
+            onChange={(e) => onUpdateContent("text", e.currentTarget.textContent)}
           />
           :
-        <span className="font-poppins text-sm lg:text-md font-light tracking-wide">
-          {text}
-        </span>
+          <span className="font-poppins text-sm lg:text-md font-light tracking-wide">
+            {text}
+          </span>
       }
       {footer}
     </div>
@@ -60,7 +60,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
     if (typeof value === 'object' && !Array.isArray(value)) {
       data = value
     }
-    dataMenu.splice(index, 1, data)    
+    dataMenu.splice(index, 1, data)
     onUpdateContent({
       ...section,
       content: {
@@ -157,7 +157,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
                   content: {
                     ...section.content,
                     sub_tagline: {
-                      ...section.content.sub_tagline, 
+                      ...section.content.sub_tagline,
                       [name]: value
                     }
                   }
@@ -182,32 +182,32 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
                       })
                     }}
                   /> : content?.button_primary &&
-                    <Button className="!rounded-none !px-10 !py-6 font-cinzel">
-                     {content?.button_primary || ""}
-                    </Button>
+                  <Button className="!rounded-none !px-10 !py-6 font-cinzel">
+                    {content?.button_primary || ""}
+                  </Button>
                   }
-                    {edit ? <ContentEditable
-                      html={content?.button_secondary}
-                      tagName="div"
-                      className="!rounded-none !px-8 !py-3 border border-white section-mode-edit font-cinzel"
-                      onChange={(e) => {
-                        const value = e.currentTarget.textContent
-                        onUpdateContent({
-                          ...section,
-                          content: {
-                            ...section.content,
-                            button_secondary: value
-                          }
-                        })
-                      }}
+                  {edit ? <ContentEditable
+                    html={content?.button_secondary}
+                    tagName="div"
+                    className="!rounded-none !px-8 !py-3 border border-white section-mode-edit font-cinzel"
+                    onChange={(e) => {
+                      const value = e.currentTarget.textContent
+                      onUpdateContent({
+                        ...section,
+                        content: {
+                          ...section.content,
+                          button_secondary: value
+                        }
+                      })
+                    }}
                   /> : content?.button_secondary &&
-                    <Button
-                        variant="ghost"
-                        className="!rounded-none border border-white hover:!text-black !px-10 !py-6 font-cinzel"
-                      >
-                        {content?.button_secondary || ""}
-                      </Button>
-                    }
+                  <Button
+                    variant="ghost"
+                    className="!rounded-none border border-white hover:!text-black !px-10 !py-6 font-cinzel"
+                  >
+                    {content?.button_secondary || ""}
+                  </Button>
+                  }
                 </div>
               }
             />

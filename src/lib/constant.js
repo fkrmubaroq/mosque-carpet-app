@@ -102,3 +102,7 @@ export const LIST_ROLE = {
   "ADMIN": "Admin",
   "STAFF": "Staff",
 }
+
+export const SANITIZE_TEXT = {
+  allowedTags: ['b', 'i', 'u', 'strong', 'br'],
+}

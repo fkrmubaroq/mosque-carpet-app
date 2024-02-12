@@ -2,7 +2,7 @@ import { OFFSET } from "@/lib/constant";
 import query, { count, deleteRow, insert, update } from "@/lib/db";
 
 const table = "product";
-export default class Product{
+export default class Product {
 
   async totalAllProduct() {
     const results = await query(`SELECT product.id FROM ${table}`);
@@ -17,14 +17,14 @@ export default class Product{
   findId(id) {
     return query(`SELECT product.* FROM product WHERE product.id = ? LIMIT 1 `, [id]);
   }
-  
+
   getProductByCategoryId(id) {
     return query(`SELECT 
       product.*, category.category_name 
         FROM product  
         LEFT JOIN category ON category.id = product.category_id 
           WHERE product.category_id = ? AND product.active = 'Y' ORDER BY product.id DESC`, [id]
-    ); 
+    );
   }
 
   getProductNameBySlug(slug) {
@@ -47,8 +47,8 @@ export default class Product{
     const skip = (page - 1) * OFFSET;
 
     if (queryParams?.name) {
-      filters.sql = `WHERE product.name = ? `;
-      filters.values.push(queryParams.name);
+      filters.sql = `WHERE product.name LIKE ? `;
+      filters.values.push([`%${queryParams.name}%`]);
     }
 
 

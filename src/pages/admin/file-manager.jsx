@@ -82,7 +82,7 @@ export default function FileManager() {
     },
     onError: (e) => {
       if (e.response?.data?.message) {
-        showToast("custom-message", e.response.data.message,"danger");
+        showToast("custom-message", e.response.data.message, "danger");
         return;
       }
       showToast("error-update-folder");
@@ -98,7 +98,7 @@ export default function FileManager() {
     },
     onError: (e) => {
       if (e.response?.data?.message) {
-        showToast("custom-message", e.response.data.message,"danger");
+        showToast("custom-message", e.response.data.message, "danger");
         return;
       }
       showToast("error-update-file");
@@ -129,16 +129,16 @@ export default function FileManager() {
     onSettled: hideConfirmation
   });
 
-  const { mutate: mutateUploadFile } = useMutation({
+  const { mutate: mutateUploadFile, isLoading: isLoadingUploadFile } = useMutation({
     mutationFn: uploadFiles,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: adminFileManagerQuery.getFIleItems(currentPath),
-      }); 
+      });
       showToast("success-upload-file")
     },
     onError: () => showToast("error-upload-file"),
-    onSettled:() => setModal(initModal)
+    onSettled: () => setModal(initModal)
   })
 
   const onCreateFolder = () => {
@@ -194,7 +194,7 @@ export default function FileManager() {
         path: currentPath
       });
       return;
-    }    
+    }
   }
 
   const onUpdateFolder = (selected) => {
@@ -218,7 +218,7 @@ export default function FileManager() {
   const onCopySource = (selected) => {
     const text = `${window.location.origin}${DIR_ACCESS_FILE}${selected.path}${selected.name}`;
     copyToClipboard(text);
-    showToast("custom-message","Teks telah disalin","default")
+    showToast("custom-message", "Teks telah disalin", "default")
   }
 
   const onDownloadFile = (selected) => {
@@ -242,14 +242,15 @@ export default function FileManager() {
       {
         modal.type === "add-file" &&
         <ModalUploadFile
+          isLoading={isLoadingUploadFile}
           onHide={() => setModal(initModal)}
           onUpload={(files) => {
-          mutateUploadFile({
-            files,
-            path: currentPath
-          });
-        }} />
-      } 
+            mutateUploadFile({
+              files,
+              path: currentPath
+            });
+          }} />
+      }
 
       {
         modal.type === "preview-file" && modal?.data && <Banner onClose={() => setModal(initModal)} src={`${DIR_ACCESS_FILE}${modal.data?.path}${modal.data?.name}`} />
@@ -280,18 +281,18 @@ export default function FileManager() {
         <div className="grid grid-cols-3 gap-6">
           {isLoading ? <ShimmerMediaManager total={9} /> :
             data?.map((item, key) => (
-            <React.Fragment key={key}>
-              {item.type === "FOLDER" && (
-                <Folder
-                  data={item}
-                  onSelect={onOpenFolder}
-                  onDeleteFolder={onDeleteFolder}
-                  onOpenFolder={onOpenFolder}
-                  selected={selectedRenameFile}
-                  onUpdateFolder={onUpdateFolder}
-                  setSelectedRenameFile={setSelectedRenameFile}
-                />
-              )}
+              <React.Fragment key={key}>
+                {item.type === "FOLDER" && (
+                  <Folder
+                    data={item}
+                    onSelect={onOpenFolder}
+                    onDeleteFolder={onDeleteFolder}
+                    onOpenFolder={onOpenFolder}
+                    selected={selectedRenameFile}
+                    onUpdateFolder={onUpdateFolder}
+                    setSelectedRenameFile={setSelectedRenameFile}
+                  />
+                )}
                 {item.type === "FILE" &&
                   <File
                     data={item}
@@ -302,9 +303,9 @@ export default function FileManager() {
                     onUpdateFile={onUpdateFile}
                     onDeleteFile={onDeleteFile}
                     onDownloadFile={onDownloadFile}
-                />}
-            </React.Fragment>
-          ))}
+                  />}
+              </React.Fragment>
+            ))}
         </div>
       </Layout>
     </>

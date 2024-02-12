@@ -55,12 +55,12 @@ const UploadFile = ({
           Format file harus{" "}
           {Array.isArray(accept)
             ? accept?.map((type, key) => {
-                return (
-                  <span className="mr-[1px]" key={key}>
-                    .{MIME_TYPE[type].toLocaleUpperCase()}{" "}
-                  </span>
-                );
-              })
+              return (
+                <span className="mr-[1px]" key={key}>
+                  .{MIME_TYPE[type].toLocaleUpperCase()}{" "}
+                </span>
+              );
+            })
             : `Format file harus .${MIME_TYPE[file.type]}`}
         </>
       );
@@ -74,7 +74,7 @@ const UploadFile = ({
   const handleChange = async (e) => {
     if (!fileRef.current) return;
     const files = "dataTransfer" in e ? e.dataTransfer.files : e.target.files;
-    
+
     if (!files?.length) {
       resetValue();
       return;
@@ -84,7 +84,7 @@ const UploadFile = ({
       fileRef.current.required = false;
     }
 
-    for (let i = 0; i < files.length; i++){
+    for (let i = 0; i < files.length; i++) {
       const valid = validationFile(files[i]);
       if (!valid) {
         setSelectedFile(undefined);
@@ -94,7 +94,7 @@ const UploadFile = ({
       // check resolution image if any
       if (allowResolutionImage?.length && MIME_TYPE_IMAGE[files[i].type]) {
         const { width, height } = await checkResolutionImage(files[i]);
-  
+
         if (!allowResolutionImage.includes(`${width}x${height}`)) {
           resetValue();
           setError(
@@ -178,13 +178,13 @@ const UploadFile = ({
         ) : (
           <div className="flex flex-col items-center justify-center pb-6 pt-5">
             <AiOutlineCloudUpload size={30} color="#6b7280" />
-              <div className="flex flex-col items-center justify-center text-center">
-                {!clearDefaultPlaceholder &&
+            <div className="flex flex-col items-center justify-center text-center">
+              {!clearDefaultPlaceholder &&
                 <p className="mb-2 text-sm text-gray-400">
                   <span className="font-semibold">Klik untuk upload</span> atau
                   drop file disini
                 </p>
-                }
+              }
               <p className="text-xs text-gray-400">{placeholder}</p>
             </div>
           </div>
@@ -199,13 +199,15 @@ const UploadFile = ({
 };
 
 function PreviewFile({ file }) {
-  const getSrcFile = (file) =>  URL.createObjectURL(file);
+  const getSrcFile = (file) => URL.createObjectURL(file);
   return (
     <div>
       {MIME_TYPE_IMAGE[file.type] && (
         <Card className="rounded-none">
           <CardContent className="flex flex-col justify-center gap-y-2 !pb-4 !pt-3 !px-3 ">
-            <Image src={getSrcFile(file)} width="100" height="100" alt="" className="object-cover" />
+            <div className="shrink-0 w-full h-[100px] relative">
+              <Image src={getSrcFile(file)} fill alt="" className="object-cover mx-auto" />
+            </div>
             <span className="text-sm font-semibold text-gray-600 line-clamp-2">
               {file.name}
             </span>

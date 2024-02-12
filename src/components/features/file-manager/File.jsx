@@ -80,24 +80,23 @@ export default function File({
       }}
       ref={fileRef}
       className={cn("group flex cursor-pointer items-center justify-between gap-x-4 rounded-md bg-gray-50 py-3 pl-3.5 pr-3 shadow-sm transition-all duration-200",
-      "focus:text-white ",
+        "focus:text-white ",
         {
-        "hover:bg-primary  focus:bg-primary": variant === "primary" && !accept ,
-        "hover:bg-secondary  focus:bg-secondary": variant === "secondary" && !accept,
-        "bg-secondary text-white": variant === "secondary" && values.includes(src),
-        "opacity-40": !accept?.includes(ext) && accept,
-        "hover:text-white": !accept
-      }
+          "hover:bg-primary  focus:bg-primary": variant === "primary" && !accept,
+          "hover:bg-secondary  focus:bg-secondary": variant === "secondary" && !accept,
+          "bg-secondary text-white": variant === "secondary" && values.includes(src),
+          "opacity-40": !accept?.includes(ext) && accept,
+          "hover:text-white": !accept
+        }
       )}
     >
       <div className="flex gap-x-4">
-        <span className="flex shrink-0">
+        <span className="flex w-12 h-[45px] relative">
           <Image
-            className="rounded-md"
+            className="rounded-md object-cover"
             src={src}
             alt=""
-            width={48}
-            height={45}
+            fill
           />
         </span>
         {selected?.id === data.id ? (
@@ -126,7 +125,7 @@ export default function File({
           />
         ) : (
           <span className="flex items-center font-semibold tracking-wide line-clamp-1 break-all">
-              {data.name}
+            {data.name}
           </span>
         )}
       </div>

@@ -9,10 +9,7 @@ const config = {
   images: {
     domains: [HOST_NAME]
   },
-  output: "standalone"
 }
-
-
 
 
 export default config;

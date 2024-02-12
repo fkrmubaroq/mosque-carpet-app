@@ -21,6 +21,7 @@ import { CiImageOn } from "react-icons/ci";
 import { FaWhatsapp } from "react-icons/fa";
 import { IoEyeOutline, IoRibbonOutline } from "react-icons/io5";
 import { LiaCitySolid } from "react-icons/lia";
+import { LuUploadCloud } from "react-icons/lu";
 import { MdOutlineCampaign } from "react-icons/md";
 import { TbClick } from "react-icons/tb";
 
@@ -71,7 +72,7 @@ export default function Settings({ setting, popupSetting }) {
   }
 
   const onClickRibbonBasic = (selectedVariant) => {
-    setFormSetting(form => ({ ...form, ribbon:`basic.${selectedVariant}`}))
+    setFormSetting(form => ({ ...form, ribbon: `basic.${selectedVariant}` }))
   }
 
   return (<>
@@ -100,8 +101,8 @@ export default function Settings({ setting, popupSetting }) {
         <div className="flex w-full flex-col gap-y-4">
           <Card>
             <CardContent>
-            {/* INFO COMPANY */}
-            <CardHeader className="pl-0 font-semibold pb-3">Informasi Perusahaan</CardHeader>
+              {/* INFO COMPANY */}
+              <CardHeader className="pl-0 font-semibold pb-3">Informasi Perusahaan</CardHeader>
               <div className="rounded-lg bg-gray-100 p-5 flex flex-col gap-y-4">
                 <ContainerInput direction="row" className="gap-x-5">
                   <Label>
@@ -136,7 +137,7 @@ export default function Settings({ setting, popupSetting }) {
                       />
                     </div>
                   </ContainerInput>
-                  
+
                   <ContainerInput className="gap-x-5 items-center">
                     <div className="text-gray-500 mt-5 ">Favicon (.ico)</div>
                     <div className="w-52 h-52 bg-gray-200 rounded-lg flex mb-5 justify-center items-center">
@@ -156,13 +157,13 @@ export default function Settings({ setting, popupSetting }) {
                         }}
                       />
                     </div>
-                    </ContainerInput>
+                  </ContainerInput>
                 </div>
 
-            </div>
+              </div>
 
-            {/* CONTACT */}
-            <CardHeader className="pl-0 font-semibold pb-3">Kontak</CardHeader>
+              {/* CONTACT */}
+              <CardHeader className="pl-0 font-semibold pb-3">Kontak</CardHeader>
               <div className="rounded-lg bg-gray-100 p-5">
                 <ContainerInput direction="row" className="w-full gap-x-5">
                   <Label className="uppercase">
@@ -205,13 +206,14 @@ export default function Settings({ setting, popupSetting }) {
                   <Button
                     size="sm"
                     className="flex gap-x-1.5 mt-2"
-                    onClick={() => setPopup(popup => ({ ...popup, show:true }))}
+                    onClick={() => setPopup(popup => ({ ...popup, show: true }))}
                   >
-                    <IoEyeOutline size={15}/>
+                    <IoEyeOutline size={15} />
                     <span>Lihat Popup</span>
                   </Button>
                 }
               </div>
+
               <div className="rounded-lg bg-gray-100 p-5">
                 <ContainerInput direction="row" className="w-full gap-x-5">
                   <Label className="uppercase">
@@ -220,7 +222,7 @@ export default function Settings({ setting, popupSetting }) {
                   <SrcFileManager
                     single
                     placeholder="Media Manager"
-                    onSave={(src) => setPopup(popup => ({ ...popup, srcImg:src }))}
+                    onSave={(src) => setPopup(popup => ({ ...popup, srcImg: src }))}
                     values={popup.srcImg}
                     onRemoveFile={() => {
                       setPopup(popup => ({ ...popup, srcImg: "" }))
@@ -230,9 +232,28 @@ export default function Settings({ setting, popupSetting }) {
                 {popup.srcImg?.length > 0 &&
                   <ContainerInput className="!gap-x-5 mt-4" direction="row">
                     <Label><TbClick size={26} /></Label>
-                    <Input placeholder="URL Popup" value={popup.url} onChange={e => setPopup(popup => ({ ...popup, url:e.target.value }))} />
+                    <Input placeholder="URL Popup" value={popup.url} onChange={e => setPopup(popup => ({ ...popup, url: e.target.value }))} />
                   </ContainerInput>
                 }
+              </div>
+
+              {/* MAX UPLOAD FILE SIZE */}
+              <CardHeader className="pl-0 font-semibold pb-3">Maksimal Ukuran Upload File</CardHeader>
+              <div className="rounded-lg bg-gray-100 p-5">
+                <ContainerInput direction="row" className="w-full gap-x-5 items-center">
+                  <Label className="uppercase">
+                    <LuUploadCloud size={26} />
+                  </Label>
+                  <Input
+                    className="!w-[150px]"
+                    type="number"
+                    value={formSetting?.max_upload_file_size_in_mb}
+                    placeholder="Maksimal ukuran upload file"
+                    onChange={(e) => setFormSetting(state => ({ ...state, max_upload_file_size_in_mb: e.target.value }))}
+                  />
+                  <span className="text-gray-600 text-sm">Mb</span>
+
+                </ContainerInput>
               </div>
 
               {/* MAINTENANCE */}
@@ -254,11 +275,11 @@ export default function Settings({ setting, popupSetting }) {
               />
               <span></span>
 
-              
+
             </CardContent>
           </Card>
 
-        
+
         </div>
       </div>
     </Layout>
