@@ -69,7 +69,12 @@ function FooterMemo({ setting, edit, section, onUpdateContent }) {
 
   return (
     <footer className="relative flex gap-x-4 bg-black pt-20 pb-28 md:px-5" id="section_footer">
-      <div className={cn("flex lg:flex-row flex-col lg:gap-y-0 gap-y-8 justify-between w-full", CONTAINER_LP)}>
+      <div className={cn(
+        "@xs/mobile:!flex-col @xs/mobile:!gap-y-8",
+        "flex lg:flex-row flex-col lg:gap-y-0 gap-y-8 justify-between w-full",
+        CONTAINER_LP,
+
+      )}>
         <FooterLogo edit={edit} onUpdateContent={onUpdate} data={content} />
         <FooterContactItem
           setting={setting}
@@ -86,24 +91,24 @@ function FooterMemo({ setting, edit, section, onUpdateContent }) {
 }
 
 function FooterLogo({ edit, onUpdateContent, data }) {
-  
+
   return (
-    <div className="flex flex-col lg:items-center lg:justify-center">
+    <div className={cn("flex flex-col lg:items-center lg:justify-center", "@xs/mobile:!items-start @xs/mobile:!justify-start")}>
       <div className={cn("relative", {
-        "section-mode-edit group" : edit
+        "section-mode-edit group": edit
       })}>
         {edit && <ToolboxImage value={data?.logo} name="logo" onUpdateContent={onUpdateContent} className="group-hover:block hidden" />}
         {data?.logo && <Image src={data?.logo} width="80" height="80" alt="" />}
       </div>
       {
         edit ?
-        <ContentEditable
-          html={data.logo_text}
-          tagName="span"
-          className="text-lg tracking-widest text-white mt-3 section-mode-edit"
-          onChange={(e) => onUpdateContent("logo_text", e.currentTarget.textContent)}
-         /> :
-        <span className="text-lg tracking-widest text-white mt-3">{data.logo_text}</span>
+          <ContentEditable
+            html={data.logo_text}
+            tagName="span"
+            className="text-lg tracking-widest text-white mt-3 section-mode-edit"
+            onChange={(e) => onUpdateContent("logo_text", e.currentTarget.textContent)}
+          /> :
+          <span className="text-lg tracking-widest text-white mt-3">{data.logo_text}</span>
       }
 
       {
@@ -126,14 +131,14 @@ function FooterContactItem({ setting, data, edit, onUpdateContent }) {
     <div className="flex flex-col gap-y-3 text-white">
       <FooterTitleItem title="Contact" />
       <div className="flex flex-col gap-y-2">
-        
+
         <FooterContentItem
           icon={<AiOutlineWhatsApp />}
           text={data?.phone_wa?.text || ""}
           data={data}
-          edit={edit} 
+          edit={edit}
           name="phone_wa"
-          onUpdateContent={(value) => onUpdateContent("phone_wa", value)} 
+          onUpdateContent={(value) => onUpdateContent("phone_wa", value)}
         />
         <FooterContentItem
           icon={<AiOutlineMail />}
@@ -141,7 +146,7 @@ function FooterContactItem({ setting, data, edit, onUpdateContent }) {
           data={data}
           edit={edit}
           name="email"
-          onUpdateContent={(value) => onUpdateContent("email", value)} 
+          onUpdateContent={(value) => onUpdateContent("email", value)}
         />
         {/* TODO : Address */}
         {/* {data.address?.map((item, key) =>
@@ -171,18 +176,18 @@ function FooterCompanyAddress({ edit, onUpdateContent, data, onAddItem }) {
   return <div className="flex flex-col gap-y-3 text-white">
     <FooterTitleItem title="Alamat Kami" />
     <div className="flex flex-col gap-y-2" >
-    {data?.map((address, key) => 
-      <FooterContentItem
-        key={key}
-        icon={<HiOutlineLocationMarker />}
-        text={address.text || ""}
-        data={data}
-        edit={edit}
-        index={key}
-        name="address"
-        onUpdateContent={(value) => onUpdateContent("address", value, key)}
+      {data?.map((address, key) =>
+        <FooterContentItem
+          key={key}
+          icon={<HiOutlineLocationMarker />}
+          text={address.text || ""}
+          data={data}
+          edit={edit}
+          index={key}
+          name="address"
+          onUpdateContent={(value) => onUpdateContent("address", value, key)}
         />
-        )}
+      )}
     </div>
     {edit &&
       <div
@@ -196,7 +201,7 @@ function FooterCompanyAddress({ edit, onUpdateContent, data, onAddItem }) {
 }
 
 function FooterTitleItem({ title }) {
-  return <div className="text-2xl lg:text-3xl font-cinzel ">{title}</div>
+  return <div className="text-2xl lg:text-3xl @xs/mobile:!text-2xl font-cinzel ">{title}</div>
 }
 
 function FooterContentItem({ index, name, data, icon, text, edit, onUpdateContent }) {
@@ -213,7 +218,7 @@ function FooterContentItem({ index, name, data, icon, text, edit, onUpdateConten
       : icon}
     {edit ?
       <div className="relative w-full">
-        <ContentEditable html={text} onChange={(e) => onUpdateContent({ ...data[name], text: e.currentTarget.textContent })} className="section-mode-edit peer" /> 
+        <ContentEditable html={text} onChange={(e) => onUpdateContent({ ...data[name], text: e.currentTarget.textContent })} className="section-mode-edit peer" />
         <ToolboxFooter
           name={name}
           index={index}
@@ -221,7 +226,7 @@ function FooterContentItem({ index, name, data, icon, text, edit, onUpdateConten
           className="group-hover:block hidden peer-focus:block"
           onUpdateContent={onUpdateContent}
         />
-      </div>:
+      </div> :
       <div className="flex w-full" onClick={() => {
         data[index]?.link && window.open(data[index].link)
         data[name]?.link && window.open(data[name].link)
@@ -236,7 +241,7 @@ function FooterSocialMedia({ data, edit, onUpdateContent, onAddItem }) {
       <FooterTitleItem title="Kunjungi Kami" />
       <div className="flex flex-col gap-y-2">
         {data?.map((socialMedia, key) =>
-          <FooterContentItem 
+          <FooterContentItem
             key={key}
             icon={socialMedia?.image || ""}
             text={socialMedia.text}
@@ -244,7 +249,7 @@ function FooterSocialMedia({ data, edit, onUpdateContent, onAddItem }) {
             index={key}
             edit={edit}
             name="social_media"
-            onUpdateContent={(value) => onUpdateContent("social_media", value, key)} 
+            onUpdateContent={(value) => onUpdateContent("social_media", value, key)}
           />
         )}
       </div>

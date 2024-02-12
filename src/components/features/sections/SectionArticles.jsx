@@ -32,7 +32,7 @@ export default function SectionArticles({ mobile, edit, section }) {
   });
 
   return (
-    <section className={cn(MARGIN_EACH_SECTION)} id="section_articles">
+    <section className={cn(MARGIN_EACH_SECTION, "@xs/mobile:!px-4")} id="section_articles">
       <div className="flex justify-between items-center">
         <div
           className="inline border-b text-lg border-b-green-600 font-cinzel tracking-wide"

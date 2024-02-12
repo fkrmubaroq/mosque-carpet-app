@@ -90,7 +90,7 @@ export const INIT_SECTIONS = [
   },
 ]
 
-export const CONTAINER_LP = "padding-container xl:w-[1280px]";
+export const CONTAINER_LP = "padding-container";
 export const MARGIN_EACH_SECTION = "lg:mb-[100px] mb-16";
 
 export const RIBBON_LIST = {

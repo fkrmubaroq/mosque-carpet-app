@@ -72,9 +72,14 @@ body {
 .padding-container{
   @apply px-5;
   @media (min-width: 1280px) {
-    @apply px-32;
+    @apply w-[1280px];
     margin-left: auto;
     margin-right: auto;
+  }
+  @container (max-width: 640px) {
+    @apply px-0 w-full;
+    margin-left: unset !important;
+    margin-right: unset !important;
   }
 }
 

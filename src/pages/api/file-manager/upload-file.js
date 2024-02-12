@@ -16,18 +16,18 @@ function renameFileDuplicated(fileName, text) {
 async function insertFileToServerAndDatabase(data) {
   const { files, path } = data;
   return new Promise(async (resolve) => {
-  const pathDir = `${DIR_FILE_UPLOAD}${data.path}`;
+    const pathDir = `${DIR_FILE_UPLOAD}${data.path}`;
     for (const key in files) {
       const file = files[key];
       let srcFile = `${pathDir}${file.originalFilename}`;
       const contentData = await fs.promises.readFile(file.path);
-
       fs.access(srcFile, async (err) => {
         // when file is not exists, create file and then move into files/upload/
         if (err) {
           await insertFileInfoToDatabase({
             name: file.originalFilename,
-            path
+            path,
+            size: file.size
           })
           await fs.promises.writeFile(srcFile, contentData);
           resolve(true);
@@ -41,7 +41,8 @@ async function insertFileToServerAndDatabase(data) {
           if (err) {
             await insertFileInfoToDatabase({
               name: fileName,
-              path
+              path,
+              size: file.size
             })
             await fs.promises.writeFile(srcFile, contentData);
             resolve(true);
@@ -49,12 +50,13 @@ async function insertFileToServerAndDatabase(data) {
           }
 
           const count = await fileManager.countFileContains(fileName);
-          
+
           const renamefileName = renameFileDuplicated(fileName, `${(count + 2)}`);
           srcFile = `${pathDir}${renamefileName}`;
           await insertFileInfoToDatabase({
             name: renamefileName,
-            path
+            path,
+            size: file.size
           })
           await fs.promises.writeFile(srcFile, contentData);
           resolve(true);
@@ -64,13 +66,14 @@ async function insertFileToServerAndDatabase(data) {
   })
 }
 
-async function insertFileInfoToDatabase({ name, path }) {
+async function insertFileInfoToDatabase({ name, path, size }) {
   const levelBySlash = path.split("/").length - 2;
   const data = {
     type: "FILE",
     name,
     level: path === "/" ? 0 : levelBySlash,
-    path: path
+    path: path,
+    size
   };
   await fileManager.insertData(data);
 }
@@ -83,9 +86,9 @@ export default async function handler(req, res) {
     }
     const multipartyForm = new multiparty.Form();
     const data = await incomingRequest(multipartyForm, req);
-    
+
     await insertFileToServerAndDatabase(data);
-   
+
     res.status(STATUS_MESSAGE_ENUM.Ok).json({
       data: "ok"
     })

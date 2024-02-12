@@ -13,7 +13,7 @@ function SectionVisionMisionMemo({ section, edit, onUpdateContent, sectionName }
     <section
       id="section_vision_mision"
       className={cn(
-        "flex flex-col gap-x-12 lg:flex-row",
+        "flex flex-col gap-x-12 @xs/mobile:!px-4 @xs/mobile:!flex-col lg:flex-row",
         MARGIN_EACH_SECTION
       )}
     >

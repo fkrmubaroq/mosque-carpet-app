@@ -39,6 +39,8 @@ export const useFileManagerStore = create((set) => ({
 }))
 
 export const useEditSection = create((set) => ({
+  mode: "desktop",
+  setMode: (mode) => set(state => ({ ...state, mode })),
   viewIdSection: true,
   setViewIdSection: (status) => set(state => ({ ...state, viewIdSection: status })),
   sectionsLp: [],

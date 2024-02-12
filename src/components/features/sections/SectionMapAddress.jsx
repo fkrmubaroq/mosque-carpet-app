@@ -1,5 +1,6 @@
 import Textarea from "@/components/ui/form/Textarea";
 import { MARGIN_EACH_SECTION } from "@/lib/constant";
+import cn from "classnames";
 import parser from "html-react-parser";
 import ContentEditable from "react-contenteditable";
 
@@ -16,7 +17,7 @@ export default function SectionMapAddress({ edit, section, onUpdateContent }) {
     });
   }
 
-  return <section className={MARGIN_EACH_SECTION} id="section_map_address">
+  return <section className={cn(MARGIN_EACH_SECTION, "@xs/mobile:!px-4")} id="section_map_address">
     {edit ? <ContentEditable
       html={content?.heading || ""}
       tagName="div"
@@ -41,6 +42,6 @@ export default function SectionMapAddress({ edit, section, onUpdateContent }) {
       onChange={(e) => onUpdate("embed_map", e.target.value)}
     />}
     {content?.embed_map && content.embed_map.includes("<iframe") &&
-      <div className="mt-5 flex justify-center">{parser(content.embed_map)}</div>}
+      <div className="mt-5 flex justify-center @xs/mobile:px-4">{parser(content.embed_map)}</div>}
   </section>
 }

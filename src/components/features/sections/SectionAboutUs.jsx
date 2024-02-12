@@ -25,10 +25,11 @@ function SectionAboutUsMemo({ section, edit, onUpdateContent }) {
       id="section_about_us"
       className={cn(
         "mb-16 flex flex-col items-center gap-x-3 pt-20 lg:flex-row",
-        MARGIN_EACH_SECTION
+        "@xs/mobile:!flex-col @xs/mobile:!mb-16 @xs/mobile:px-4",
+        MARGIN_EACH_SECTION,
       )}
     >
-      <div className="lg:pr-20 xl:pr-40">
+      <div className="lg:pr-20 xl:pr-40 @xs/mobile:!pr-0">
         <SectionTitle
           context={content?.heading || ""}
           title={content?.title || ""}
@@ -38,7 +39,7 @@ function SectionAboutUsMemo({ section, edit, onUpdateContent }) {
 
         {edit ? <ContentEditableSection
           html={content?.text}
-          className="mb-5 font-poppins text-lg tracking-wide text-gray-500 lg:mb-0 section-mode-edit"
+          className="mb-5 font-poppins text-lg tracking-wide text-gray-500 @xs/mobile:!mb-5 lg:mb-0 section-mode-edit"
           onChange={(value) => onUpdate("text", value)}
         /> :
           <div className="mb-5 font-poppins text-lg tracking-wide text-gray-500 lg:mb-0">
@@ -47,14 +48,13 @@ function SectionAboutUsMemo({ section, edit, onUpdateContent }) {
         }
       </div>
 
-      <div className="relative shrink-0 flex justify-center w-full lg:w-[500px] group ">
+      <div className="relative shrink-0 flex justify-center w-full lg:w-[500px] group @xs/mobile:w-full">
         {edit && <ToolboxImage value={content.image} name="image" onUpdateContent={onUpdate} className="group-hover:block hidden" />}
-        <div className={cn({ "section-mode-edit p-1": edit })}>
+        <div className={cn("relative w-[450px] h-[300px] @xs/mobile:!px-4 @xs/mobile:!w-[320px] ", { "section-mode-edit p-1": edit })}>
           <Image
             className="rounded-lg"
             src={content?.image || placeholderImage}
-            width="450"
-            height="300"
+            fill
             alt=""
             loading="lazy"
           />

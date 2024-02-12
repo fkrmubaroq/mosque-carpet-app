@@ -35,7 +35,7 @@ function SectionWhyChooseUsMemo({ section, edit, onUpdateContent, sectionName })
       <div className="h-1 w-full border-t border-dashed"></div>
       <section
         id="section_why_choose_us"
-        className={cn("flex items-center gap-x-3 pt-20", MARGIN_EACH_SECTION)}
+        className={cn("flex items-center gap-x-3 pt-20 @xs/mobile:!px-4", MARGIN_EACH_SECTION)}
       >
         <div>
           <SectionTitle
@@ -51,8 +51,10 @@ function SectionWhyChooseUsMemo({ section, edit, onUpdateContent, sectionName })
             context={content?.heading || ""}
             title={content?.title || ""}
           />
-          <div className="flex flex-col items-center gap-x-10 lg:flex-row lg:gap-y-0 gap-y-5 ">
-            <div className="flex flex-col items-center lg:gap-x-24 lg:flex-row lg:gap-y-0 gap-y-7">
+          <div className={cn("flex flex-col items-center gap-x-10 lg:flex-row lg:gap-y-0 gap-y-5 ", "@xs/mobile:!gap-y-5 @xs/mobile:!flex-col")}>
+            <div className={cn("flex flex-col items-center lg:gap-x-24 lg:flex-row lg:gap-y-0 gap-y-7",
+              "@xs/mobile:!gap-y-7 @xs/mobile:!gap-x-0 @xs/mobile:!flex-col"
+            )}>
               {content?.text?.map((item, key) =>
                 <ItemChooseUs
                   edit={edit}
@@ -64,7 +66,7 @@ function SectionWhyChooseUsMemo({ section, edit, onUpdateContent, sectionName })
                 />
               )}
             </div>
-            <div className="flex w-full lg:w-2/3 justify-center">
+            <div className={cn("flex w-full lg:w-2/3  justify-center", "@xs/mobile:!w-full")}>
               <Button className="flex items-center justify-center gap-x-2 !rounded-none !p-6" >
                 {edit ? <ContentEditable className="section-mode-edit" html={content?.button_primary} tagName="span" onChange={(e) => {
                   const value = e.currentTarget.textContent;

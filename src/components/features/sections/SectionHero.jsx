@@ -17,31 +17,34 @@ function HeroCard({
 
   return (
     <div
-      className="rounded-lg px-12 py-10 text-white lg:w-[500px] sm:w-[400px] w-full"
+      className={cn(
+        "@xs/mobile:!w-full",
+        "lg:w-[500px] sm:w-[400px]",
+        "rounded-lg px-12 py-10 text-white w-full")}
       style={{ background: "rgba(0,0,0,0.7)" }}
     >
       {
         edit ?
           <ContentEditableSection
             tagName="h1"
-            className="mb-4 text-xl option lg:text-2xl font-cinzel text-primary section-mode-edit outline-none"
+            className="mb-4 text-xl option @xs/mobile:!text-xl lg:text-2xl font-cinzel text-primary section-mode-edit outline-none"
             html={title}
             onChange={(value) => onUpdateContent("title", value)}
           />
           :
-          <div className="mb-4 text-xl lg:text-3xl font-cinzel text-primary">{title}</div>
+          <div className="mb-4 text-xl @xs/mobile:text-xl lg:text-3xl font-cinzel text-primary">{title}</div>
       }
 
       {
         edit ?
           <ContentEditableSection
             tagName="div"
-            className="font-poppins text-sm lg:text-md line-clamp-3 font-light tracking-wide section-mode-edit outline-none"
+            className="font-poppins text-sm @xs/mobile:!text-sm lg:text-md line-clamp-3 font-light tracking-wide section-mode-edit outline-none"
             html={text}
             onChange={(value) => onUpdateContent("text", value)}
           />
           :
-          <span className="font-poppins text-sm lg:text-md font-light tracking-wide line-clamp-3">
+          <span className="font-poppins text-sm @xs/mobile:!text-sm lg:text-md font-light tracking-wide line-clamp-3">
             {parser(text)}
           </span>
       }
@@ -82,7 +85,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
   })
 
   return (
-    <section className="h-[600px] w-full mb-24 lg:h-[700px]" id="section_hero">
+    <section className={cn("h-[600px] w-full mb-24 lg:h-[700px]", "@xs/mobile:!h-[600px] @xs/mobile:!mb-24")} id="section_hero">
       <Header
         edit={edit}
         mobile={mobile}
@@ -93,7 +96,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
       />
       <div
         className={cn(
-          "absolute group w-full bg-black bg-center object-cover lg:h-[700px]",
+          "absolute group w-full bg-black bg-center object-cover lg:h-[700px] @xs/mobile:!h-[600px]",
         )}
         style={{
           backgroundImage: `url('${content?.banner}')`,
@@ -101,7 +104,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
           backgroundSize: `100% ${mobile?.mobileSm ? "100%" : ""}`,
         }}
       >
-        <div className={cn("pt-28 lg:pt-48 relative", CONTAINER_LP)}>
+        <div className={cn("pt-28 @xs/mobile:!pt-28 lg:pt-48 ", CONTAINER_LP)}>
           {
             edit &&
             <ToolboxImage
@@ -110,7 +113,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
               position="bottomRight"
               onUpdateContent={onUpdateImage}
               text="Ganti Banner"
-              className="-bottom-20 !-right-3 cursor-pointer w-[130px]"
+              className="-bottom-10 !-right-3 cursor-pointer w-[130px]"
             />
           }
           <div
@@ -124,6 +127,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
             html={content?.tagline || ""}
             tagName="h1"
             className={cn(
+              "@xs/mobile:!mb-6 @xs/mobile:!max-w-[450px] @xs/mobile:!px-3 @xs/mobile:!text-xl",
               "lg:mb-24 lg:w-full lg:max-w-[750px] lg:px-0 lg:text-2xl",
               "text-xl font-light tracking-wider text-white",
               "relative mx-auto mb-6 line-clamp-4 max-w-[450px] px-3 text-center font-poppins ",
@@ -166,11 +170,11 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
               title={content?.sub_tagline?.title || ""}
               text={content?.sub_tagline?.text || ""}
               footer={
-                <div className="mt-5 flex flex-col gap-x-4 gap-y-4 lg:flex-row lg:gap-y-0">
+                <div className="mt-5 flex flex-col gap-x-4 gap-y-4 lg:flex-row lg:gap-y-0 @xs/mobile:!gap-y-4 @xs/mobile:!flex-col">
                   {edit ? <ContentEditable
                     html={content?.button_primary}
                     tagName="div"
-                    className="!rounded-none flex justify-center items-center !px-8 section-mode-edit font-cinzel max-w-[200px] !py-3 bg-primary"
+                    className="!rounded-none flex justify-center items-center !px-8 section-mode-edit font-cinzel @xs/mobile:!max-w-full max-w-[220px] !py-3 bg-primary"
                     onChange={(e) => {
                       const value = e.currentTarget.textContent
                       onUpdateContent({
@@ -189,7 +193,7 @@ export default function SectionHero({ edit, mobile = false, section, onUpdateCon
                   {edit ? <ContentEditable
                     html={content?.button_secondary}
                     tagName="div"
-                    className="!rounded-none !px-8 !py-3 border border-white max-w-[220px] section-mode-edit font-cinzel"
+                    className="!rounded-none flex justify-center items-center !px-8 !py-3 border border-white @xs/mobile:!max-w-full max-w-[220px] section-mode-edit font-cinzel"
                     onChange={(e) => {
                       const value = e.currentTarget.textContent
                       onUpdateContent({

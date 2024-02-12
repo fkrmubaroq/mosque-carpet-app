@@ -61,15 +61,18 @@ export default function SectionContactUs({ setting, mobile = false, edit, sectio
           ></div>
           <div
             className={cn(
-              "relative z-10 flex h-full items-center justify-end",
+              "relative @xs/mobile:!px-5 z-10 flex h-full items-center justify-end",
               CONTAINER_LP
             )}
           >
-            <div className="px-4 lg:px-0">
+            <div className="px-4 @xs/mobile:!px-4 lg:px-0">
               {
                 edit ?
                   <ContentEditableSection
-                    className="mb-4 font-cinzel text-2xl leading-normal text-white lg:max-w-[700px] lg:text-5xl section-mode-edit"
+                    className={cn(
+                      "mb-4 font-cinzel text-2xl leading-normal text-white lg:max-w-[700px] lg:text-5xl section-mode-edit",
+                      "@xs/mobile:!text-2xl @xs/mobile:!w-full "
+                    )}
                     html={content?.title}
                     onChange={(value) => onUpdate("title", value)}
                   /> :

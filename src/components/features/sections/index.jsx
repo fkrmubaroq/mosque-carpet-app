@@ -22,7 +22,7 @@ const Sections = {
   section_map_address: SectionMapAddress,
   section_projects: SectionProjects
 }
-export default function SectionContainer({ onUpdateContent, sectionName, section }) {
+export default function SectionContainer({ mobile, onUpdateContent, sectionName, section }) {
   const SectionContainer = Sections[sectionName];
-  return <SectionContainer section={section} onUpdateContent={onUpdateContent} edit />
+  return <SectionContainer mobile={mobile} section={section} onUpdateContent={onUpdateContent} edit />
 }

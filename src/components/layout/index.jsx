@@ -13,8 +13,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import { BiHomeAlt } from "react-icons/bi";
 import { CiBoxList, CiBoxes } from "react-icons/ci";
+import { FaMobileAlt } from "react-icons/fa";
 import { FiUsers } from "react-icons/fi";
-import { IoIosArrowDown, IoIosArrowUp, IoIosGlobe } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp, IoIosGlobe, IoMdDesktop } from "react-icons/io";
 import { LuUser } from "react-icons/lu";
 import { MdOutlineAccountCircle, MdOutlineArticle } from "react-icons/md";
 import { PiDotsThreeLight } from "react-icons/pi";
@@ -98,7 +99,14 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
   const [expand, setExpand] = useState(true);
   const [dropdown, setDropdown] = useState(false);
   const [showToast, showConfirmation, hideConfirmation] = useDialogStore(state => [state.showToast, state.showConfirmation, state.hideConfirmation]);
-  const [sectionsLp, viewIdSection, setViewIdSection] = useEditSection(useShallow(state => [state.sectionsLp, state.viewIdSection, state.setViewIdSection]));
+  const [sectionsLp, viewIdSection, setViewIdSection, mode, setMode] = useEditSection(
+    useShallow(state => [
+      state.sectionsLp,
+      state.viewIdSection,
+      state.setViewIdSection,
+      state.mode,
+      state.setMode
+    ]));
   const isSectionPage = route.pathname === "/admin/section";
   const isSettingPage = route.pathname === "/admin/settings";
   const isCreateArticlePage = route.pathname === "/admin/articles/create";
@@ -156,141 +164,156 @@ export function Layout({ children, customTitle, title, classNameTitle }) {
 
   return (
     <>
-    <Meta title={title} />
-    <div className={cn(style["layout"], { [style["expanded"]]: expand })}>
-      <div className={cn("bg-gray-50",style["header"], {
-        "fixed bg-white z-[99999] right-0 shadow-sm": isSectionPage || isSettingPage || isCreateArticlePage || isUpdateArticlePage,
-        "left-[270px]": (isSettingPage || isSectionPage || isCreateArticlePage || isUpdateArticlePage) && expand,
-        "left-[75px]": (isSettingPage || isSectionPage || isCreateArticlePage || isUpdateArticlePage) && !expand,
-      })}>
-        <div className="flex items-center gap-x-2">
-          <div
-            onClick={() => setExpand((e) => !e)}
-            className="flex h-11 w-11 cursor-pointer items-center justify-center  gap-x-3 hover:rounded-md hover:bg-primary/20"
-          >
-            <RxHamburgerMenu size={20} />
-          </div>
-          {customTitle && customTitle}
-          {!customTitle &&
-            <div className={cn("text-lg font-medium", classNameTitle)}>
-              {title}
-            </div>
-          }
-        </div>
-
-        {/* IS SECTION PAGE */}
-        {
-          isSectionPage &&
-          <div className="flex gap-x-2">
-            <Button
-              onClick={() => window.open(window.location.origin)}
-              variant="ghost"
-              className="border border-gray-600 gap-x-2 flex items-center justify-center !rounded-full">
-              <IoIosGlobe size={20} />
-              <span >Website</span>
-            </Button>
-            <Button
-              disabled={isLoading}
-              className="!rounded-full"
-              size="lg"
-              onClick={() => onPublish()}
+      <Meta title={title} />
+      <div className={cn(style["layout"], { [style["expanded"]]: expand })}>
+        <div className={cn("bg-gray-50", style["header"], {
+          "fixed bg-white z-[99999] right-0 shadow-sm": isSectionPage || isSettingPage || isCreateArticlePage || isUpdateArticlePage,
+          "left-[270px]": (isSettingPage || isSectionPage || isCreateArticlePage || isUpdateArticlePage) && expand,
+          "left-[75px]": (isSettingPage || isSectionPage || isCreateArticlePage || isUpdateArticlePage) && !expand,
+        })}>
+          <div className="flex items-center gap-x-2">
+            <div
+              onClick={() => setExpand((e) => !e)}
+              className="flex h-11 w-11 cursor-pointer items-center justify-center  gap-x-3 hover:rounded-md hover:bg-primary/20"
             >
-              {isLoading ? (
-                <SpinnerIcon width="w-4" height="h-4" />
-              ) : (
-                "Publish"
-              )}
-            </Button>
+              <RxHamburgerMenu size={20} />
+            </div>
+            {customTitle && customTitle}
+            {!customTitle &&
+              <div className={cn("text-lg font-medium", classNameTitle)}>
+                {title}
+              </div>
+            }
           </div>
-        }
-        <div className="flex gap-x-5 items-center">
-          {isSectionPage && <div>
-            <ToggleSwitch
-              text="ID Section"
-              checked={viewIdSection}
-              onChange={(checked) => setViewIdSection(checked)}
-            />
-          </div>
+
+          {/* IS SECTION PAGE */}
+          {
+            isSectionPage &&
+            <div className="flex gap-x-2">
+              <Button
+                onClick={() => window.open(window.location.origin)}
+                variant="ghost"
+                className="border border-gray-600 gap-x-2 flex items-center justify-center !rounded-full">
+                <IoIosGlobe size={20} />
+                <span >Website</span>
+              </Button>
+              <Button
+                disabled={isLoading}
+                className="!rounded-full"
+                size="lg"
+                onClick={() => onPublish()}
+              >
+                {isLoading ? (
+                  <SpinnerIcon width="w-4" height="h-4" />
+                ) : (
+                  "Simpan"
+                )}
+              </Button>
+            </div>
           }
-          <div
-            ref={dropdownRef}
-            onClick={() => setDropdown(o => !o)}
-            className="cursor-pointer bg-gray-50 relative flex items-center gap-x-2 rounded-lg p-2  ">
-            <MdOutlineAccountCircle
-              size={33}
-              className="opacity-50"
-            />
-            <div className="flex flex-col gap-y-1 border-r pr-3 min-w-[100px] max-w-[300px]">
-              <span className="text-sm font-semibold text-gray-500 ">
+          <div className="flex gap-x-5 items-center">
+            {
+              isSectionPage &&
+              <div className="flex items-center gap-x-1">
+                <div
+                  onClick={() => setMode("mobile")}
+                  className={cn("w-10 h-10 flex justify-center items-center hover:bg-gray-200 rounded-md cursor-pointer", { "bg-gray-200": mode === "mobile" })}>
+                  <FaMobileAlt size={20} color="gray" />
+                </div>
+                <div
+                  onClick={() => setMode("desktop")}
+                  className={cn("w-10 h-10 flex justify-center items-center hover:bg-gray-200 rounded-md cursor-pointer", { "bg-gray-200": mode === "desktop" })}>
+                  <IoMdDesktop size={20} color="gray" />
+                </div>
+              </div>
+            }
+            {isSectionPage && <div>
+              <ToggleSwitch
+                text="ID Section"
+                checked={viewIdSection}
+                onChange={(checked) => setViewIdSection(checked)}
+              />
+            </div>
+            }
+            <div
+              ref={dropdownRef}
+              onClick={() => setDropdown(o => !o)}
+              className="cursor-pointer bg-gray-50 relative flex items-center gap-x-2 rounded-lg p-2  ">
+              <MdOutlineAccountCircle
+                size={33}
+                className="opacity-50"
+              />
+              <div className="flex flex-col gap-y-1 border-r pr-3 min-w-[100px] max-w-[300px]">
+                <span className="text-sm font-semibold text-gray-500 ">
                   {userLogin?.name || "-"}
-              </span>
-              <span className="text-xs text-gray-600 ">
+                </span>
+                <span className="text-xs text-gray-600 ">
                   {LIST_ROLE?.[userLogin?.role] || "-"}
-              </span>
+                </span>
+              </div>
+              <div className=" h-full ">
+                {dropdown ? <IoIosArrowUp /> : <IoIosArrowDown />}
+              </div>
+              <DropdownMenu show={dropdown} onClick={onClickDropdown} />
             </div>
-            <div className=" h-full ">
-              {dropdown ? <IoIosArrowUp /> : <IoIosArrowDown/> }
-            </div>
-            <DropdownMenu show={dropdown} onClick={onClickDropdown} />
           </div>
         </div>
-      </div>
-      <div className={style["sidebar"]}>
-        <div
-          className={cn(
-            " mt-5 flex items-center gap-x-4 overflow-hidden rounded-lg bg-primary/95",
-            {
-              "mx-5 mb-2 px-4 py-3": expand,
-              "mx-3 justify-center pb-2 pt-3": !expand,
-            }
-          )}
-        >
+        <div className={style["sidebar"]}>
+          <div
+            className={cn(
+              " mt-5 flex items-center gap-x-4 overflow-hidden rounded-lg bg-primary/95",
+              {
+                "mx-5 mb-2 px-4 py-3": expand,
+                "mx-3 justify-center pb-2 pt-3": !expand,
+              }
+            )}
+          >
             <div className={cn("shrink-0 overflow-hidden relative ", { "w-10 h-10": expand, "w-5 h-5": !expand })}>
-            <Image
-              src={setting?.logo || "/img/logo.png"}
+              <Image
+                src={setting?.logo || "/img/logo.png"}
                 layout="fill"
                 objectFit="contain"
-              alt=""
-            />
-          </div>
-          {expand && (
-            <div className="flex flex-col overflow-hidden font-jasans">
-              <span className="overflow-hidden font-medium tracking-widest text-white">
-                {setting?.logo_title || ""}
-              </span>
-              <span className="text-xs text-gray-200">{LIST_ROLE?.[userLogin?.role] || ""}</span>
+                alt=""
+              />
             </div>
-          )}
-        </div>
-
-        <div className={style["sidebar__menu"]}>
-          {sidebarMenus.map((sidebar, key) => (
-            <div
-              key={key}
-              className={cn({
-                "flex flex-col items-center justify-center": !expand,
-              })}
-            >
-              {expand ? (
-                <div className={style["sidebar__label"]}>{sidebar.label}</div>
-              ) : (
-                <PiDotsThreeLight />
-              )}
-              <div className="mb-6 flex flex-col gap-y-1">
-                {sidebar.menus.map((menu, key) => (
-                  <MenuItem
-                    data={menu}
-                    key={key}
-                    expand={expand}
-                    activeMenu={route.pathname}
-                  />
-                ))}
+            {expand && (
+              <div className="flex flex-col overflow-hidden font-jasans">
+                <span className="overflow-hidden font-medium tracking-widest text-white">
+                  {setting?.logo_title || ""}
+                </span>
+                <span className="text-xs text-gray-200">{LIST_ROLE?.[userLogin?.role] || ""}</span>
               </div>
-            </div>
-          ))}
+            )}
+          </div>
+
+          <div className={style["sidebar__menu"]}>
+            {sidebarMenus.map((sidebar, key) => (
+              <div
+                key={key}
+                className={cn({
+                  "flex flex-col items-center justify-center": !expand,
+                })}
+              >
+                {expand ? (
+                  <div className={style["sidebar__label"]}>{sidebar.label}</div>
+                ) : (
+                  <PiDotsThreeLight />
+                )}
+                <div className="mb-6 flex flex-col gap-y-1">
+                  {sidebar.menus.map((menu, key) => (
+                    <MenuItem
+                      data={menu}
+                      key={key}
+                      expand={expand}
+                      activeMenu={route.pathname}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-      <div className={cn(style["content"], "bg-gray-50")}>{children}</div>
+        <div className={cn(style["content"], "bg-gray-50")}>{children}</div>
       </div>
     </>
   );

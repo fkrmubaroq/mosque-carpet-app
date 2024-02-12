@@ -18,7 +18,6 @@ export default async function handler(req, res) {
     }
 
     const checkId = await fileManager.findId(id);
-    console.log("che", checkId, id);
     if (!checkId.length) {
       throw new ResponseError(STATUS_MESSAGE_ENUM.BadRequest, ERROR_MESSAGE.FailedToDeleteFile);
     }

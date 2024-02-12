@@ -6,7 +6,7 @@ import { INIT_SECTIONS } from "@/lib/constant";
 import { useEditSection } from "@/lib/hookStore";
 import Section from "@/models/section";
 import cn from "classnames";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 export async function getServerSideProps() {
@@ -28,11 +28,13 @@ export default function Sections({ sections }) {
   const [
     setSectionsLp,
     sectionsLp,
-    viewIdSection
+    viewIdSection,
+    mode
   ] = useEditSection(useShallow(state => [
     state.setSectionsLp,
     state.sectionsLp,
-    state.viewIdSection
+    state.viewIdSection,
+    state.mode
   ]));
 
   const [isLoading, setIsLoading] = useState(true);
@@ -58,19 +60,46 @@ export default function Sections({ sections }) {
     )
   }
 
+  const mobile = useMemo(() => mode === "mobile" ? { mobileSm: true, mobileMd: true } : {}, [mode]);
+
   return <Layout title="Sections">
     {isLoading && <LoaderOverlay />}
-    <div className="flex flex-col gap-y-3 relative">
-      {sectionsLp?.map((section, key) => <div key={key} className="relative">
-        <SectionId name={section.section_name} show={viewIdSection} />
-        <SectionContainer
-          onUpdateContent={(updatedSection) => onUpdateContent(updatedSection, key)}
-          section={section}
-          sectionName={section.section_name}
-        />
+    {mode === "mobile" ?
+      <div class="relative mx-auto border-gray-800  bg-gray-800 border-[14px] rounded-[2.5rem] h-[700px] w-[380px] shadow-xl">
+        <div class="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"></div>
+        <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
+        <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
+        <div class="h-[64px] w-[3px] bg-gray-800 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
+        <div class="rounded-[2rem] overflow-auto w-[352px] h-[672px] bg-white @container/mobile relative">
+          {sectionsLp?.map((section, key) => <div key={key} className="relative">
+            <SectionId name={section.section_name} show={viewIdSection} />
+            <SectionContainer
+              mobile={mobile}
+              onUpdateContent={(updatedSection) => onUpdateContent(updatedSection, key)}
+              section={section}
+              sectionName={section.section_name}
+            />
+          </div>
+          )}
+        </div>
       </div>
-      )}
-    </div>
+
+      :
+
+      <div className={cn("flex flex-col relative")}>
+        {sectionsLp?.map((section, key) => <div key={key} className="relative">
+          <SectionId name={section.section_name} show={viewIdSection} />
+          <SectionContainer
+            mobile={mobile}
+            onUpdateContent={(updatedSection) => onUpdateContent(updatedSection, key)}
+            section={section}
+            sectionName={section.section_name}
+          />
+        </div>
+        )}
+      </div>
+    }
+
   </Layout>
 }
 
@@ -79,7 +108,7 @@ function SectionId({ name, show }) {
 
   return <div className={cn("absolute z-[9999] right-3 bg-secondary p-2 text-white",
     {
-      "top-1/2": name === "section_articles" || name === "section_categories",
+      "top-1/2": name === "section_articles" || name === "section_categories" || name === "section_hero",
       "top-0": name !== "section_articles" && name !== "section_categories",
     }
   )}>
