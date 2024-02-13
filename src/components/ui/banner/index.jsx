@@ -1,14 +1,20 @@
+import Image from "next/image";
 import { IoIosClose } from "react-icons/io";
 
-export default function Banner({ src, redirectTo, onClose,  }) {
+export default function Banner({ src, redirectTo, onClose, }) {
   return <div className="absolute justify-center flex items-center inset-0 z-[999999]">
     <div className="bg-black/60 inset-0 fixed"></div>
     <div className="text-white z-[99999] fixed ">
-      <div 
+      <div
         onClick={() => redirectTo && window.open(redirectTo)}
       >
-        <div className="max-h-[700px] max-w-[800px] px-4">
-          <img src={src} alt="" />
+        <div className="relative px-4 max-w-[800px] h-[400px]">
+          <Image src={src} alt=""
+            width={500}
+            height={300}
+            layout="responsive"
+            className="!max-h-[500px] object-contain"
+          />
         </div>
         <div
           onClick={(e) => {
