@@ -159,7 +159,7 @@ export function slugString(string) {
 function getDomain() {
   const env = process.env.ENVIRONMENT;
   if (env === "local") return "localhost";
-  if (env === "production" || env === "development") return process.env.HOST_NAME
+  return process.env.HOST_NAME
 }
 
 export function getCookieName(name) {
