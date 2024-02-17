@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "env-cmd -f .env next build ",
-    "build:dev": "env-cmd -f .env.dev next build ",
+    "build:dev": "env-cmd -f .env.dev next build && cp -r files ./out",
     "build:production": "env-cmd -f .env.production next build ",
     "start:production": "NODE_ENV=production env-cmd -f .env.production node server.js",
     "start:dev": "NODE_ENV=development env-cmd -f .env.dev next start",
