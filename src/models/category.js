@@ -35,7 +35,7 @@ export default class Category{
     const paginationSql = `LIMIT ${limit} OFFSET ${offset}`;
     const categorySql = `SELECT category.* FROM ${table} ${filters.sql} ORDER BY id DESC `;
     const response = await query(`${categorySql} ${paginationSql}`, filters.values);
-
+    console.log("responsexx ", response);
     const paginationInfo = await count(`${categorySql}`, filters.values);
     const totalPage = Math.ceil(paginationInfo / OFFSET)
     return {
