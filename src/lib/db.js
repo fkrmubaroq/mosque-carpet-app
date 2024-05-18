@@ -10,13 +10,11 @@ const db = mysql({
   }
 });
 
-const connection = db.getClient();
-
 export default async function query(query, values) {
   try {
     const results = await db.query(query, values);
     await db.end();
-    return results;
+    return JSON.parse(JSON.stringify(results));
   } catch (error) {
     return { error };
   }

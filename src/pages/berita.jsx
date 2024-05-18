@@ -25,6 +25,7 @@ export async function getServerSideProps() {
   const section = new Section();
 
   const resultSection = await section.getAll();
+  console.log("s", resultSection);
   return {
     props: {
       sections: resultSection || []
