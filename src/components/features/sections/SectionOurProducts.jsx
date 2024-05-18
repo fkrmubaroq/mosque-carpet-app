@@ -26,7 +26,6 @@ export default function SectionOurProduct({ edit, mobile }) {
     queryFn: async () => {
       const params = {};
       const response = await getCategory(params);
-      console.log("response ", response);
       if (response.status !== 200) throw new Error();
       return response.data || [];
     }

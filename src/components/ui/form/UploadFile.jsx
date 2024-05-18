@@ -1,13 +1,12 @@
 import { MIME_TYPE, MIME_TYPE_IMAGE } from "@/lib/constant";
 import {
-  checkResolutionImage, formatBytes, handleDragZoneHover
+  checkResolutionImage,
+  formatBytes,
+  handleDragZoneHover,
 } from "@/lib/utils";
 import cn from "classnames";
 import Image from "next/image";
-import {
-  useRef,
-  useState
-} from "react";
+import { useRef, useState } from "react";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { Card, CardContent } from "../card";
 
@@ -23,7 +22,7 @@ const UploadFile = ({
   placeholder,
   className,
   onRemove,
-  clearDefaultPlaceholder
+  clearDefaultPlaceholder,
 }) => {
   const fileRef = useRef(null);
   const [error, setError] = useState("");
@@ -55,12 +54,12 @@ const UploadFile = ({
           Format file harus{" "}
           {Array.isArray(accept)
             ? accept?.map((type, key) => {
-              return (
-                <span className="mr-[1px]" key={key}>
-                  .{MIME_TYPE[type].toLocaleUpperCase()}{" "}
-                </span>
-              );
-            })
+                return (
+                  <span className="mr-[1px]" key={key}>
+                    .{MIME_TYPE[type].toLocaleUpperCase()}{" "}
+                  </span>
+                );
+              })
             : `Format file harus .${MIME_TYPE[file.type]}`}
         </>
       );
@@ -112,11 +111,11 @@ const UploadFile = ({
       }
     }
 
-    onChange && onChange(files, (files) => {
-      setSelectedFile(files)
-    });
+    onChange &&
+      onChange(files, (files) => {
+        setSelectedFile(files);
+      });
   };
-
 
   const handleClick = (e) => {
     e.stopPropagation();
@@ -157,7 +156,7 @@ const UploadFile = ({
           "wrapper-upload-file upload-file-drop-zone relative overflow-auto",
           className,
           {
-            "flex-col flex items-center justify-center": !selectedFile,
+            "flex flex-col items-center justify-center": !selectedFile,
           }
         )}
         onClick={handleClick}
@@ -166,11 +165,13 @@ const UploadFile = ({
         onDragLeave={(e) => handleDragZoneHover(e, false)}
       >
         {selectedFile ? (
-          <div className={cn("grid gap-3", {
-            "grid-cols-3": selectedFile.length > 1,
-            "grid-cols-2": selectedFile.length === 2,
-            "grid-cols-1": selectedFile.length === 1
-          })}>
+          <div
+            className={cn("grid gap-3", {
+              "grid-cols-3": selectedFile.length > 1,
+              "grid-cols-2": selectedFile.length === 2,
+              "grid-cols-1": selectedFile.length === 1,
+            })}
+          >
             {Array.from(selectedFile).map((file, key) => (
               <PreviewFile file={file} key={key} />
             ))}
@@ -179,12 +180,12 @@ const UploadFile = ({
           <div className="flex flex-col items-center justify-center pb-6 pt-5">
             <AiOutlineCloudUpload size={30} color="#6b7280" />
             <div className="flex flex-col items-center justify-center text-center">
-              {!clearDefaultPlaceholder &&
+              {!clearDefaultPlaceholder && (
                 <p className="mb-2 text-sm text-gray-400">
                   <span className="font-semibold">Klik untuk upload</span> atau
                   drop file disini
                 </p>
-              }
+              )}
               <p className="text-xs text-gray-400">{placeholder}</p>
             </div>
           </div>
@@ -204,11 +205,16 @@ function PreviewFile({ file }) {
     <div>
       {MIME_TYPE_IMAGE[file.type] && (
         <Card className="rounded-none">
-          <CardContent className="flex flex-col justify-center gap-y-2 !pb-4 !pt-3 !px-3 ">
-            <div className="shrink-0 w-full h-[100px] relative">
-              <Image src={getSrcFile(file)} fill alt="" className="object-cover mx-auto" />
+          <CardContent className="flex flex-col justify-center gap-y-2 !px-3 !pb-4 !pt-3 ">
+            <div className="relative h-[100px] w-full shrink-0">
+              <Image
+                src={getSrcFile(file)}
+                layout="fill"
+                alt=""
+                className="mx-auto object-cover"
+              />
             </div>
-            <span className="text-sm font-semibold text-gray-600 line-clamp-2">
+            <span className="line-clamp-2 text-sm font-semibold text-gray-600">
               {file.name}
             </span>
             <span className="text-sm text-gray-400">

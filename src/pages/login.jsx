@@ -44,7 +44,7 @@ export default function Login() {
     <Meta title="Login " />
     <div className="min-h-screen lg:px-0 px-5 flex justify-center items-center bg-gray-50">
       <div className="lg:block hidden">
-        <Image src="/img/login.png" width={350} height={250} />
+        <Image src="/img/login.svg" width={350} height={250} />
       </div>
       <Card className="w-[400px] bg-white shadow-md border-none">
         <CardHeader>

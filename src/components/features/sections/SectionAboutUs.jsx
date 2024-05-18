@@ -54,7 +54,7 @@ function SectionAboutUsMemo({ section, edit, onUpdateContent }) {
           <Image
             className="rounded-lg"
             src={content?.image || placeholderImage}
-            fill
+            layout="fill"
             alt=""
             loading="lazy"
           />

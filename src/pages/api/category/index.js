@@ -38,7 +38,6 @@ async function get(req, res) {
     const data = await category.getCategoryWithPagination(query);
     res.status(200).json(data);
   } catch (e) {
-    console.log("e", e)
     responseErrorMessage(e, res);
   }
 } 

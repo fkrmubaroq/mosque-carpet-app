@@ -3,7 +3,7 @@ import { getCookie } from "./lib/utils";
 
 export async function middleware(req, res) {
   const user = getCookie("adm", req);
-  const userParsed = JSON.parse(user?.value || null);
+  const userParsed = JSON.parse(user || null);
   if (req.nextUrl.pathname.startsWith("/login") && userParsed?.username) {
     return NextResponse.redirect(new URL("/admin/dashboard", req.url));
   }
@@ -14,7 +14,7 @@ export async function middleware(req, res) {
     return NextResponse.next();
   }
 
-  const isMaintenance = await checkIsMaintenance();
+  const isMaintenance = false;
 
   if (isMaintenance) {
     return NextResponse.rewrite(new URL("/maintenance", req.url));
@@ -24,7 +24,7 @@ export async function middleware(req, res) {
 }
 
 async function checkIsMaintenance() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const baseUrl = process.env.API_BASE_URL;
   const response = await fetch(`${baseUrl}/setting`);
   const data = await response.json();
   return data?.data?.is_maintenance === "Y";
